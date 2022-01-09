@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE student PUBLIC "-//Portland State University//DTD CS410J Grade Book//EN" "http://www.cs.pdx.edu/~whitlock/dtds/gradebook.dtd">
+<student enrolled-section="graduate">
+<id>awurtz</id>
+<firstName>Addison</firstName>
+<lastName>Wurtz</lastName>
+<email>awurtz@pdx.edu</email>
+<major>Computer Science</major>
+<notes>
+<note>Addison Wurtz would like to learn How to be a better programmer (and how to use some new tools)</note>
+<note>Addison Wurtz has these comments: I'm excited for this term!</note>
+</notes>
+</student>
