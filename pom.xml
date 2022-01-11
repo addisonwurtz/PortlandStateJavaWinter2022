@@ -12,9 +12,9 @@ accordingly
     
   <parent>
         
-    <artifactId>PortlandStateJavaWinter2022</artifactId>
+    <artifactId>cs410j</artifactId>
         
-    <groupId>edu.pdx.cs410J.awurtz</groupId>
+    <groupId>io.github.davidwhitlock.cs410J</groupId>
         
     <version>2022.0.0</version>
       
