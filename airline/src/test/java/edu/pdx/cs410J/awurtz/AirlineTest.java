@@ -2,9 +2,11 @@ package edu.pdx.cs410J.awurtz;
 
 import org.junit.jupiter.api.Test;
 
+
+import java.util.ArrayList;
+
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class AirlineTest {
     @Test
@@ -13,4 +15,21 @@ public class AirlineTest {
         assertThat(airline.getName(), equalTo("Delta"));
     }
 
+    @Test
+    void addFlightAddsFlight() {
+        Airline airline = new Airline("Delta");
+        Flight flight = new Flight("PDX", 48, "02/25/2022", "11:11", "LAX", "02/25/2022", "14:25");
+        airline.addFlight(flight);
+        assertThat(airline.getFlights(), hasItem(flight));
+    }
+
+    @Test
+    void getFlightsReturnsFlightArrayList() {
+        Airline airline = new Airline("Delta");
+        Flight flight = new Flight("PDX", 48, "02/25/2022", "11:11", "LAX", "02/25/2022", "14:25");
+        ArrayList<Flight> flightList = new ArrayList<>();
+        flightList.add(flight);
+        airline.addFlight(flight);
+        assertThat(airline.getFlights(), equalTo(flightList));
+    }
 }
