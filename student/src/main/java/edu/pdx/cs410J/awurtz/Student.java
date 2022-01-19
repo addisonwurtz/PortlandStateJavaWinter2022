@@ -39,11 +39,7 @@ public class Student extends Human {
    * <code>Student</code>.                                                          
    */                                                                               
   public String toString() {
-    if (this.gener.equals("female")) {
-      return "She";
-    }
-
-    throw new UnsupportedOperationException("Gender" + this.gender + "not supported");
+    throw new UnsupportedOperationException("Not implemented yet");
   }
 
   /**
