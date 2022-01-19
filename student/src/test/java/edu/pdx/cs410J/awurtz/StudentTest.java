@@ -22,4 +22,10 @@ public class StudentTest
     assertThat(pat.getName(), equalTo(name));
   }
 
+  @Test
+  void femaleGenderHasShePronoun() {
+    Student femaleStudent = new Student ("Name", new ArrayList<>(), 0.0, "female");
+    assertThat(femaleStudent.toString(), containsString("She"));
+  }
 }
+
