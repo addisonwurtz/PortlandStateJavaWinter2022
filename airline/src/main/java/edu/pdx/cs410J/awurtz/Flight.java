@@ -8,7 +8,7 @@ public class Flight extends AbstractFlight {
   Integer flightNumber;
   String departDate;
   String departTime;
-  String dest;
+  String destination;
   String arriveDate;
   String arriveTime;
   /**
@@ -40,28 +40,28 @@ public class Flight extends AbstractFlight {
     this.flightNumber = flightNumber;
     this.departDate = departDate;
     this.departTime = departTime;
-    this.dest = dest;
+    this.destination = dest;
     this.arriveDate = arriveDate;
     this.arriveTime = arriveTime;
   }
   @Override
   public int getNumber() {
-    return 42;
+  return this.flightNumber;
   }
 
   @Override
   public String getSource() {
-    throw new UnsupportedOperationException("This method is not implemented yet");
+    return this.source;
   }
 
   @Override
   public String getDepartureString() {
-    throw new UnsupportedOperationException("This method is not implemented yet");
+    return this.departTime + " " + this.departDate;
   }
 
   @Override
   public String getDestination() {
-    throw new UnsupportedOperationException("This method is not implemented yet");
+  return this.destination;
   }
 
   @Override

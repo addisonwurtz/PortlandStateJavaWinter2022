@@ -13,27 +13,35 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  */
 public class FlightTest {
 
-  /**
-   * This unit test will need to be modified (likely deleted) as you implement
-   * your project.
-   */
   @Test
   void getArrivalStringReturnsArriveDateAndArriveTimeAsString() {
     Flight flight = createTestFlight();
-
     assertThat(flight.getArrivalString(), is(flight.arriveTime + " " + flight.arriveDate));
   }
 
-  /**
-   * This unit test will need to be modified (likely deleted) as you implement
-   * your project.
-   */
   @Test
-  void initiallyAllFlightsHaveTheSameNumber() {
-    Flight flight = new Flight();
-    assertThat(flight.getNumber(), equalTo(42));
+  void getNumberReturnsFlightNumber() {
+    Flight flight = createTestFlight();
+    assertThat(flight.getNumber(), equalTo(flight.flightNumber));
   }
 
+  @Test
+  void getSourceReturnsSource() {
+   Flight flight = createTestFlight();
+   assertThat(flight.getSource(), equalTo(flight.source));
+  }
+
+  @Test
+  void getDepartureStringReturnsDepartureString() {
+    Flight flight = createTestFlight();
+    assertThat(flight.getDepartureString(), is(flight.departTime + " " + flight.departDate));
+  }
+
+  @Test
+  void getDestinationReturnsDestination() {
+    Flight flight = createTestFlight();
+    assertThat(flight.getDestination(), equalTo(flight.destination));
+  }
   @Test
   void forProject1ItIsOkayIfGetDepartureTimeReturnsNull() {
     Flight flight = new Flight();
@@ -83,7 +91,7 @@ public class FlightTest {
     String destination = "SFO";
     Flight testFlight = FlightTest.createTestFlight();
 
-    assertThat(testFlight.dest, is(destination));
+    assertThat(testFlight.destination, is(destination));
   }
 
   @Test
