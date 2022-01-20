@@ -31,10 +31,20 @@ class Project1IT extends InvokeMainTestCase {
   }
 
   @Test
+  void testNotEnoughCommandLineArguments() {
+    String[] args = new String[] {"-print", "Delta", "u9", "PDX", "SFO", "11/11/11 11:11", "12/12/12 12:12"};
+    MainMethodResult result = invokeMain(args);
+    assertThat(result.getTextWrittenToStandardError(), containsString("Missing command line arguments"));
+  }
+
+  @Test
     void parserDetectsNonIntegerFlightNumber() {
       String[] args = new String[] {"-print", "Delta", "u9", "PDX", "SFO", "11/11/11", "11:11", "12/12/12", "12:12"};
       MainMethodResult result = invokeMain(args);
-      assertThrows(NumberFormatException.class, () -> Project1.createFlightAndPrintDescription(args));
+      //How are you supposed to use assertThrows?
+      //I am trying to say "Assert that createFlightAndPrintDescription throws a NumberFormatException when given the above String[] args.
+      //assertThrows(NumberFormatException.class, () -> Project1.createFlightAndPrintDescription(args));
+      assertThat(result.getTextWrittenToStandardError(), containsString("Flight number is not an integer."));
       assertThat(result.getExitCode(), equalTo(1));
   }
 
@@ -43,6 +53,7 @@ class Project1IT extends InvokeMainTestCase {
       String[] args = new String[] {"-print", "Delta", "99", "PDX9", "SFO", "11/11/11", "11:11", "12/12/12", "12:12"};
       MainMethodResult result = invokeMain(args);
       assertThat(result.getExitCode(), equalTo(1));
+      assertThat(result.getTextWrittenToStandardError(), containsString(" is not a 3 letter airport code."));
 
   }
 }

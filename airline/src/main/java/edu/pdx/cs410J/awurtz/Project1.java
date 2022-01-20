@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Objects;
 
 import static java.lang.Integer.parseInt;
 
@@ -13,7 +12,7 @@ import static java.lang.Integer.parseInt;
  */
 public class Project1 {
 
-  public static void parseCommandLineArguments(String[] args) {
+  public static void parseCommandLineArgumentsAndReturnFlight(String[] args) {
     if (args[0].equals("-README") || args[1].equals("-README")) {
 
       try {
@@ -36,17 +35,17 @@ public class Project1 {
     try {
       Integer flightNumber = parseInt(args[2]);
     } catch (NumberFormatException ex) {
-      printErrorMessageAndExit("Flight number was not an integer.");
+      printErrorMessageAndExit("Flight number is not an integer.");
     }
     String source = args[3];
     if (source.length() > 3 || !isAlpha(source)) {
-      printErrorMessageAndExit("Source is not a 3 letter airport code.");
+      printErrorMessageAndExit(args[3] + " is not a 3 letter airport code.");
     }
-    String departTime = args[4];
-    String departDate = args[5];
+    String departDate = args[4];
+    String departTime = args[5];
     String destination = args[6];
-    String arriveDate = args[7];
-    String arriveTime = args[8];
+    String arriveTime = args[7];
+    String arriveDate = args[8];
 
   }
 
@@ -69,18 +68,34 @@ public class Project1 {
     System.exit(1);
   }
 
+  private static String printCommandLineInterfaceDescription() {
+    return """
+              args are (in this order): [options] <args>
+                airline                   The name of the airline
+                flightNumber              The flight number
+                src                       Three-letter code of departure airport
+                departDate                Departure date
+                departTime                Departure time (24-hour time)
+                dest                      Three-letter code of arrival airport
+                arriveDate                Arrival date
+                arriveTime                Arrival time (24-hour time)
+              options are (options may appear in any order):
+                -print                    Prints a description of the new flight
+                -README                   Prints a README for this project and exits
+              Date and time should be in the format: mm/dd/yyy hh:mm
+           """;
+  }
 
   public static void main(String[] args) {
-    Flight flight = new Flight();  // Refer to one of Dave's classes so that we can be sure it is on the classpath
+    Flight flight = new Flight();
 
     if (args.length < 9) {
-      System.err.println("Missing command line arguments.");
-      System.out.println("Arguments should be as follows:");
-      System.out.println("airline_name flight_number departure_airport_code departure_date departure_time destination_airport_code arrival_date arrival_time");
-      System.out.println("Options are: -print (prints the description of the new flight)");
-      System.out.println("             -README (Prints a README for this project and exits)");
+      printErrorMessageAndExit("Missing command line arguments." + printCommandLineInterfaceDescription());
     } else {
-      parseCommandLineArguments(args);
+      try {
+        parseCommandLineArgumentsAndReturnFlight(args);
+      }
+      catch ()
     }
 
     System.exit(1);
