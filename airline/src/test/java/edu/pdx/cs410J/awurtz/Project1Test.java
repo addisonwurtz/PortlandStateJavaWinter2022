@@ -1,5 +1,6 @@
 package edu.pdx.cs410J.awurtz;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
@@ -7,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import static edu.pdx.cs410J.awurtz.Project1.parseDate;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -29,4 +31,14 @@ class Project1Test {
     }
   }
 
+  @Test
+  void parserDetectsValidDateFormat() {
+    assertThat(parseDate("02/20/2022"), equalTo(true));
+  }
+
+  @Disabled //dateParse needs support for single digit days and months
+  @Test
+  void parserDetectsValidDateWithSingleDigitDay() {
+    assertThat(parseDate("1/23/2022"), equalTo(true));
+  }
 }
