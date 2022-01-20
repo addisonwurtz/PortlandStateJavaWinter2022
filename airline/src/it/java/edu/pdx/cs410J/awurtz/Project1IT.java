@@ -34,6 +34,15 @@ class Project1IT extends InvokeMainTestCase {
     void parserDetectsNonIntegerFlightNumber() {
       String[] args = new String[] {"-print", "Delta", "u9", "PDX", "SFO", "11/11/11", "11:11", "12/12/12", "12:12"};
       MainMethodResult result = invokeMain(args);
+      assertThrows(NumberFormatException.class, () -> Project1.createFlightAndPrintDescription(args));
       assertThat(result.getExitCode(), equalTo(1));
+  }
+
+  @Test
+    void parserDetectsInvalidSource() {
+      String[] args = new String[] {"-print", "Delta", "99", "PDX9", "SFO", "11/11/11", "11:11", "12/12/12", "12:12"};
+      MainMethodResult result = invokeMain(args);
+      assertThat(result.getExitCode(), equalTo(1));
+
   }
 }
