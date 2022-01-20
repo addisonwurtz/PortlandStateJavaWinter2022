@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * An integration test for the {@link Project1} main class.
@@ -29,4 +30,10 @@ class Project1IT extends InvokeMainTestCase {
     assertThat(result.getTextWrittenToStandardError(), containsString("Missing command line arguments"));
   }
 
+  @Test
+    void parserDetectsNonIntegerFlightNumber() {
+      String[] args = new String[] {"-print", "Delta", "u9", "PDX", "SFO", "11/11/11", "11:11", "12/12/12", "12:12"};
+      MainMethodResult result = invokeMain(args);
+      assertThat(result.getExitCode(), equalTo(1));
+  }
 }
