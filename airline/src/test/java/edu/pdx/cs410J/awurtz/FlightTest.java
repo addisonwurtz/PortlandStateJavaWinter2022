@@ -57,7 +57,7 @@ public class FlightTest {
     String arrivalDate = "2/9/2022";
     String arrivalTime = "13:13";
 
-    return new Flight(source, flightNumber, departDate, departTime, destination, arrivalDate, arrivalTime);
+    return new Flight(flightNumber, source, departDate, departTime, destination, arrivalDate, arrivalTime);
   }
 
   @Test

@@ -11,6 +11,7 @@ import java.io.InputStreamReader;
 import static edu.pdx.cs410J.awurtz.Project1.parseDate;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * A unit test for code in the <code>Project1</code> class.  This is different
@@ -33,12 +34,44 @@ class Project1Test {
 
   @Test
   void parserDetectsValidDateFormat() {
-    assertThat(parseDate("02/20/2022"), equalTo(true));
+    String date = "02/20/2022";
+    assertThat(parseDate(date), equalTo(date));
   }
 
-  @Disabled //dateParse needs support for single digit days and months
   @Test
-  void parserDetectsValidDateWithSingleDigitDay() {
-    assertThat(parseDate("1/23/2022"), equalTo(true));
+  void parseDateDetectsValidDateWithSingleDigitMonth() {
+    String date = "1/23/2022";
+    assertThat(parseDate(date), equalTo(date));
   }
+
+  @Test
+  void parseDateDetectsValidDateWithSingleDigitDay() {
+    String date = "12/3/2022";
+    assertThat(parseDate(date), equalTo(date));
+  }
+
+  @Test
+  void parseDateThrowsInvalidDateExceptionForTwoDigitYear() {
+    String date = "12/15/21";
+    assertThrows(InvalidDateException.class, () -> Project1.parseDate(date));
+  }
+
+  @Test
+  void parseDateThrowsInvalidDateExceptionForFebruaryThirtiethDate() {
+    String date = "02/30/2022";
+    assertThrows(InvalidDateException.class, () -> Project1.parseDate(date));
+  }
+
+  @Test
+  void parseDateThrowsInvalidDateExceptionForAprilThirtyFirstDate() {
+    String date = "4/31/2022";
+    assertThrows(InvalidDateException.class, () -> Project1.parseDate(date));
+  }
+
+  @Test
+  void parseTimeDetectsValidTime() {
+    String time = "11:11";
+    assertThat(Project1.parseTime(time), equalTo(time));
+  }
+
 }

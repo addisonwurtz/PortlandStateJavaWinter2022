@@ -21,7 +21,7 @@ public class Flight extends AbstractFlight {
    *
    * @param flightNumber
    *        The flight number
-   * @param src
+   * @param source
    *        Three-letter code of the departure airport
    * @param departDate
    *        Departure date
@@ -34,10 +34,10 @@ public class Flight extends AbstractFlight {
    * @param arriveTime
    *        Arrival time (24-hour time)
    */
-  public Flight(String src, Integer flightNumber, String departDate, String departTime, String dest, String arriveDate, String arriveTime) {
+  public Flight(Integer flightNumber, String source, String departDate, String departTime, String dest, String arriveDate, String arriveTime) {
 
-    this.source = src;
     this.flightNumber = flightNumber;
+    this.source = source;
     this.departDate = departDate;
     this.departTime = departTime;
     this.destination = dest;

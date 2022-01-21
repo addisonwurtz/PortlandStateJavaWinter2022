@@ -41,10 +41,7 @@ class Project1IT extends InvokeMainTestCase {
     void parserDetectsNonIntegerFlightNumber() {
       String[] args = new String[] {"-print", "Delta", "u9", "PDX", "SFO", "11/11/11", "11:11", "12/12/12", "12:12"};
       MainMethodResult result = invokeMain(args);
-      //How are you supposed to use assertThrows?
-      //I am trying to say "Assert that createFlightAndPrintDescription throws a NumberFormatException when given the above String[] args.
-      //assertThrows(NumberFormatException.class, () -> Project1.createFlightAndPrintDescription(args));
-      assertThat(result.getTextWrittenToStandardError(), containsString("Flight number is not an integer."));
+      assertThat(result.getTextWrittenToStandardError(), containsString("Flight number " + args[2] + " is not an integer."));
       assertThat(result.getExitCode(), equalTo(1));
   }
 
