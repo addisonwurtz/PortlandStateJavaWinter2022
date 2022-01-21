@@ -21,6 +21,12 @@ public class Project1 {
         System.out.println(reader.readLine());
 
     } else {
+      if (args.length < 9) {
+        printErrorMessageAndExit("Missing command line arguments." + printCommandLineInterfaceDescription());
+      }
+      if (args.length > 9) {
+        printErrorMessageAndExit("Too many command line arguments." + printCommandLineInterfaceDescription());
+      }
       if (args[0].equals("-print")) {
         System.out.println(parseArgsAndCreateFlight(args).toString());
       }
@@ -49,9 +55,9 @@ public class Project1 {
       throw new InvalidSourceException(destination);
     }
 
-    String arriveTime = parseTime(args[7]);
+    String arriveDate = parseDate(args[7]);
 
-    String arriveDate = parseDate(args[8]);
+    String arriveTime = parseTime(args[8]);
 
     return new Flight(flightNumber, source, departDate,departTime,destination,arriveTime, arriveDate);
 
@@ -117,7 +123,7 @@ public class Project1 {
   public static void main(String[] args) {
     Flight flight = new Flight();
 
-    if (args.length < 9) {
+    if (args.length == 0) {
       printErrorMessageAndExit("Missing command line arguments." + printCommandLineInterfaceDescription());
     }
     try {
@@ -145,7 +151,7 @@ public class Project1 {
   }
 
   private static String printCommandLineInterfaceDescription() {
-    return "args are (in this order): [options] <args>\n" +
+    return "\n\nargs are (in this order): [options] <args>\n" +
             "\tairline                   The name of the airline\n" +
             "\tflightNumber              The flight number\n" +
             "\tsrc                       Three-letter code of departure airport\n" +
