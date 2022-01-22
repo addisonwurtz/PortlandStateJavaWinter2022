@@ -13,7 +13,7 @@ import static java.lang.Integer.*;
  */
 public class Project1 {
 
-  public static void parseCommandLineArgumentsAndReturnFlight(String[] args) throws IOException {
+  public static void checkOptionsAndParseCommandLineArguments(String[] args) throws IOException {
     if (args[0].equals("-README") || args[1].equals("-README")) {
         InputStream readme = Project1.class.getResourceAsStream("README.txt");
         assert readme != null;
@@ -59,7 +59,7 @@ public class Project1 {
 
     String arriveTime = parseTime(args[8]);
 
-    return new Flight(flightNumber, source, departDate,departTime,destination,arriveTime, arriveDate);
+    return new Flight(flightNumber, source, departDate,departTime,destination,arriveDate, arriveTime);
 
   }
 
@@ -94,10 +94,14 @@ public class Project1 {
       throw new InvalidTimeException(timeString);
     }
 
+    int hour, minute;
     try{
-      int hour = Integer.parseInt(stringTokenizer.nextToken());
-      int minute = Integer.parseInt(stringTokenizer.nextToken());
+      hour = Integer.parseInt(stringTokenizer.nextToken());
+      minute = Integer.parseInt(stringTokenizer.nextToken());
     } catch (NumberFormatException ex) {
+      throw new InvalidTimeException(timeString);
+    }
+    if((hour < 0 || hour > 24) || (minute < 0 || minute > 60)) {
       throw new InvalidTimeException(timeString);
     }
 
@@ -127,7 +131,7 @@ public class Project1 {
       printErrorMessageAndExit("Missing command line arguments." + printCommandLineInterfaceDescription());
     }
     try {
-      parseCommandLineArgumentsAndReturnFlight(args);
+      checkOptionsAndParseCommandLineArguments(args);
     } catch (IOException ex) {
       printErrorMessageAndExit("README file was not be found.");
     } catch (InvalidFlightNumberException ex) {
