@@ -13,6 +13,15 @@ import static java.lang.Integer.*;
  */
 public class Project1 {
 
+  /**
+   * The checkOptionsAndParseCommandLineArguments method initially checks for -README or -print options in args, checks for the correct number of args, and then
+   * directs the flow of the program appropriates.
+   *
+   * @param args
+   *        The String of commandline arguments that will be parsed and, if they are correct, used to build a flight
+   * @throws IOException
+   *         IOException is thrown if there is a problem accessing the readme file. The exception is caught in the main method.
+   */
   public static void checkOptionsAndParseCommandLineArguments(String[] args) throws IOException {
     if (args[0].equals("-README") || args[1].equals("-README")) {
         InputStream readme = Project1.class.getResourceAsStream("README.txt");
@@ -33,6 +42,14 @@ public class Project1 {
     }
   }
 
+  /**
+   * The parseArgsAndCreateFlight method is called in order to individually check that each of the args is properly formatted and, if they are,
+   * returns a flight built from the freshly parsed parameters.
+   * @param args
+   *        The commandline arguments (options are ignored in this method)
+   * @return
+   *        Returns the freshly constructed flight.
+   */
   public static Flight parseArgsAndCreateFlight(String[] args) {
     String airline = args[1];
     int flightNumber;
@@ -63,6 +80,17 @@ public class Project1 {
 
   }
 
+  /**
+   * The parseDate method parses dates, verifying the format is mm/dd/yyyy or m/d/yyy (months and days can include or omit the leading zero).
+   * If the date is properly formatted, the date string is returned. If it is a not exception with a descriptive error
+   * message is thrown.
+   * @param dateString
+   *        A string to be parsed (that is hopefully a properly formatted date)
+   * @return
+   *        Returns dateString if it is a valid date in a valid format
+   * @throws InvalidDateException
+   *        Exception is thrown for dates that do not exist and dates that are not properly formatted.
+   */
   static String parseDate(String dateString) throws InvalidDateException{
     StringTokenizer stringTokenizer = new StringTokenizer(dateString, "/");
 
@@ -87,6 +115,13 @@ public class Project1 {
     return dateString;
   }
 
+  /**
+   * The parseTime method takes a string and returns it if it is valid a valid time. If it is not, an error is thrown.
+   * @param timeString
+   *        String in 24-hour time
+   * @return
+   *        Returns time string if is a properly formatted, valid 24-hour time.
+   */
   static String parseTime(String timeString) {
     StringTokenizer stringTokenizer = new StringTokenizer(timeString, ":");
     
@@ -108,7 +143,13 @@ public class Project1 {
     return timeString;
   }
 
-
+  /**
+   * The isAlpha method traverses a string and checks if each character in the string is a letter.
+   * @param string
+   *        A string
+   * @return
+   *        Returns false if any of the characters are not a letter. Returns true when all characters are letters.
+   */
   private static boolean isAlpha(String string) {
     if (string == null) {
       return false;
@@ -123,7 +164,13 @@ public class Project1 {
     return true;
   }
 
-
+  /**
+   * The main method of the Project1 class checks for commandline arguments and kicks off the program by calling
+   * checkOptionsAndParseCommandLineArguments. It also catches most of the exceptions that might be thrown by other
+   * methods and facilitates a graceful exit with helpful error messages.
+   * @param args
+   *        arguments from the commandline
+   */
   public static void main(String[] args) {
     Flight flight = new Flight();
 
@@ -148,12 +195,23 @@ public class Project1 {
     System.exit(1);
   }
 
-
+  /**
+   * The printErrorMessageAndExit method writes messages (usually from exceptions) to standard error, and calls exit.
+   * @param message
+   *        Error message (usually from an exception thrown somewhere else in the program).
+   */
   private static void printErrorMessageAndExit(String message) {
     System.err.println(message);
     System.exit(1);
   }
 
+  /**
+   * The printCommandLineInterfaceDescription method just prints a well-formatted description of the order and meaning
+   * of the command line arguments. It is usually called following an exception that is thrown due to improperly
+   * formatted arguments.
+   * @return
+   *        Returns a formatted string.
+   */
   private static String printCommandLineInterfaceDescription() {
     return "\n\nargs are (in this order): [options] <args>\n" +
             "\tairline                   The name of the airline\n" +
