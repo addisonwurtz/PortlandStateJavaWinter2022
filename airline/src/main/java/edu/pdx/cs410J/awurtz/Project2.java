@@ -11,7 +11,7 @@ import static java.lang.Integer.*;
 /**
  * The main class for the CS410J airline Project
  */
-public class Project1 {
+public class Project2 {
 
   /**
    * The checkOptionsAndParseCommandLineArguments method initially checks for -README or -print options in args, checks for the correct number of args, and then
@@ -19,12 +19,11 @@ public class Project1 {
    *
    * @param args
    *        The String of commandline arguments that will be parsed and, if they are correct, used to build a flight
-   * @throws IOException
-   *         IOException is thrown if there is a problem accessing the readme file. The exception is caught in the main method.
+   * @throws IOException is thrown if there is a problem accessing the readme file. The exception is caught in the main method.
    */
   public static void checkOptionsAndParseCommandLineArguments(String[] args) throws IOException {
     if (args[0].equals("-README") || args[1].equals("-README")) {
-        InputStream readme = Project1.class.getResourceAsStream("README.txt");
+        InputStream readme = Project2.class.getResourceAsStream("README.txt");
         assert readme != null;
         BufferedReader reader = new BufferedReader(new InputStreamReader(readme));
         System.out.println(reader.readLine());
@@ -213,19 +212,23 @@ public class Project1 {
    *        Returns a formatted string.
    */
   private static String printCommandLineInterfaceDescription() {
-    return "\n\nargs are (in this order): [options] <args>\n" +
-            "\tairline                   The name of the airline\n" +
-            "\tflightNumber              The flight number\n" +
-            "\tsrc                       Three-letter code of departure airport\n" +
-            "\tdepartDate                Departure date\n" +
-            "\tdepartTime                Departure time (24-hour time)\n" +
-            "\tdest                      Three-letter code of arrival airport\n" +
-            "\tarriveDate                Arrival date\n" +
-            "\tarriveTime                Arrival time (24-hour time)\n" +
-            "options are (options may appear in any order):\n" +
-            "\t-print                    Prints a description of the new flight\n" +
-            "\t-README                   Prints a README for this project and exits\n" +
-            "Date and time should be in the format: mm/dd/yyy hh:mm\n";
+    return """
+
+
+            args are (in this order): [options] <args>
+            \tairline                   The name of the airline
+            \tflightNumber              The flight number
+            \tsrc                       Three-letter code of departure airport
+            \tdepartDate                Departure date
+            \tdepartTime                Departure time (24-hour time)
+            \tdest                      Three-letter code of arrival airport
+            \tarriveDate                Arrival date
+            \tarriveTime                Arrival time (24-hour time)
+            options are (options may appear in any order):
+            \t-print                    Prints a description of the new flight
+            \t-README                   Prints a README for this project and exits
+            Date and time should be in the format: mm/dd/yyy hh:mm
+            """;
 
   }
 }

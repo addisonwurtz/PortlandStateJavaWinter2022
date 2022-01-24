@@ -1,6 +1,5 @@
 package edu.pdx.cs410J.awurtz;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
@@ -8,8 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import static edu.pdx.cs410J.awurtz.Project1.checkOptionsAndParseCommandLineArguments;
-import static edu.pdx.cs410J.awurtz.Project1.parseDate;
+import static edu.pdx.cs410J.awurtz.Project2.parseDate;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -20,12 +18,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * from <code>Project1IT</code> which is an integration test (and can handle the calls
  * to {@link System#exit(int)} and the like.
  */
-class Project1Test {
+class Project2Test {
 
   @Test
   void readmeCanBeReadAsResource() throws IOException {
     try (
-      InputStream readme = Project1.class.getResourceAsStream("README.txt")
+      InputStream readme = Project2.class.getResourceAsStream("README.txt")
     ) {
       assertThat(readme, not(nullValue()));
       BufferedReader reader = new BufferedReader(new InputStreamReader(readme));
@@ -55,55 +53,55 @@ class Project1Test {
   @Test
   void parseDateThrowsInvalidDateExceptionForTwoDigitYear() {
     String date = "12/15/21";
-    assertThrows(InvalidDateException.class, () -> Project1.parseDate(date));
+    assertThrows(InvalidDateException.class, () -> Project2.parseDate(date));
   }
 
   @Test
   void parseDateThrowsInvalidDateExceptionForFebruaryThirtiethDate() {
     String date = "02/30/2022";
-    assertThrows(InvalidDateException.class, () -> Project1.parseDate(date));
+    assertThrows(InvalidDateException.class, () -> Project2.parseDate(date));
   }
 
   @Test
   void parseDateThrowsInvalidDateExceptionForAprilThirtyFirstDate() {
     String date = "4/31/2022";
-    assertThrows(InvalidDateException.class, () -> Project1.parseDate(date));
+    assertThrows(InvalidDateException.class, () -> Project2.parseDate(date));
   }
 
   @Test
   void parseTimeDetectsValidTime() {
     String time = "11:11";
-    assertThat(Project1.parseTime(time), equalTo(time));
+    assertThat(Project2.parseTime(time), equalTo(time));
   }
 
   @Test
   void parseDateThrowsInvalidDateExceptionForInvalidDate() {
    String date = "13/12/2012";
-   assertThrows(InvalidDateException.class, () -> Project1.parseDate(date));
+   assertThrows(InvalidDateException.class, () -> Project2.parseDate(date));
   }
 
   @Test
   void parseArgsAndCreateFlightThrowsInvalidSourceExceptionIfSourceIsTooNotThreeCharactersLong() {
     String[] args = new String[] {"-print", "Delta", "99", "PDXPDX", "11/11/2011", "11:11", "SFO", "12/12/12", "12:12"};
-    assertThrows(InvalidSourceException.class, () -> Project1.parseArgsAndCreateFlight(args));
+    assertThrows(InvalidSourceException.class, () -> Project2.parseArgsAndCreateFlight(args));
   }
 
   @Test
   void parseArgsAndCreateFlightThrowsInvalidSourceExceptionIfSourceIsNotAlphabetic() {
     String[] args = new String[] {"-print", "Delta", "99", "999", "11/11/2011", "11:11", "SFO", "12/12/12", "12:12"};
-    assertThrows(InvalidSourceException.class, () -> Project1.parseArgsAndCreateFlight(args));
+    assertThrows(InvalidSourceException.class, () -> Project2.parseArgsAndCreateFlight(args));
   }
 
   @Test
   void parseArgsAndReturnFlightReturnsFlight() throws IOException {
     String[] args = new String[] {"-print", "Delta", "99", "PDX", "11/11/2011", "11:11", "SFO", "12/12/2012", "12:12"};
     Flight flight = new Flight(99, "PDX", "11/11/2011", "11:11", "SFO", "12/12/2012", "12:12");
-    assertThat(Project1.parseArgsAndCreateFlight(args).destination, equalTo(flight.getDestination()));
+    assertThat(Project2.parseArgsAndCreateFlight(args).destination, equalTo(flight.getDestination()));
   }
 
   @Test
   void parseTimeThrowsInvalidTimeExceptionForIncompleteTime() {
     String time = "12";
-    assertThrows(InvalidTimeException.class, () -> Project1.parseTime(time));
+    assertThrows(InvalidTimeException.class, () -> Project2.parseTime(time));
   }
 }

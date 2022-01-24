@@ -1,3 +1,3 @@
 The airline project builds and optionally prints a Flight object (that represents a commercial airline flight) based command line arguments and options.
 The primary work that this program does is parsing the command line arguments in order to verify correctness before feeding them to the flight constructor.
-This program is designed to be user friendly by providing the user with clear feedback if any of the arguments are incorrect or improperly formatted.
+This program is designed to be user-friendly by providing the user with clear feedback if any of the arguments are incorrect or improperly formatted.
