@@ -9,7 +9,7 @@ import java.util.StringTokenizer;
 import static java.lang.Integer.*;
 
 /**
- * The main class for the CS410J airline Project
+ * The main class for the CS410J Airline Project
  */
 public class Project2 {
 
@@ -23,11 +23,7 @@ public class Project2 {
    */
   public static void checkOptionsAndParseCommandLineArguments(String[] args) throws IOException {
     if (args[0].equals("-README") || args[1].equals("-README")) {
-        InputStream readme = Project2.class.getResourceAsStream("README.txt");
-        assert readme != null;
-        BufferedReader reader = new BufferedReader(new InputStreamReader(readme));
-        System.out.println(reader.readLine());
-
+        System.out.println(getReadMe());
     } else {
       if (args.length < 9) {
         printErrorMessageAndExit("Missing command line arguments." + printCommandLineInterfaceDescription());
@@ -36,9 +32,27 @@ public class Project2 {
         printErrorMessageAndExit("Too many command line arguments." + printCommandLineInterfaceDescription());
       }
       if (args[0].equals("-print")) {
-        System.out.println(parseArgsAndCreateFlight(args).toString());
+        System.out.println(parseArgsAndCreateFlight(args));
       }
     }
+  }
+
+  /**
+   * @return contents of README.txt as String
+   */
+  public static String getReadMe() throws IOException{
+    StringBuilder readMeText = new StringBuilder();
+    String line;
+    InputStream readme = Project2.class.getResourceAsStream("README.txt");
+    assert readme != null;
+    BufferedReader reader = new BufferedReader(new InputStreamReader(readme));
+
+    while((line = reader.readLine()) != null) {
+      readMeText.append(line);
+      readMeText.append("\n");
+    }
+
+    return readMeText.toString();
   }
 
   /**
@@ -212,23 +226,21 @@ public class Project2 {
    *        Returns a formatted string.
    */
   private static String printCommandLineInterfaceDescription() {
-    return """
-
-
-            args are (in this order): [options] <args>
-            \tairline                   The name of the airline
-            \tflightNumber              The flight number
-            \tsrc                       Three-letter code of departure airport
-            \tdepartDate                Departure date
-            \tdepartTime                Departure time (24-hour time)
-            \tdest                      Three-letter code of arrival airport
-            \tarriveDate                Arrival date
-            \tarriveTime                Arrival time (24-hour time)
-            options are (options may appear in any order):
-            \t-print                    Prints a description of the new flight
-            \t-README                   Prints a README for this project and exits
-            Date and time should be in the format: mm/dd/yyy hh:mm
-            """;
+    return "\n" +
+           "\n" +
+           "args are (in this order): [options] <args>\n" +
+           "\tairline                   The name of the airline\n" +
+           "\tflightNumber              The flight number\n" +
+           "\tsrc                       Three-letter code of departure airport\n" +
+           "\tdepartDate                Departure date\n" +
+           "\tdepartTime                Departure time (24-hour time)\n" +
+           "\tdest                      Three-letter code of arrival airport\n" +
+           "\tarriveDate                Arrival date\n" +
+           "\tarriveTime                Arrival time (24-hour time)\n" +
+           "options are (options may appear in any order):\n" +
+           "\t-print                    Prints a description of the new flight\n" +
+           "\t-README                   Prints a README for this project and exits\n" +
+           "Date and time should be in the format: mm/dd/yyy hh:mm\n";
 
   }
 }

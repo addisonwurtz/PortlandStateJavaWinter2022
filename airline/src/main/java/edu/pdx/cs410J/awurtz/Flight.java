@@ -54,6 +54,14 @@ public class Flight extends AbstractFlight {
     return this.source;
   }
 
+  public String getDepartDate() {
+    return this.departDate;
+  }
+
+  public String getDepartTime() {
+    return this.departTime;
+  }
+
   @Override
   public String getDepartureString() {
     return this.departTime + " " + this.departDate;
@@ -62,6 +70,14 @@ public class Flight extends AbstractFlight {
   @Override
   public String getDestination() {
   return this.destination;
+  }
+
+  public String getArriveDate() {
+    return this.arriveDate;
+  }
+
+  public String getArriveTime() {
+    return this.arriveTime;
   }
 
   @Override

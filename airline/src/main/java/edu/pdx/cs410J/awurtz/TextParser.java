@@ -8,6 +8,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
+/**
+ * Parses contents of text file and creates an airline with associated flights using information from file.
+ */
 public class TextParser implements AirlineParser<Airline> {
   private final Reader reader;
 

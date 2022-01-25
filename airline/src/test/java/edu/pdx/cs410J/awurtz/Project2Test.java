@@ -13,6 +13,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+//java -jar target/airline-2022.0.0 jar -README
 /**
  * A unit test for code in the <code>Project1</code> class.  This is different
  * from <code>Project1IT</code> which is an integration test (and can handle the calls

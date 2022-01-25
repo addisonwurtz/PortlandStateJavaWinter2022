@@ -38,4 +38,140 @@ public class TextDumperTest {
     Airline read = parser.parse();
     assertThat(read.getName(), equalTo(airlineName));
   }
+
+  @Test
+  void FlightNumberIsDumpedInTextFormat() {
+    String airlineName = "Delta";
+    Airline airline = new Airline(airlineName);
+    Flight flight = new Flight(12, "PDX", "01/24/2022", "11:11", "SFO", "01/24/2022", "12:12");
+
+    airline.addFlight(flight);
+
+    StringWriter sw = new StringWriter();
+    TextDumper dumper = new TextDumper(sw);
+    dumper.dump(airline);
+    String text = sw.toString();
+
+    assertThat(text, containsString(String.valueOf(flight.getNumber())));
+  }
+
+  @Test
+  void FlightSourceIsDumpedInTextFormat() {
+    String airlineName = "Delta";
+    Airline airline = new Airline(airlineName);
+    Flight flight = new Flight(12, "PDX", "01/24/2022", "11:11", "SFO", "01/24/2022", "12:12");
+
+    airline.addFlight(flight);
+
+    StringWriter sw = new StringWriter();
+    TextDumper dumper = new TextDumper(sw);
+    dumper.dump(airline);
+    String text = sw.toString();
+
+    assertThat(text, containsString(flight.getSource()));
+
+  }
+
+  @Test
+  void FlightDepartDateIsDumpedInTextFormat() {
+    String airlineName = "Delta";
+    Airline airline = new Airline(airlineName);
+    Flight flight = new Flight(12, "PDX", "01/24/2022", "11:11", "SFO", "01/24/2022", "12:12");
+
+    airline.addFlight(flight);
+
+    StringWriter sw = new StringWriter();
+    TextDumper dumper = new TextDumper(sw);
+    dumper.dump(airline);
+    String text = sw.toString();
+
+    assertThat(text, containsString(flight.getDepartDate()));
+
+  }
+
+  @Test
+  void FlightDepartTimeIsDumpedInTextFormat() {
+    String airlineName = "Delta";
+    Airline airline = new Airline(airlineName);
+    Flight flight = new Flight(12, "PDX", "01/24/2022", "11:11", "SFO", "01/24/2022", "12:12");
+
+    airline.addFlight(flight);
+
+    StringWriter sw = new StringWriter();
+    TextDumper dumper = new TextDumper(sw);
+    dumper.dump(airline);
+    String text = sw.toString();
+
+    assertThat(text, containsString(flight.getDepartTime()));
+
+  }
+
+  @Test
+  void FlightDestinationIsDumpedInTextFormat() {
+    String airlineName = "Delta";
+    Airline airline = new Airline(airlineName);
+    Flight flight = new Flight(12, "PDX", "01/24/2022", "11:11", "SFO", "01/24/2022", "12:12");
+
+    airline.addFlight(flight);
+
+    StringWriter sw = new StringWriter();
+    TextDumper dumper = new TextDumper(sw);
+    dumper.dump(airline);
+    String text = sw.toString();
+
+    assertThat(text, containsString(flight.getDestination()));
+  }
+
+  @Test
+  void FlightArriveDateIsDumpedInTextFormat() {
+    String airlineName = "Delta";
+    Airline airline = new Airline(airlineName);
+    Flight flight = new Flight(12, "PDX", "01/24/2022", "11:11", "SFO", "01/25/2022", "12:12");
+
+    airline.addFlight(flight);
+
+    StringWriter sw = new StringWriter();
+    TextDumper dumper = new TextDumper(sw);
+    dumper.dump(airline);
+    String text = sw.toString();
+
+    assertThat(text, containsString(flight.getArriveDate()));
+  }
+
+  @Test
+  void FlightArriveTimeIsDumpedInTextFormat() {
+    String airlineName = "Delta";
+    Airline airline = new Airline(airlineName);
+    Flight flight = new Flight(12, "PDX", "01/24/2022", "11:11", "SFO", "01/25/2022", "12:12");
+
+    airline.addFlight(flight);
+
+    StringWriter sw = new StringWriter();
+    TextDumper dumper = new TextDumper(sw);
+    dumper.dump(airline);
+    String text = sw.toString();
+
+    assertThat(text, containsString(flight.getArriveTime()));
+  }
+
+  @Test
+  void InformationForMultipleFlightsIsDumpedInTextFormat() {
+    String airlineName = "Delta";
+    Airline airline = new Airline(airlineName);
+    Flight flight1 = new Flight(12, "PDX", "01/24/2022", "11:11", "SFO", "01/25/2022", "12:12");
+    Flight flight2 = new Flight(13, "LAX", "01/24/2022", "11:11", "MSP", "01/25/2022", "15:12");
+
+    airline.addFlight(flight1);
+    airline.addFlight(flight2);
+
+    StringWriter sw = new StringWriter();
+    TextDumper dumper = new TextDumper(sw);
+    dumper.dump(airline);
+    String text = sw.toString();
+
+    assertThat(text, containsString(flight1.getSource()));
+    assertThat(text, containsString(flight2.getSource()));
+    assertThat(text, containsString(flight1.getArriveTime()));
+    assertThat(text, containsString(flight2.getArriveTime()));
+  }
 }

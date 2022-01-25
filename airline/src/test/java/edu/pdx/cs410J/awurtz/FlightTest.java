@@ -109,4 +109,28 @@ public class FlightTest {
 
     assertThat(testFlight.arriveTime, is(arrivalTime));
   }
+
+  @Test
+  void getDepartDateReturnsDepartDate() {
+    Flight flight = createTestFlight();
+    assertThat(flight.getDepartDate(), equalTo(flight.departDate));
+  }
+
+  @Test
+  void getDepartTimeReturnsDepartTime() {
+    Flight flight = createTestFlight();
+    assertThat(flight.getDepartTime(), equalTo(flight.departTime));
+  }
+
+  @Test
+  void getArriveDateReturnsDepartDate() {
+    Flight flight = createTestFlight();
+    assertThat(flight.getArriveDate(), equalTo(flight.arriveDate));
+  }
+
+  @Test
+  void getArriveTimeReturnsDepartTime() {
+    Flight flight = createTestFlight();
+    assertThat(flight.getArriveTime(), equalTo(flight.arriveTime));
+  }
 }
