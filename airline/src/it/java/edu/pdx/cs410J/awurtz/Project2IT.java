@@ -32,14 +32,14 @@ class Project2IT extends InvokeMainTestCase {
 
   @Test
   void parserDetectsTooManyCommandLineArguments() {
-    String[] args = new String[] {"-print", "Delta", "u9", "PDX", "SFO", "11/11/11", "11:11", "12/12/12", "12:12", "behind schedule"};
+    String[] args = new String[] {"-print", "Delta", "u9", "PDX", "SFO", "11/11/2011", "11:11", "12/12/12", "12:12", "behind schedule"};
     MainMethodResult result = invokeMain(args);
     assertThat(result.getTextWrittenToStandardError(), containsString("Too many command line arguments"));
 
   }
   @Test
   void testNotEnoughCommandLineArguments() {
-    String[] args = new String[] {"-print", "Delta", "u9", "PDX", "SFO", "11/11/11 11:11", "12/12/12 12:12"};
+    String[] args = new String[] {"-print", "Delta", "99", "PDX", "11/11/2011", "11:11", "SFO", "12/12/2012"};
     MainMethodResult result = invokeMain(args);
     assertThat(result.getTextWrittenToStandardError(), containsString("Missing command line arguments"));
   }

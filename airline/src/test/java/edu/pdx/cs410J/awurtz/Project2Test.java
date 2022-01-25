@@ -6,7 +6,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Locale;
 
+import static edu.pdx.cs410J.awurtz.Project2.parseAirportCode;
 import static edu.pdx.cs410J.awurtz.Project2.parseDate;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -31,6 +33,18 @@ class Project2Test {
       String line = reader.readLine();
       assertThat(line, containsString("airline project"));
     }
+  }
+
+  @Test
+  void parseAirportCodeDetectsInvalidCode() {
+    String code = "PDXX";
+    assertThrows(InvalidAirportCodeException.class, () -> Project2.parseAirportCode(code));
+  }
+
+  @Test
+  void parseAirportCodeReturnsValidCodeInUppercase() {
+    String code = "msp";
+    assertThat(parseAirportCode(code), equalTo(code.toUpperCase()));
   }
 
   @Test
@@ -83,19 +97,19 @@ class Project2Test {
 
   @Test
   void parseArgsAndCreateFlightThrowsInvalidSourceExceptionIfSourceIsTooNotThreeCharactersLong() {
-    String[] args = new String[] {"-print", "Delta", "99", "PDXPDX", "11/11/2011", "11:11", "SFO", "12/12/12", "12:12"};
-    assertThrows(InvalidSourceException.class, () -> Project2.parseArgsAndCreateFlight(args));
+    String[] args = new String[] {"99", "PDXPDX", "11/11/2011", "11:11", "SFO", "12/12/12", "12:12"};
+    assertThrows(InvalidAirportCodeException.class, () -> Project2.parseArgsAndCreateFlight(args));
   }
 
   @Test
   void parseArgsAndCreateFlightThrowsInvalidSourceExceptionIfSourceIsNotAlphabetic() {
-    String[] args = new String[] {"-print", "Delta", "99", "999", "11/11/2011", "11:11", "SFO", "12/12/12", "12:12"};
-    assertThrows(InvalidSourceException.class, () -> Project2.parseArgsAndCreateFlight(args));
+    String[] args = new String[] {"99", "999", "11/11/2011", "11:11", "SFO", "12/12/12", "12:12"};
+    assertThrows(InvalidAirportCodeException.class, () -> Project2.parseArgsAndCreateFlight(args));
   }
 
   @Test
   void parseArgsAndReturnFlightReturnsFlight() throws IOException {
-    String[] args = new String[] {"-print", "Delta", "99", "PDX", "11/11/2011", "11:11", "SFO", "12/12/2012", "12:12"};
+    String[] args = new String[] {"99", "PDX", "11/11/2011", "11:11", "SFO", "12/12/2012", "12:12"};
     Flight flight = new Flight(99, "PDX", "11/11/2011", "11:11", "SFO", "12/12/2012", "12:12");
     assertThat(Project2.parseArgsAndCreateFlight(args).destination, equalTo(flight.getDestination()));
   }

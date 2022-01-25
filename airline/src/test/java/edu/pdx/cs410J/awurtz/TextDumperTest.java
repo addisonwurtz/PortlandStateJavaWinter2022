@@ -1,6 +1,7 @@
 package edu.pdx.cs410J.awurtz;
 
 import edu.pdx.cs410J.ParserException;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -25,9 +26,10 @@ public class TextDumperTest {
     assertThat(text, containsString(airlineName));
   }
 
+
   @Test
   void canParseTextWrittenByTextDumper(@TempDir File tempDir) throws IOException, ParserException {
-    String airlineName = "Test Airline";
+    String airlineName = "Test Airline\n99\nLAX\n12/12/2021\n15:45\nDEN\n12/15/2021\n11:11";
     Airline airline = new Airline(airlineName);
 
     File textFile = new File(tempDir, "airline.txt");
@@ -36,7 +38,7 @@ public class TextDumperTest {
 
     TextParser parser = new TextParser(new FileReader(textFile));
     Airline read = parser.parse();
-    assertThat(read.getName(), equalTo(airlineName));
+    assertThat(read.getName(), containsString("Test Airline"));
   }
 
   @Test

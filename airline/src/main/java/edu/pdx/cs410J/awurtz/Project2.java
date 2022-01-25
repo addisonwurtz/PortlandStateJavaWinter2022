@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.StringTokenizer;
 
 import static java.lang.Integer.*;
@@ -14,45 +15,36 @@ import static java.lang.Integer.*;
 public class Project2 {
 
   /**
-   * The checkOptionsAndParseCommandLineArguments method initially checks for -README or -print options in args, checks for the correct number of args, and then
+   * The checkOptions method initially checks for -README or -print options in args, checks for the correct number of args, and then
    * directs the flow of the program appropriates.
    *
    * @param args
    *        The String of commandline arguments that will be parsed and, if they are correct, used to build a flight
    * @throws IOException is thrown if there is a problem accessing the readme file. The exception is caught in the main method.
    */
-  public static void checkOptionsAndParseCommandLineArguments(String[] args) throws IOException {
+  public static void checkOptions(String[] args) throws IOException {
     if (args[0].equals("-README") || args[1].equals("-README")) {
         System.out.println(getReadMe());
-    } else {
-      if (args.length < 9) {
-        printErrorMessageAndExit("Missing command line arguments." + printCommandLineInterfaceDescription());
-      }
+    }
+    if(args[0].equals("-print")) {
       if (args.length > 9) {
-        printErrorMessageAndExit("Too many command line arguments." + printCommandLineInterfaceDescription());
+        printErrorMessageAndExit("Too many command line arguments.");
       }
-      if (args[0].equals("-print")) {
-        System.out.println(parseArgsAndCreateFlight(args));
+      if (args.length < 9) {
+        printErrorMessageAndExit("Missing command line arguments.");
       }
+      parseArgsAndCreateFlight(Arrays.copyOfRange(args, 2, args.length));
     }
-  }
-
-  /**
-   * @return contents of README.txt as String
-   */
-  public static String getReadMe() throws IOException{
-    StringBuilder readMeText = new StringBuilder();
-    String line;
-    InputStream readme = Project2.class.getResourceAsStream("README.txt");
-    assert readme != null;
-    BufferedReader reader = new BufferedReader(new InputStreamReader(readme));
-
-    while((line = reader.readLine()) != null) {
-      readMeText.append(line);
-      readMeText.append("\n");
+    else {
+      if(args.length > 8) {
+        printErrorMessageAndExit("Too many command line arguments.");
+      }
+      if(args.length < 8) {
+        printErrorMessageAndExit("Missing command line arguments.");
+      }
+      parseArgsAndCreateFlight(Arrays.copyOfRange(args, 1, args.length));
     }
 
-    return readMeText.toString();
   }
 
   /**
@@ -63,34 +55,42 @@ public class Project2 {
    * @return
    *        Returns the freshly constructed flight.
    */
-  public static Flight parseArgsAndCreateFlight(String[] args) {
-    String airline = args[1];
+ static Flight parseArgsAndCreateFlight(String[] args) {
     int flightNumber;
     try {
-      flightNumber = parseInt(args[2]);
+      flightNumber = parseInt(args[0]);
     } catch(NumberFormatException ex) {
-      throw new InvalidFlightNumberException(args[2]);
+      throw new InvalidFlightNumberException(args[0]);
     }
-    String source = args[3].toUpperCase();
-    if (source.length() > 3 || !isAlpha(source)) {
-      throw new InvalidSourceException(source);
-    }
-    String departDate = parseDate(args[4]);
-
-    String departTime = parseTime(args[5]);
-
-    String destination = args[6].toUpperCase();
-
-    if (destination.length() > 3 || !isAlpha(destination)) {
-      throw new InvalidSourceException(destination);
-    }
-
-    String arriveDate = parseDate(args[7]);
-
-    String arriveTime = parseTime(args[8]);
+    String source = parseAirportCode(args[1]);
+    String departDate = parseDate(args[2]);
+    String departTime = parseTime(args[3]);
+    String destination = parseAirportCode(args[4]);
+    String arriveDate = parseDate(args[5]);
+    String arriveTime = parseTime(args[6]);
 
     return new Flight(flightNumber, source, departDate,departTime,destination,arriveDate, arriveTime);
+  }
 
+  /**
+   * Traverses a string and checks if each character in the string is a letter.
+   * @param string
+   *        Airport code string
+   * @return
+   *        Returns valid 3-letter airport code.
+   */
+  static String parseAirportCode(String string) {
+    if (string == null || string.length() != 3) {
+      throw new InvalidAirportCodeException(string);
+    }
+
+    for (int i = 0; i < string.length(); i++) {
+      char c = string.charAt(i);
+      if (!(c >= 'A' && c <= 'Z') && !(c >= 'a' && c <= 'z')) {
+        throw new InvalidAirportCodeException(string);
+      }
+    }
+    return string.toUpperCase();
   }
 
   /**
@@ -157,29 +157,26 @@ public class Project2 {
   }
 
   /**
-   * The isAlpha method traverses a string and checks if each character in the string is a letter.
-   * @param string
-   *        A string
-   * @return
-   *        Returns false if any of the characters are not a letter. Returns true when all characters are letters.
+   * @return contents of README.txt as String
    */
-  private static boolean isAlpha(String string) {
-    if (string == null) {
-      return false;
+  public static String getReadMe() throws IOException{
+    StringBuilder readMeText = new StringBuilder();
+    String line;
+    InputStream readme = Project2.class.getResourceAsStream("README.txt");
+    assert readme != null;
+    BufferedReader reader = new BufferedReader(new InputStreamReader(readme));
+
+    while((line = reader.readLine()) != null) {
+      readMeText.append(line);
+      readMeText.append("\n");
     }
 
-    for (int i = 0; i < string.length(); i++) {
-      char c = string.charAt(i);
-      if (!(c >= 'A' && c <= 'Z') && !(c >= 'a' && c <= 'z')) {
-        return false;
-      }
-    }
-    return true;
+    return readMeText.toString();
   }
 
   /**
    * The main method of the Project1 class checks for commandline arguments and kicks off the program by calling
-   * checkOptionsAndParseCommandLineArguments. It also catches most of the exceptions that might be thrown by other
+   * checkOptions. It also catches most of the exceptions that might be thrown by other
    * methods and facilitates a graceful exit with helpful error messages.
    * @param args
    *        arguments from the commandline
@@ -191,13 +188,13 @@ public class Project2 {
       printErrorMessageAndExit("Missing command line arguments." + printCommandLineInterfaceDescription());
     }
     try {
-      checkOptionsAndParseCommandLineArguments(args);
+      checkOptions(args);
     } catch (IOException ex) {
       printErrorMessageAndExit("README file was not be found.");
     } catch (InvalidFlightNumberException ex) {
       printErrorMessageAndExit("Flight number " + ex.getInvalidFlightNumber() + " is not an integer." + printCommandLineInterfaceDescription());
-    } catch (InvalidSourceException ex) {
-      printErrorMessageAndExit(ex.getInvalidSource() + " is not a 3 letter airport code." + printCommandLineInterfaceDescription());
+    } catch (InvalidAirportCodeException ex) {
+      printErrorMessageAndExit(ex.getInvalidAirportCode() + " is not a 3 letter airport code." + printCommandLineInterfaceDescription());
     } catch (InvalidDateException ex) {
       printErrorMessageAndExit(ex.getInvalidDate() + " is not a valid date." + printCommandLineInterfaceDescription());
     } catch (InvalidTimeException ex) {
@@ -256,14 +253,14 @@ class InvalidFlightNumberException extends NumberFormatException {
   }
 }
 
-class InvalidSourceException extends RuntimeException {
-    private final String invalidSource;
+class InvalidAirportCodeException extends RuntimeException {
+    private final String invalidAirportCode;
 
-    public InvalidSourceException(String invalidSource) { this.invalidSource = invalidSource;
+    public InvalidAirportCodeException(String invalidAirportCode) { this.invalidAirportCode = invalidAirportCode;
     }
 
-    public String getInvalidSource() {
-      return invalidSource;
+    public String getInvalidAirportCode() {
+      return invalidAirportCode;
     }
   }
 

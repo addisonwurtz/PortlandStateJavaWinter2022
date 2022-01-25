@@ -33,7 +33,7 @@ public class TextParserTest {
     assertThrows(ParserException.class, parser::parse);
   }
 
-  @Disabled
+
   @Test
   void flightCanBeParsed() throws ParserException {
     InputStream resource = getClass().getResourceAsStream("valid-airline.txt");
