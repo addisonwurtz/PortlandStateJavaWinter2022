@@ -8,6 +8,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
+import static edu.pdx.cs410J.awurtz.Project2.parseArgsAndCreateFlight;
+import static java.lang.Integer.parseInt;
+
 /**
  * Parses contents of text file and creates an airline with associated flights using information from file.
  */
@@ -25,12 +28,51 @@ public class TextParser implements AirlineParser<Airline> {
     ) {
 
       String airlineName = br.readLine();
-
       if (airlineName == null) {
         throw new ParserException("Missing airline name");
       }
 
-      return new Airline(airlineName);
+      String flightNumber = br.readLine();
+      if(flightNumber == null) {
+        throw new ParserException("Missing flight number");
+      }
+
+      String source = br.readLine();
+      if(source == null) {
+        throw new ParserException("Missing flight source.");
+      }
+
+      String departDate = br.readLine();
+      if(departDate == null) {
+        throw new ParserException("Missing departure date.");
+      }
+
+      String departTime = br.readLine();
+      if(departTime == null) {
+        throw new ParserException("Missing departure time.");
+      }
+
+      String destination = br.readLine();
+      if(destination == null) {
+        throw new ParserException("Missing flight destination.");
+      }
+
+      String arriveDate = br.readLine();
+      if(arriveDate == null) {
+        throw new ParserException("Missing arrival date.");
+      }
+
+      String arriveTime = br.readLine();
+      if(arriveTime == null) {
+        throw new ParserException("Missing arrival time.");
+      }
+
+      Airline airline = new Airline(airlineName);
+      String[] flightArgs = {flightNumber, source, departDate, departTime, destination, arriveDate, arriveTime};
+      Flight flight = parseArgsAndCreateFlight(flightArgs);
+      airline.addFlight(flight);
+
+      return airline;
 
     } catch (IOException e) {
       throw new ParserException("While parsing airline text", e);
