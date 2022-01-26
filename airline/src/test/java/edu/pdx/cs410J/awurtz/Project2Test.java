@@ -6,10 +6,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Locale;
 
-import static edu.pdx.cs410J.awurtz.Project2.parseAirportCode;
-import static edu.pdx.cs410J.awurtz.Project2.parseDate;
+import static edu.pdx.cs410J.awurtz.Project2.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -118,5 +116,23 @@ class Project2Test {
   void parseTimeThrowsInvalidTimeExceptionForIncompleteTime() {
     String time = "12";
     assertThrows(InvalidTimeException.class, () -> Project2.parseTime(time));
+  }
+
+  @Test
+  void attemptToReadFileReturnsNewForFileThatDoesNotExist() throws IOException {
+    String fileName = "fakeFile.txt";
+    assertEquals(Project2.getValidFile(fileName).getName(), fileName);
+  }
+
+  @Test
+  void attemptToReadFileReturnsFileForFileThatDoesExistWithTxt() throws IOException {
+    String fileName = "C:\\Users\\addis\\Desktop\\Advanced Java\\realFile.txt";
+    assertThat(Project2.getValidFile(fileName).exists(), equalTo(true));
+  }
+
+  @Test
+  void attemptToReadFileReturnsFileForFileThatDoesExistWithOutTxt() throws IOException {
+    String fileName = "C:\\Users\\addis\\Desktop\\Advanced Java\\realFile";
+    assertThat(Project2.getValidFile(fileName).exists(), equalTo(true));
   }
 }

@@ -33,7 +33,8 @@ class Project2IT extends InvokeMainTestCase {
 
   @Test
   void parserDetectsTooManyCommandLineArguments() {
-    String[] args = new String[]{"-print", "Delta", "u9", "PDX", "SFO", "11/11/2011", "11:11", "12/12/12", "12:12", "behind schedule"};
+    String[] args = new String[]{"-print", "Delta", "u9", "PDX", "SFO", "11/11/2011", "11:11", "12/12/12", "12:12",
+            "behind schedule"};
     MainMethodResult result = invokeMain(args);
     assertThat(result.getTextWrittenToStandardError(), containsString("Too many command line arguments"));
 
@@ -50,7 +51,8 @@ class Project2IT extends InvokeMainTestCase {
   void parserDetectsNonIntegerFlightNumber() {
     String[] args = new String[]{"-print", "Delta", "u9", "PDX", "11/11/2011", "11:11", "SFO", "12/12/12", "12:12"};
     MainMethodResult result = invokeMain(args);
-    assertThat(result.getTextWrittenToStandardError(), containsString("Flight number " + args[2] + " is not an integer."));
+    assertThat(result.getTextWrittenToStandardError(), containsString("Flight number " + args[2] +
+                                                                      " is not an integer."));
     assertThat(result.getExitCode(), equalTo(1));
   }
 
@@ -73,9 +75,10 @@ class Project2IT extends InvokeMainTestCase {
 
   @Test
   void errorWhenFlightNumberIsNotAnInteger() {
-    String[] args = new String[]{"Delta", "NUMBER", "PDX", "03/03/2022", "12:00", "ORD", "03/03/2022", "16:00"};
+    String[] args = new String[]{"-print", "Delta", "NUMBER", "PDX", "03/03/2022", "12:00", "ORD", "03/03/2022", "16:00"};
     MainMethodResult result = invokeMain(args);
     assertThat(result.getExitCode(), equalTo(1));
+
     assertThat(result.getTextWrittenToStandardError(), containsString("is not an integer"));
   }
 
@@ -165,6 +168,41 @@ class Project2IT extends InvokeMainTestCase {
     MainMethodResult result = invokeMain(args);
     assertThat(result.getExitCode(),equalTo(1));
     assertThat(result.getTextWrittenToStandardError(), containsString("Missing arrival time"));
+  }
+
+  @Test
+  void readMeOptionPrintsReadMe () {
+    String[] args = new String[] {"-README"};
+    MainMethodResult result = invokeMain(args);
+    assertThat(result.getExitCode(),equalTo(1));
+    assertThat(result.getTextWrittenToStandardOut(), containsString("Addison Wurtz"));
+  }
+
+  @Test
+  void printOptionExitsWithErrorForTooManyArgs () {
+    String[] args = new String[] {"-print", "Delta", "123", "PDX", "03/03/2022", "12:00", "ORD", "03/03/2022", "16:00",
+            "extra arg"};
+    MainMethodResult result = invokeMain(args);
+    assertThat(result.getExitCode(),equalTo(1));
+    assertThat(result.getTextWrittenToStandardError(), containsString("Too many command line arguments"));
+  }
+
+  @Test
+  void printOptionPrintsFlightString () {
+    String[] args = new String[] {"-print", "Delta", "123", "PDX", "03/03/2022", "12:00", "ORD", "03/03/2022", "16:00"};
+    MainMethodResult result = invokeMain(args);
+    assertThat(result.getExitCode(),equalTo(1));
+    assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 123 departs PDX at 12:00"));
 
   }
+
+  @Test
+  void textFileOptionIsRecognized () {
+    String[] args = new String[] {"-textFile", "fileName", "Delta", "123", "PDX", "03/03/2022", "12:00", "ORD", "03/03/2022", "16:00"};
+    MainMethodResult result = invokeMain(args);
+    assertThat(result.getExitCode(),equalTo(1));
+    assertThat(result.getTextWrittenToStandardOut(), containsString("-textFile option is not yet implemented."));
+  }
+
+
 }

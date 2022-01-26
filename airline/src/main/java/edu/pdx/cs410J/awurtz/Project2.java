@@ -1,9 +1,8 @@
 package edu.pdx.cs410J.awurtz;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.StringTokenizer;
 
@@ -23,8 +22,12 @@ public class Project2 {
    * @throws IOException is thrown if there is a problem accessing the readme file. The exception is caught in the main method.
    */
   public static void checkOptions(String[] args) throws IOException {
+      Airline airline;
+      File airlineFile;
+      Boolean fileTesting;
+
       if(args[0].contains("-")) {
-          if (args[0].equals("-README") || args[1].equals("-README")) {
+          if (args[0].equals("-README") || args[1].equals("-README") || args[2].equals("-README")) {
               System.out.println(getReadMe());
           }
           if (args[0].equals("-print")) {
@@ -34,7 +37,14 @@ public class Project2 {
               if (args.length < 9) {
                   printErrorMessageAndExit("Missing command line arguments.");
               }
-              parseArgsAndCreateFlight(Arrays.copyOfRange(args, 2, args.length));
+              System.out.println(parseArgsAndCreateFlight(Arrays.copyOfRange(args, 2, args.length)));
+          }
+          if (args[0].equals("-textFile"))  {
+              String fileName = args[1];
+              airlineFile = getValidFile(fileName);
+
+              System.out.println("-textFile option is not yet implemented.");
+              System.exit(1);
           }
           else {
               printErrorMessageAndExit(args[0] + " option is not supported.");
@@ -50,6 +60,20 @@ public class Project2 {
 
   }
 
+  static File getValidFile(String fileName) throws IOException {
+      if(!fileName.endsWith(".txt")) {
+          fileName = fileName.concat(".txt");
+      }
+      File file = new File(fileName);
+
+      if(file.exists()) {
+          return file;
+      }
+      else {
+          return new File(fileName);
+      }
+  }
+
   /**
    * The parseArgsAndCreateFlight method is called in order to individually check that each of the args is properly formatted and, if they are,
    * returns a flight built from the freshly parsed parameters.
@@ -60,10 +84,11 @@ public class Project2 {
    * @throws MissingCommandLineArgumentException that specifies which argument is missing
    */
  static Flight parseArgsAndCreateFlight(String[] args) {
-    int flightNumber;
-    String source, departDate, departTime, destination, arriveDate, arriveTime;
-    try {
-      flightNumber = parseInt(args[0]);
+     int flightNumber;
+     String source, departDate, departTime, destination, arriveDate, arriveTime;
+
+     try {
+         flightNumber = parseInt(args[0]);
     } catch(NumberFormatException ex) {
       throw new InvalidFlightNumberException(args[0]);
     } catch(ArrayIndexOutOfBoundsException ex) {
@@ -168,7 +193,7 @@ public class Project2 {
    */
   static String parseTime(String timeString) {
     StringTokenizer stringTokenizer = new StringTokenizer(timeString, ":");
-    
+
     if(stringTokenizer.countTokens() != 2) {
       throw new InvalidTimeException(timeString);
     }
@@ -268,7 +293,7 @@ public class Project2 {
            "\tarriveDate                Arrival date\n" +
            "\tarriveTime                Arrival time (24-hour time)\n" +
            "options are (options may appear in any order):\n" +
-           "\t-textfile file            Where to read/write the airline info\n" +
+           "\t-textFile file            Where to read/write the airline info\n" +
            "\t-print                    Prints a description of the new flight\n" +
            "\t-README                   Prints a README for this project and exits\n" +
            "Date and time should be in the format: mm/dd/yyy hh:mm\n";
@@ -292,7 +317,7 @@ class InvalidFlightNumberException extends NumberFormatException {
 
   public InvalidFlightNumberException(String invalidFlightNumber) {
       this.invalidFlightNumber = invalidFlightNumber;}
-  
+
   public String getInvalidFlightNumber() {
 
       return invalidFlightNumber;
