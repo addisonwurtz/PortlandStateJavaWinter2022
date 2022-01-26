@@ -23,25 +23,28 @@ public class Project2 {
    * @throws IOException is thrown if there is a problem accessing the readme file. The exception is caught in the main method.
    */
   public static void checkOptions(String[] args) throws IOException {
-    if (args[0].equals("-README") || args[1].equals("-README")) {
-        System.out.println(getReadMe());
-    }
-    if(args[0].equals("-print")) {
-      if (args.length > 9) {
-        printErrorMessageAndExit("Too many command line arguments.");
+      if(args[0].contains("-")) {
+          if (args[0].equals("-README") || args[1].equals("-README")) {
+              System.out.println(getReadMe());
+          }
+          if (args[0].equals("-print")) {
+              if (args.length > 9) {
+                  printErrorMessageAndExit("Too many command line arguments.");
+              }
+              if (args.length < 9) {
+                  printErrorMessageAndExit("Missing command line arguments.");
+              }
+              parseArgsAndCreateFlight(Arrays.copyOfRange(args, 2, args.length));
+          }
+          else {
+              printErrorMessageAndExit(args[0] + " option is not supported.");
+          }
       }
-      if (args.length < 9) {
-        printErrorMessageAndExit("Missing command line arguments.");
-      }
-      parseArgsAndCreateFlight(Arrays.copyOfRange(args, 2, args.length));
-    }
     else {
       if(args.length > 8) {
         printErrorMessageAndExit("Too many command line arguments.");
       }
-      if(args.length < 8) {
-        printErrorMessageAndExit("Missing command line arguments.");
-      }
+
       parseArgsAndCreateFlight(Arrays.copyOfRange(args, 1, args.length));
     }
 
@@ -57,19 +60,46 @@ public class Project2 {
    */
  static Flight parseArgsAndCreateFlight(String[] args) {
     int flightNumber;
+    String source, departDate, departTime, destination, arriveDate, arriveTime;
     try {
       flightNumber = parseInt(args[0]);
     } catch(NumberFormatException ex) {
       throw new InvalidFlightNumberException(args[0]);
+    } catch(ArrayIndexOutOfBoundsException ex) {
+        throw new MissingCommandLineArgumentException("flight number");
     }
-    String source = parseAirportCode(args[1]);
-    String departDate = parseDate(args[2]);
-    String departTime = parseTime(args[3]);
-    String destination = parseAirportCode(args[4]);
-    String arriveDate = parseDate(args[5]);
-    String arriveTime = parseTime(args[6]);
+    try {
+        source = parseAirportCode(args[1]);
+    } catch(ArrayIndexOutOfBoundsException ex) {
+        throw new MissingCommandLineArgumentException("source airport code");
+    }
+    try {
+        departDate = parseDate(args[2]);
+    } catch (ArrayIndexOutOfBoundsException ex) {
+        throw new MissingCommandLineArgumentException("departure date");
+    }
+    try {
+        departTime = parseTime(args[3]);
+    } catch (ArrayIndexOutOfBoundsException ex) {
+        throw new MissingCommandLineArgumentException("departure time");
+    }
+    try {
+        destination = parseAirportCode(args[4]);
+    } catch (ArrayIndexOutOfBoundsException ex) {
+        throw new MissingCommandLineArgumentException("destination airport");
+    }
+    try {
+        arriveDate = parseDate(args[5]);
+    } catch (ArrayIndexOutOfBoundsException ex) {
+        throw new MissingCommandLineArgumentException("arrival date");
+    }
+    try {
+        arriveTime = parseTime(args[6]);
+    } catch (ArrayIndexOutOfBoundsException ex) {
+        throw new MissingCommandLineArgumentException("arrival time");
+    }
 
-    return new Flight(flightNumber, source, departDate,departTime,destination,arriveDate, arriveTime);
+        return new Flight(flightNumber, source, departDate,departTime,destination,arriveDate, arriveTime);
   }
 
   /**
@@ -185,10 +215,12 @@ public class Project2 {
     Flight flight = new Flight();
 
     if (args.length == 0) {
-      printErrorMessageAndExit("Missing command line arguments." + printCommandLineInterfaceDescription());
+        printErrorMessageAndExit("Missing command line arguments." + printCommandLineInterfaceDescription());
     }
     try {
-      checkOptions(args);
+        checkOptions(args);
+    } catch(MissingCommandLineArgumentException ex) {
+      printErrorMessageAndExit("Missing " + ex.getMissingArgument());
     } catch (IOException ex) {
       printErrorMessageAndExit("README file was not be found.");
     } catch (InvalidFlightNumberException ex) {
@@ -235,6 +267,7 @@ public class Project2 {
            "\tarriveDate                Arrival date\n" +
            "\tarriveTime                Arrival time (24-hour time)\n" +
            "options are (options may appear in any order):\n" +
+           "\t-textfile file            Where to read/write the airline info\n" +
            "\t-print                    Prints a description of the new flight\n" +
            "\t-README                   Prints a README for this project and exits\n" +
            "Date and time should be in the format: mm/dd/yyy hh:mm\n";
@@ -242,25 +275,39 @@ public class Project2 {
   }
 }
 
+class MissingCommandLineArgumentException extends RuntimeException {
+    private final String missingArgument;
+
+    public MissingCommandLineArgumentException(String missingArgument) {
+        this.missingArgument = missingArgument;
+    }
+
+    public String getMissingArgument() {
+        return missingArgument;}
+}
 
 class InvalidFlightNumberException extends NumberFormatException {
   private final String invalidFlightNumber;
 
-  public InvalidFlightNumberException(String invalidFlightNumber) { this.invalidFlightNumber = invalidFlightNumber;}
+  public InvalidFlightNumberException(String invalidFlightNumber) {
+      this.invalidFlightNumber = invalidFlightNumber;}
   
   public String getInvalidFlightNumber() {
-    return invalidFlightNumber;
+
+      return invalidFlightNumber;
   }
 }
 
 class InvalidAirportCodeException extends RuntimeException {
     private final String invalidAirportCode;
 
-    public InvalidAirportCodeException(String invalidAirportCode) { this.invalidAirportCode = invalidAirportCode;
+    public InvalidAirportCodeException(String invalidAirportCode) {
+        this.invalidAirportCode = invalidAirportCode;
     }
 
     public String getInvalidAirportCode() {
-      return invalidAirportCode;
+
+        return invalidAirportCode;
     }
   }
 
@@ -272,17 +319,20 @@ class InvalidDateException extends RuntimeException {
     }
 
    public String getInvalidDate() {
-     return invalidDate;
+
+       return invalidDate;
    }
 }
 
 class InvalidTimeException extends RuntimeException {
   private final String invalidTime;
 
-  public InvalidTimeException(String invalidTime) {this.invalidTime = invalidTime;}
+  public InvalidTimeException(String invalidTime) {
+      this.invalidTime = invalidTime;}
 
   public String getInvalidTime() {
-    return invalidTime;
+
+      return invalidTime;
   }
 }
 
