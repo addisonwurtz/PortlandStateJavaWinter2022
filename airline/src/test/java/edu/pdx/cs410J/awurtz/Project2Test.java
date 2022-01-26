@@ -1,11 +1,12 @@
 package edu.pdx.cs410J.awurtz;
 
 import org.junit.jupiter.api.Test;
+import org.junit.platform.commons.annotation.Testable;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static edu.pdx.cs410J.awurtz.Project2.*;
 import static org.hamcrest.CoreMatchers.*;
@@ -121,18 +122,27 @@ class Project2Test {
   @Test
   void attemptToReadFileReturnsNewForFileThatDoesNotExist() throws IOException {
     String fileName = "fakeFile.txt";
-    assertEquals(Project2.getValidFile(fileName).getName(), fileName);
+    assertEquals(Project2.getValidFile(fileName), Paths.get(fileName));
   }
 
   @Test
   void attemptToReadFileReturnsFileForFileThatDoesExistWithTxt() throws IOException {
-    String fileName = "C:\\Users\\addis\\Desktop\\Advanced Java\\realFile.txt";
-    assertThat(Project2.getValidFile(fileName).exists(), equalTo(true));
+    String fileName = "realFile.txt";
+    Path file = Files.createFile(Path.of(fileName));
+
+    assertThat(Files.exists(Project2.getValidFile(fileName)), equalTo(true));
   }
 
   @Test
-  void attemptToReadFileReturnsFileForFileThatDoesExistWithOutTxt() throws IOException {
-    String fileName = "C:\\Users\\addis\\Desktop\\Advanced Java\\realFile";
-    assertThat(Project2.getValidFile(fileName).exists(), equalTo(true));
+  void attemptToReadFileReturnsFileForFileThatDoesExist() throws IOException {
+    String fileName = "C:\\Users\\addis\\Desktop\\Advanced Java\\realFile.txt";
+
+    assertThat(Project2.getValidFile(fileName).toFile().getAbsolutePath(), equalTo(fileName));
+  }
+
+  @Test
+  void getValidFileReturnsReadableFile() throws IOException {
+    String fileName = "fakeFile.txt";
+    assertThat(Project2.getValidFile(fileName).getFileName().toString(), equalTo(fileName));
   }
 }

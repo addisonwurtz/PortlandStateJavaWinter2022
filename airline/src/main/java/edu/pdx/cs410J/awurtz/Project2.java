@@ -3,6 +3,7 @@ package edu.pdx.cs410J.awurtz;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.StringTokenizer;
 
@@ -23,7 +24,7 @@ public class Project2 {
    */
   public static void checkOptions(String[] args) throws IOException {
       Airline airline;
-      File airlineFile;
+      Path airlineFile;
       Boolean fileTesting;
 
       if(args[0].contains("-")) {
@@ -60,17 +61,17 @@ public class Project2 {
 
   }
 
-  static File getValidFile(String fileName) throws IOException {
+  static Path getValidFile(String fileName) throws IOException {
       if(!fileName.endsWith(".txt")) {
           fileName = fileName.concat(".txt");
       }
-      File file = new File(fileName);
+      Path file = Paths.get(fileName);
 
-      if(file.exists()) {
+      if(Files.exists(file)) {
           return file;
       }
       else {
-          return new File(fileName);
+          return Files.createFile(file);
       }
   }
 
