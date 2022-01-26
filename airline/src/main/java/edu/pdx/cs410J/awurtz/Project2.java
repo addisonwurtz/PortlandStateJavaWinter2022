@@ -57,6 +57,7 @@ public class Project2 {
    *        The commandline arguments (options are ignored in this method)
    * @return
    *        Returns the freshly constructed flight.
+   * @throws MissingCommandLineArgumentException that specifies which argument is missing
    */
  static Flight parseArgsAndCreateFlight(String[] args) {
     int flightNumber;
