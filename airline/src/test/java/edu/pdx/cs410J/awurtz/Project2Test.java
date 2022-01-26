@@ -131,18 +131,22 @@ class Project2Test {
     Path file = Files.createFile(Path.of(fileName));
 
     assertThat(Files.exists(Project2.getValidFile(fileName)), equalTo(true));
+    Files.delete(file);
   }
 
   @Test
   void attemptToReadFileReturnsFileForFileThatDoesExist() throws IOException {
-    String fileName = "C:\\Users\\addis\\Desktop\\Advanced Java\\realFile.txt";
+    String fileName = "fileDoesNotYetExist.txt";
+    Path file = Files.createFile(Path.of(fileName));
 
-    assertThat(Project2.getValidFile(fileName).toFile().getAbsolutePath(), equalTo(fileName));
+    assertThat(Files.exists(Project2.getValidFile(fileName)), equalTo(true));
+    Files.delete(file);
   }
 
   @Test
   void getValidFileReturnsReadableFile() throws IOException {
     String fileName = "fakeFile.txt";
     assertThat(Project2.getValidFile(fileName).getFileName().toString(), equalTo(fileName));
+    Files.delete(Paths.get(fileName));
   }
 }
