@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -44,5 +45,11 @@ public class TextParserTest {
 
     ArrayList<Flight> flights = (ArrayList<Flight>) airline.getFlights();
     assertThat(flights.get(0).toString(), containsString(flight.toString()));
+  }
+
+  @Test
+  void testParserReadsBothFlightsFromAirlineTestFile() {
+    InputStream resource = getClass().getResourceAsStream("valid-airline.txt");
+    assertThat(resource, notNullValue());
   }
 }

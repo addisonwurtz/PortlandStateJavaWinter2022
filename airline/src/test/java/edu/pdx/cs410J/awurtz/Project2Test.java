@@ -15,7 +15,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-//java -jar target/airline-2022.0.0 jar -README
+//java -jar target/airline-2022.0.0.jar -README
 /**
  * A unit test for code in the <code>Project1</code> class.  This is different
  * from <code>Project1IT</code> which is an integration test (and can handle the calls
@@ -185,14 +185,6 @@ class Project2Test {
             "1/27/2022", "19:25"};
     assertThrows(AirlineFromFileDoesNotMatchAirlineFromCommandLineException.class, () -> checkOptions(args));
 
-  }
-
-  @Disabled
-  @Test
-  void thirdAirlineIsAddedToFile() throws IOException {
-    String[] args = new String[]{"-textFile", "AirlineTestFile", "Delta", "102", "LAX", "2/9/2022", "23:00", "JFK",
-            "2/10/2022", "3:25"};
-    assertThat(Project2.checkOptions(args).toString(), containsString("3 flights"));
   }
 
 }

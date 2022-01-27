@@ -76,8 +76,10 @@ public class TextParser implements AirlineParser<Airline> {
       } while (br.readLine() == "***");
       return airline;
 
-    } catch (IOException e) {
+    } catch (ParserException ex) {
       throw new ParserException("While parsing airline text");
+    } catch (IOException ex) {
+      throw new ParserException("Airline information could not be read from file.");
     }
   }
 }
