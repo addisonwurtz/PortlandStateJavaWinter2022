@@ -1,13 +1,18 @@
 package edu.pdx.cs410J.awurtz;
 
+import edu.pdx.cs410J.ParserException;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.StringTokenizer;
 
 import static java.lang.Integer.*;
+import static java.nio.file.Files.isReadable;
+import static java.nio.file.Files.isWritable;
 
 /**
  * The main class for the CS410J Airline Project
@@ -15,63 +20,118 @@ import static java.lang.Integer.*;
 public class Project2 {
 
   /**
-   * The checkOptions method initially checks for -README or -print options in args, checks for the correct number of args, and then
-   * directs the flow of the program appropriates.
+   * The checkOptions method initially checks for -README, -print, or -textFile options in args, checks for the correct number of args, and then
+   * directs the flow of the program appropriately.
    *
    * @param args
    *        The String of commandline arguments that will be parsed and, if they are correct, used to build a flight
    * @throws IOException is thrown if there is a problem accessing the readme file. The exception is caught in the main method.
    */
-  public static void checkOptions(String[] args) throws IOException {
-      Airline airline;
+  public static Airline checkOptions(String[] args) throws IOException {
+      Airline airlineFromFile = null, airlineFromCommandLine;
+      Flight flight;
       Path airlineFile;
-      Boolean fileTesting;
+      Boolean print = false, textFile = false;
+      String fileName = "";
 
-      if(args[0].contains("-")) {
-          if (args[0].equals("-README") || args[1].equals("-README") || args[2].equals("-README")) {
-              System.out.println(getReadMe());
+      int i = 0;
+      while (args[i].contains("-")) {
+          switch (args[i]) {
+              case "-README" -> {
+                  System.out.println(getReadMe());
+                  System.exit(1);
+              }
+              case "-print" -> print = true;
+              case "-textFile" -> {
+                  textFile = true;
+                  fileName = args[++i];
+              }
+              default -> printErrorMessageAndExit(args[i] + " option is not supported.");
           }
-          if (args[0].equals("-print")) {
-              if (args.length > 9) {
+          if (i > 4) {
+              printErrorMessageAndExit("Too many options.");
+          }
+          i++;
+      }
+
+      //creates airline and flight from commands line args
+      airlineFromCommandLine = new Airline(args[i]);
+      flight = parseArgsAndCreateFlight(args);
+
+      //prints flight created with command line arguments
+      if (print) {
+          System.out.println(flight);
+      }
+
+      //reads and writes to supplied text file
+      if (textFile) {
+          airlineFile = getValidFile(fileName);
+          if (airlineFile == null) {
+              airlineFromCommandLine.addFlight(flight);
+              writeAirlineToFile(airlineFromCommandLine, Files.createFile(Path.of(fileName)));
+              return airlineFromCommandLine;
+          } else {
+              airlineFromFile = attemptToReadFile(airlineFile);
+
+              //check that airline in the same in file and from the new flight
+              if (Objects.equals(airlineFromFile.getName(), airlineFromCommandLine.getName())) {
+                  airlineFromFile.addFlight(flight);
+                  writeAirlineToFile(airlineFromFile, airlineFile);
+                  return airlineFromFile;
+              } else {
+                  throw new AirlineFromFileDoesNotMatchAirlineFromCommandLineException(airlineFromFile, airlineFromCommandLine);
+              }
+          }
+      }
+
+          //creates flight in case of no options
+      else{
+              if (args.length > 8) {
                   printErrorMessageAndExit("Too many command line arguments.");
               }
-              if (args.length < 9) {
-                  printErrorMessageAndExit("Missing command line arguments.");
-              }
-              System.out.println(parseArgsAndCreateFlight(Arrays.copyOfRange(args, 2, args.length)));
+              airlineFromCommandLine.addFlight(parseArgsAndCreateFlight(args));
+              return airlineFromCommandLine;
           }
-          if (args[0].equals("-textFile"))  {
-              String fileName = args[1];
-              airlineFile = getValidFile(fileName);
-
-              System.out.println("-textFile option is not yet implemented.");
-              System.exit(1);
-          }
-          else {
-              printErrorMessageAndExit(args[0] + " option is not supported.");
-          }
-      }
-    else {
-      if(args.length > 8) {
-        printErrorMessageAndExit("Too many command line arguments.");
-      }
-
-      parseArgsAndCreateFlight(Arrays.copyOfRange(args, 1, args.length));
-    }
-
   }
-
   static Path getValidFile(String fileName) throws IOException {
-      if(!fileName.endsWith(".txt")) {
-          fileName = fileName.concat(".txt");
-      }
+
       Path file = Paths.get(fileName);
 
       if(Files.exists(file)) {
           return file;
       }
       else {
-          return Files.createFile(file);
+          return null;
+      }
+  }
+
+  static Airline attemptToReadFile(Path fileToRead) {
+      TextParser parser;
+      try {
+          if (isReadable(fileToRead)) {
+              parser = new TextParser(Files.newBufferedReader(fileToRead));
+              return parser.parse();
+          }
+      } catch (ParserException ex) {
+          printErrorMessageAndExit(ex.getMessage());
+      } catch(IOException ex) {
+         printErrorMessageAndExit("There was an issue opening " + fileToRead);
+      } catch (SecurityException ex) {
+          printErrorMessageAndExit("You do not have permission to read this file: " + fileToRead);
+      }
+
+      return null;
+  }
+
+  static void writeAirlineToFile(Airline airline, Path fileToWrite) {
+      TextDumper writer;
+      try {
+          if(isWritable(fileToWrite)) {
+             writer = new TextDumper(Files.newBufferedWriter(fileToWrite));
+             writer.dump(airline);
+          }
+      } catch (IOException ex) {
+         printErrorMessageAndExit("There was a problem while writing to " + fileToWrite.getFileName());
       }
   }
 
@@ -85,43 +145,51 @@ public class Project2 {
    * @throws MissingCommandLineArgumentException that specifies which argument is missing
    */
  static Flight parseArgsAndCreateFlight(String[] args) {
+     String[] flightArgs;
+     int i = 0;
      int flightNumber;
      String source, departDate, departTime, destination, arriveDate, arriveTime;
 
+     while(args[i].contains("-")) {
+         if(args[i].equals("-textFile")) { ++i; }
+         ++i;
+     }
+     flightArgs = Arrays.copyOfRange(args, ++i, args.length);
+
      try {
-         flightNumber = parseInt(args[0]);
+         flightNumber = parseInt(flightArgs[0]);
     } catch(NumberFormatException ex) {
-      throw new InvalidFlightNumberException(args[0]);
+      throw new InvalidFlightNumberException(flightArgs[0]);
     } catch(ArrayIndexOutOfBoundsException ex) {
         throw new MissingCommandLineArgumentException("flight number");
     }
     try {
-        source = parseAirportCode(args[1]);
+        source = parseAirportCode(flightArgs[1]);
     } catch(ArrayIndexOutOfBoundsException ex) {
         throw new MissingCommandLineArgumentException("source airport code");
     }
     try {
-        departDate = parseDate(args[2]);
+        departDate = parseDate(flightArgs[2]);
     } catch (ArrayIndexOutOfBoundsException ex) {
         throw new MissingCommandLineArgumentException("departure date");
     }
     try {
-        departTime = parseTime(args[3]);
+        departTime = parseTime(flightArgs[3]);
     } catch (ArrayIndexOutOfBoundsException ex) {
         throw new MissingCommandLineArgumentException("departure time");
     }
     try {
-        destination = parseAirportCode(args[4]);
+        destination = parseAirportCode(flightArgs[4]);
     } catch (ArrayIndexOutOfBoundsException ex) {
         throw new MissingCommandLineArgumentException("destination airport");
     }
     try {
-        arriveDate = parseDate(args[5]);
+        arriveDate = parseDate(flightArgs[5]);
     } catch (ArrayIndexOutOfBoundsException ex) {
         throw new MissingCommandLineArgumentException("arrival date");
     }
     try {
-        arriveTime = parseTime(args[6]);
+        arriveTime = parseTime(flightArgs[6]);
     } catch (ArrayIndexOutOfBoundsException ex) {
         throw new MissingCommandLineArgumentException("arrival time");
     }
@@ -239,13 +307,14 @@ public class Project2 {
    *        arguments from the commandline
    */
   public static void main(String[] args) {
-    Flight flight = new Flight();
+    //Flight flight = new Flight();
+    Airline airline;
 
     if (args.length == 0) {
         printErrorMessageAndExit("Missing command line arguments." + printCommandLineInterfaceDescription());
     }
     try {
-        checkOptions(args);
+        airline = checkOptions(args);
     } catch(MissingCommandLineArgumentException ex) {
       printErrorMessageAndExit("Missing " + ex.getMissingArgument());
     } catch (IOException ex) {
@@ -258,6 +327,9 @@ public class Project2 {
       printErrorMessageAndExit(ex.getInvalidDate() + " is not a valid date." + printCommandLineInterfaceDescription());
     } catch (InvalidTimeException ex) {
       printErrorMessageAndExit(ex.getInvalidTime() + " is not a valid time" + printCommandLineInterfaceDescription());
+    } catch (AirlineFromFileDoesNotMatchAirlineFromCommandLineException ex) {
+        printErrorMessageAndExit("Airlines doe not match.\nAirline from file: " + ex.getAirlineFromFile() +
+                                 "\nAirline from command line: " + ex.getAirlineFromCommandLine());
     }
 
 
@@ -361,5 +433,22 @@ class InvalidTimeException extends RuntimeException {
 
       return invalidTime;
   }
+}
+
+class AirlineFromFileDoesNotMatchAirlineFromCommandLineException extends RuntimeException {
+    private final Airline airlineFromFile;
+    private final Airline airlineFromCommandLine;
+
+    public AirlineFromFileDoesNotMatchAirlineFromCommandLineException(Airline airlineFromFile,
+                                                                      Airline airlineFromCommandLine) {
+        this.airlineFromFile = airlineFromFile;
+        this.airlineFromCommandLine = airlineFromCommandLine;
+    }
+    public String getAirlineFromFile() {
+        return airlineFromFile.getName();
+    }
+    public String getAirlineFromCommandLine() {
+        return airlineFromCommandLine.getName();
+    }
 }
 

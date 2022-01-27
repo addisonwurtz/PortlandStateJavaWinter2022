@@ -4,6 +4,10 @@ import edu.pdx.cs410J.InvokeMainTestCase;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -33,18 +37,19 @@ class Project2IT extends InvokeMainTestCase {
 
   @Test
   void parserDetectsTooManyCommandLineArguments() {
-    String[] args = new String[]{"-print", "Delta", "u9", "PDX", "SFO", "11/11/2011", "11:11", "12/12/12", "12:12",
+    String[] args = new String[]{"-print", "Delta", "99", "PDX", "11/11/2011", "11:11", "SFO", "12/12/2012", "12:12",
             "behind schedule"};
     MainMethodResult result = invokeMain(args);
     assertThat(result.getTextWrittenToStandardError(), containsString("Too many command line arguments"));
 
   }
 
+
   @Test
   void testNotEnoughCommandLineArguments() {
     String[] args = new String[]{"-print", "Delta", "99", "PDX", "11/11/2011", "11:11", "SFO", "12/12/2012"};
     MainMethodResult result = invokeMain(args);
-    assertThat(result.getTextWrittenToStandardError(), containsString("Missing command line arguments"));
+    assertThat(result.getTextWrittenToStandardError(), containsString("Missing arrival time"));
   }
 
   @Test
@@ -195,14 +200,4 @@ class Project2IT extends InvokeMainTestCase {
     assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 123 departs PDX at 12:00"));
 
   }
-
-  @Test
-  void textFileOptionIsRecognized () {
-    String[] args = new String[] {"-textFile", "fileName", "Delta", "123", "PDX", "03/03/2022", "12:00", "ORD", "03/03/2022", "16:00"};
-    MainMethodResult result = invokeMain(args);
-    assertThat(result.getExitCode(),equalTo(1));
-    assertThat(result.getTextWrittenToStandardOut(), containsString("-textFile option is not yet implemented."));
-  }
-
-
 }

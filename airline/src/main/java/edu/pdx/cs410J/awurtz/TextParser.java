@@ -32,50 +32,55 @@ public class TextParser implements AirlineParser<Airline> {
         throw new ParserException("Missing airline name");
       }
 
-      String flightNumber = br.readLine();
-      if(flightNumber == null) {
-        throw new ParserException("Missing flight number");
-      }
-
-      String source = br.readLine();
-      if(source == null) {
-        throw new ParserException("Missing flight source.");
-      }
-
-      String departDate = br.readLine();
-      if(departDate == null) {
-        throw new ParserException("Missing departure date.");
-      }
-
-      String departTime = br.readLine();
-      if(departTime == null) {
-        throw new ParserException("Missing departure time.");
-      }
-
-      String destination = br.readLine();
-      if(destination == null) {
-        throw new ParserException("Missing flight destination.");
-      }
-
-      String arriveDate = br.readLine();
-      if(arriveDate == null) {
-        throw new ParserException("Missing arrival date.");
-      }
-
-      String arriveTime = br.readLine();
-      if(arriveTime == null) {
-        throw new ParserException("Missing arrival time.");
-      }
-
       Airline airline = new Airline(airlineName);
-      String[] flightArgs = {flightNumber, source, departDate, departTime, destination, arriveDate, arriveTime};
-      Flight flight = parseArgsAndCreateFlight(flightArgs);
-      airline.addFlight(flight);
 
+      do {
+        String flightNumber = br.readLine();
+        if (flightNumber == null) {
+          throw new ParserException("Missing flight number");
+        }
+
+        String source = br.readLine();
+        if (source == null) {
+          throw new ParserException("Missing flight source.");
+        }
+
+        String departDate = br.readLine();
+        if (departDate == null) {
+          throw new ParserException("Missing departure date.");
+        }
+
+        String departTime = br.readLine();
+        if (departTime == null) {
+          throw new ParserException("Missing departure time.");
+        }
+
+        String destination = br.readLine();
+        if (destination == null) {
+          throw new ParserException("Missing flight destination.");
+        }
+
+        String arriveDate = br.readLine();
+        if (arriveDate == null) {
+          throw new ParserException("Missing arrival date.");
+        }
+
+        String arriveTime = br.readLine();
+        if (arriveTime == null) {
+          throw new ParserException("Missing arrival time.");
+        }
+
+        String[] flightArgs = {airlineName, flightNumber, source, departDate, departTime, destination, arriveDate, arriveTime};
+        Flight flight = parseArgsAndCreateFlight(flightArgs);
+        airline.addFlight(flight);
+      } while (br.readLine() == "***");
       return airline;
 
     } catch (IOException e) {
-      throw new ParserException("While parsing airline text", e);
+      throw new ParserException("While parsing airline text");
     }
   }
 }
+
+
+

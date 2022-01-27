@@ -1,5 +1,6 @@
 package edu.pdx.cs410J.awurtz;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.annotation.Testable;
 
@@ -96,7 +97,7 @@ class Project2Test {
 
   @Test
   void parseArgsAndCreateFlightThrowsInvalidSourceExceptionIfSourceIsTooNotThreeCharactersLong() {
-    String[] args = new String[] {"99", "PDXPDX", "11/11/2011", "11:11", "SFO", "12/12/12", "12:12"};
+    String[] args = new String[] {"Delta", "99", "PDXPDX", "11/11/2011", "11:11", "SFO", "12/12/12", "12:12"};
     assertThrows(InvalidAirportCodeException.class, () -> Project2.parseArgsAndCreateFlight(args));
   }
 
@@ -108,7 +109,7 @@ class Project2Test {
 
   @Test
   void parseArgsAndReturnFlightReturnsFlight() throws IOException {
-    String[] args = new String[] {"99", "PDX", "11/11/2011", "11:11", "SFO", "12/12/2012", "12:12"};
+    String[] args = new String[] {"Delta", "99", "PDX", "11/11/2011", "11:11", "SFO", "12/12/2012", "12:12"};
     Flight flight = new Flight(99, "PDX", "11/11/2011", "11:11", "SFO", "12/12/2012", "12:12");
     assertThat(Project2.parseArgsAndCreateFlight(args).destination, equalTo(flight.getDestination()));
   }
@@ -122,7 +123,7 @@ class Project2Test {
   @Test
   void attemptToReadFileReturnsNewForFileThatDoesNotExist() throws IOException {
     String fileName = "fakeFile.txt";
-    assertEquals(Project2.getValidFile(fileName), Paths.get(fileName));
+    assertThat(Project2.getValidFile(fileName), equalTo(null));
   }
 
   @Test
@@ -146,7 +147,52 @@ class Project2Test {
   @Test
   void getValidFileReturnsReadableFile() throws IOException {
     String fileName = "fakeFile.txt";
-    assertThat(Project2.getValidFile(fileName).getFileName().toString(), equalTo(fileName));
-    Files.delete(Paths.get(fileName));
+    assertThat(Project2.getValidFile(fileName), equalTo(null));
   }
+
+  @Test
+  void checkOptionsReturnsAirlineBasedOnArgs() throws IOException {
+    String[] args = new String[] {"Delta", "99", "PDX", "11/11/2011", "11:11", "SFO", "12/12/2012", "12:12"};
+    assertThat(Project2.checkOptions(args).getName(), equalTo("Delta"));
+  }
+
+  @Test
+  void checkOptionsCorrectlyReadsTextFileAndReturnsUpdatedAirline() throws IOException {
+    String[] args = new String[] {"-textFile", "AirlineTestFile", "Delta", "99", "PDX", "11/11/2011", "11:11", "SFO",
+            "12/12/2012", "12:12"};
+     assertThat(Project2.checkOptions(args).toString(), containsString("Delta with 2 flights"));
+  }
+
+  @Test
+  void checkOptionsReturnsNewAirlineWhenGiveFileThatDoesNotExitYet() throws IOException {
+    String[] args = new String[]{"-textFile", "NewAirlineFile", "Alaska", "99", "PDX", "11/11/2011", "11:11", "SFO",
+            "12/12/2012", "12:12"};
+    assertThat(Project2.checkOptions(args).getName(), equalTo("Alaska"));
+    assertThat(Files.exists(Paths.get("NewAirlineFile")), equalTo(true));
+    Files.delete(Paths.get("NewAirlineFile"));
+  }
+
+  @Test
+  void multipleFlightsAreReturnedWhenNewFlightIsAdded() throws IOException {
+    String[] args = new String[]{"-textFile", "AirlineTestFile", "Delta", "99", "MSP", "1/27/2022", "15:00", "LAX",
+            "1/27/2022", "19:25"};
+    assertThat(Project2.checkOptions(args).toString(), containsString("2 flights"));
+  }
+
+  @Test
+  void checkOptionsThrowsErrorWhenNewAirlineDoesNotMatchAirlineInFile() {
+    String[] args = new String[]{"-textFile", "AirlineTestFile", "Alaska", "99", "MSP", "1/27/2022", "15:00", "LAX",
+            "1/27/2022", "19:25"};
+    assertThrows(AirlineFromFileDoesNotMatchAirlineFromCommandLineException.class, () -> checkOptions(args));
+
+  }
+
+  @Disabled
+  @Test
+  void thirdAirlineIsAddedToFile() throws IOException {
+    String[] args = new String[]{"-textFile", "AirlineTestFile", "Delta", "102", "LAX", "2/9/2022", "23:00", "JFK",
+            "2/10/2022", "3:25"};
+    assertThat(Project2.checkOptions(args).toString(), containsString("3 flights"));
+  }
+
 }

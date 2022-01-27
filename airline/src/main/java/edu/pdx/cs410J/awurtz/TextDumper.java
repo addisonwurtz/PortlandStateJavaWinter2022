@@ -40,8 +40,10 @@ public class TextDumper implements AirlineDumper<Airline> {
           pw.println(flight.getDestination());
           pw.println(flight.getArriveDate());
           pw.println(flight.getArriveTime());
+          pw.println("***");
         }
       }
+
 
       pw.flush();
     }
