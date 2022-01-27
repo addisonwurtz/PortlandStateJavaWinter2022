@@ -28,7 +28,7 @@ public class Project2 {
    * @throws IOException is thrown if there is a problem accessing the readme file. The exception is caught in the main method.
    */
   public static Airline checkOptions(String[] args) throws IOException {
-      Airline airlineFromFile = null, airlineFromCommandLine;
+      Airline airlineFromFile, airlineFromCommandLine;
       Flight flight;
       Path airlineFile;
       Boolean print = false, textFile = false;
@@ -74,6 +74,7 @@ public class Project2 {
               airlineFromFile = attemptToReadFile(airlineFile);
 
               //check that airline in the same in file and from the new flight
+              assert airlineFromFile != null;
               if (Objects.equals(airlineFromFile.getName(), airlineFromCommandLine.getName())) {
                   airlineFromFile.addFlight(flight);
                   writeAirlineToFile(airlineFromFile, airlineFile);
@@ -93,6 +94,13 @@ public class Project2 {
               return airlineFromCommandLine;
           }
   }
+
+    /**
+     * checks if file exists
+     * @param fileName
+     * @return file if it exists, otherwise null
+     * @throws IOException
+     */
   static Path getValidFile(String fileName) throws IOException {
 
       Path file = Paths.get(fileName);
@@ -105,6 +113,11 @@ public class Project2 {
       }
   }
 
+    /**
+     * reads airline and flights from file
+     * @param fileToRead
+     * @return airline read from file, returns null if file is empty
+     */
   static Airline attemptToReadFile(Path fileToRead) {
       TextParser parser;
       try {
@@ -119,10 +132,14 @@ public class Project2 {
       } catch (SecurityException ex) {
           printErrorMessageAndExit("You do not have permission to read this file: " + fileToRead);
       }
-
       return null;
   }
 
+    /**
+     * writes airline and associated flights to file
+     * @param airline
+     * @param fileToWrite
+     */
   static void writeAirlineToFile(Airline airline, Path fileToWrite) {
       TextDumper writer;
       try {
