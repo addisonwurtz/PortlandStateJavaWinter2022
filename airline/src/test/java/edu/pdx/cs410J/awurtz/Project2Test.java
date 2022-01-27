@@ -108,7 +108,7 @@ class Project2Test {
   }
 
   @Test
-  void parseArgsAndReturnFlightReturnsFlight() throws IOException {
+  void parseArgsAndReturnFlightReturnsFlight() {
     String[] args = new String[] {"Delta", "99", "PDX", "11/11/2011", "11:11", "SFO", "12/12/2012", "12:12"};
     Flight flight = new Flight(99, "PDX", "11/11/2011", "11:11", "SFO", "12/12/2012", "12:12");
     assertThat(Project2.parseArgsAndCreateFlight(args).destination, equalTo(flight.getDestination()));
@@ -156,6 +156,7 @@ class Project2Test {
     assertThat(Project2.checkOptions(args).getName(), equalTo("Delta"));
   }
 
+  @Disabled
   @Test
   void checkOptionsCorrectlyReadsTextFileAndReturnsUpdatedAirline() throws IOException {
     String[] args = new String[] {"-textFile", "AirlineTestFile", "Delta", "99", "PDX", "11/11/2011", "11:11", "SFO",
@@ -172,6 +173,7 @@ class Project2Test {
     Files.delete(Paths.get("NewAirlineFile"));
   }
 
+  @Disabled
   @Test
   void multipleFlightsAreReturnedWhenNewFlightIsAdded() throws IOException {
     String[] args = new String[]{"-textFile", "AirlineTestFile", "Delta", "99", "MSP", "1/27/2022", "15:00", "LAX",
@@ -187,4 +189,11 @@ class Project2Test {
 
   }
 
+  @Disabled
+  @Test
+  void threeFlightsAreReturnedWhenNewFlightIsAdded() throws IOException {
+    String[] args = new String[]{"-textFile", "AirlineTestFile", "Delta", "102", "LAX", "5/13/2022", "20:00", "JFK",
+            "5/14/2022", "02:25"};
+    assertThat(Project2.checkOptions(args).toString(), containsString("3 flights"));
+  }
 }

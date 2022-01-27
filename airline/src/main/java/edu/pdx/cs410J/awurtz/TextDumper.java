@@ -25,6 +25,7 @@ public class TextDumper implements AirlineDumper<Airline> {
    */
   @Override
   public void dump(Airline airline) {
+    Boolean firstIteration = true;
     try (
       PrintWriter pw = new PrintWriter(this.writer)
       ) {
@@ -33,6 +34,12 @@ public class TextDumper implements AirlineDumper<Airline> {
       ArrayList<Flight> flightList = (ArrayList<Flight>) airline.getFlights();
       if(!flightList.isEmpty()) {
         for (Flight flight : flightList) {
+          if(!firstIteration) {
+            pw.println("***");
+          }
+          else {
+            firstIteration = false;
+          }
           pw.println(flight.getNumber());
           pw.println(flight.getSource());
           pw.println(flight.getDepartDate());
@@ -40,7 +47,6 @@ public class TextDumper implements AirlineDumper<Airline> {
           pw.println(flight.getDestination());
           pw.println(flight.getArriveDate());
           pw.println(flight.getArriveTime());
-          pw.println("***");
         }
       }
 

@@ -7,6 +7,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.Objects;
 
 import static edu.pdx.cs410J.awurtz.Project2.parseArgsAndCreateFlight;
 import static java.lang.Integer.parseInt;
@@ -73,11 +74,9 @@ public class TextParser implements AirlineParser<Airline> {
         String[] flightArgs = {airlineName, flightNumber, source, departDate, departTime, destination, arriveDate, arriveTime};
         Flight flight = parseArgsAndCreateFlight(flightArgs);
         airline.addFlight(flight);
-      } while (br.readLine() == "***");
+      } while (Objects.equals(br.readLine(), "***"));
       return airline;
 
-    } catch (ParserException ex) {
-      throw new ParserException("While parsing airline text");
     } catch (IOException ex) {
       throw new ParserException("Airline information could not be read from file.");
     }

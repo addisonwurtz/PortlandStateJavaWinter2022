@@ -101,7 +101,7 @@ public class Project2 {
      * @return file if it exists, otherwise null
      * @throws IOException
      */
-  static Path getValidFile(String fileName) throws IOException {
+  static Path getValidFile(String fileName) {
 
       Path file = Paths.get(fileName);
 
@@ -122,7 +122,8 @@ public class Project2 {
       TextParser parser;
       try {
           if (isReadable(fileToRead)) {
-              parser = new TextParser(Files.newBufferedReader(fileToRead));
+              parser = new TextParser(new FileReader(String.valueOf(fileToRead)));
+              //parser = new TextParser(Files.newBufferedReader(fileToRead));
               return parser.parse();
           }
       } catch (ParserException ex) {
