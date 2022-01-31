@@ -16,7 +16,9 @@ public class AirlineXmlHelper extends ProjectXmlHelper {
   protected static final String PUBLIC_ID =
     "-//Portland State University//DTD CS410J Airline//EN";
 
-
+  /**
+   * Code of airline XML helper class
+   */
   public AirlineXmlHelper() {
     super(PUBLIC_ID, SYSTEM_ID, "airline.dtd");
   }

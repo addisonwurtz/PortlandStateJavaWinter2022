@@ -2,6 +2,9 @@ package edu.pdx.cs410J.awurtz;
 
 import edu.pdx.cs410J.AbstractFlight;
 
+/**
+ * code for <code>Flight</code> class
+ */
 public class Flight extends AbstractFlight {
 
   String source;
@@ -14,8 +17,8 @@ public class Flight extends AbstractFlight {
   /**
    * Creates a new <code>Flight</code> with default parameters
    */
-  public Flight() {
-  }
+  public Flight() {}
+
   /**
    * Creates  a new <code>Flight</code>
    *
@@ -34,7 +37,8 @@ public class Flight extends AbstractFlight {
    * @param arriveTime
    *        Arrival time (24-hour time)
    */
-  public Flight(Integer flightNumber, String source, String departDate, String departTime, String dest, String arriveDate, String arriveTime) {
+  public Flight(Integer flightNumber, String source, String departDate, String departTime, String dest,
+                String arriveDate, String arriveTime) {
 
     this.flightNumber = flightNumber;
     this.source = source;

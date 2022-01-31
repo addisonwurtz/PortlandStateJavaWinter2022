@@ -99,7 +99,6 @@ public class Project2 {
      * checks if file exists
      * @param fileName
      * @return file if it exists, otherwise null
-     * @throws IOException
      */
   static Path getValidFile(String fileName) {
 
@@ -453,18 +452,35 @@ class InvalidTimeException extends RuntimeException {
   }
 }
 
+/**
+ *  Exception class is used when the name of the airline from the commandline does not match the name of
+ *  the airline in the file referenced with the -textFile commandline option.
+ */
 class AirlineFromFileDoesNotMatchAirlineFromCommandLineException extends RuntimeException {
     private final Airline airlineFromFile;
     private final Airline airlineFromCommandLine;
 
+    /**
+     * Exception constructor
+     * @param airlineFromFile name of airline in text file
+     * @param airlineFromCommandLine name of airline from the commandline.
+     */
     public AirlineFromFileDoesNotMatchAirlineFromCommandLineException(Airline airlineFromFile,
                                                                       Airline airlineFromCommandLine) {
         this.airlineFromFile = airlineFromFile;
         this.airlineFromCommandLine = airlineFromCommandLine;
     }
+
+    /**
+     * @return name of airline from text file
+     */
     public String getAirlineFromFile() {
         return airlineFromFile.getName();
     }
+
+    /**
+     * @return name of airline from commandline
+     */
     public String getAirlineFromCommandLine() {
         return airlineFromCommandLine.getName();
     }
