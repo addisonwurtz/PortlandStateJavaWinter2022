@@ -12,7 +12,7 @@ import java.util.Locale;
 /**
  * code for <code>Flight</code> class
  */
-public class Flight extends AbstractFlight {
+public class Flight extends AbstractFlight implements Comparable<Flight>{
 
   String source;
   Integer flightNumber;
@@ -81,15 +81,20 @@ public class Flight extends AbstractFlight {
 
   @Override
   public Date getDeparture() {
-    SimpleDateFormat stringToDate = new SimpleDateFormat(dateTimePattern);
-    String dateString = this.departDate + " " + this.departTime;
+    if(depart == null) {
+      SimpleDateFormat stringToDate = new SimpleDateFormat(dateTimePattern);
+      String dateString = this.departDate + " " + this.departTime;
 
-    try {
-      return stringToDate.parse(dateString);
-    } catch (ParseException e) {
-     throw new InvalidDepartureException("Departure date/Time (" + dateString + ") is not in the format MM/dd/yyyy hh:mm");
+      try {
+        return stringToDate.parse(dateString);
+      } catch (ParseException e) {
+        throw new InvalidDepartureException("Departure date/Time (" + dateString + ") is not in the format MM/dd/yyyy hh:mm");
+      }
     }
-  };
+    else {
+      return depart;
+    }
+  }
 
   @Override
   public String getDepartureString() {
@@ -114,13 +119,18 @@ public class Flight extends AbstractFlight {
 
   @Override
   public Date getArrival() {
-    SimpleDateFormat stringToDate = new SimpleDateFormat(dateTimePattern);
-    String dateString = this.arriveDate + " " + this.arriveTime;
+    if(arrive == null) {
+      SimpleDateFormat stringToDate = new SimpleDateFormat(dateTimePattern);
+      String dateString = this.arriveDate + " " + this.arriveTime;
 
-    try {
-      return stringToDate.parse(dateString);
-    } catch (ParseException e) {
-      throw new InvalidArrivalException("Arrival date/Time (" + dateString + ") is not in the format MM/dd/yyyy hh:mm");
+      try {
+        return stringToDate.parse(dateString);
+      } catch (ParseException e) {
+        throw new InvalidArrivalException("Arrival date/Time (" + dateString + ") is not in the format MM/dd/yyyy hh:mm");
+      }
+    }
+    else {
+      return arrive;
     }
   }
 
@@ -130,6 +140,30 @@ public class Flight extends AbstractFlight {
     DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.SHORT, currentLocale);
     DateFormat timeFormatter = DateFormat.getTimeInstance(DateFormat.SHORT, currentLocale);
     return dateFormatter.format(arrive) + " " + timeFormatter.format(arrive);
+  }
+
+  @Override
+  public int compareTo(Flight flight) {
+    int sourceCmp = this.source.compareTo(flight.getSource());
+    int departureCmp;
+
+    if(sourceCmp == 0 ) {
+      departureCmp = this.getDeparture().compareTo(flight.getDeparture());
+      if(departureCmp == 0) {
+        return 0;
+      }
+      if(departureCmp < 0) {
+        return 1;
+      }
+      else {
+        return -1;
+      }
+    }
+    if(sourceCmp > 0) {
+      return 1;
+    }
+    else {
+      return -1; }
   }
 
 }

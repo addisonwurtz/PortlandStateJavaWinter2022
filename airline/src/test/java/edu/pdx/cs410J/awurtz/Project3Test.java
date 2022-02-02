@@ -194,8 +194,8 @@ class Project3Test {
   @Disabled
   @Test
   void threeFlightsAreReturnedWhenNewFlightIsAdded() throws IOException {
-    String[] args = new String[]{"-textFile", "AirlineTestFile", "Delta", "102", "LAX", "5/13/2022", "20:00", "JFK",
-            "5/14/2022", "02:25"};
+    String[] args = new String[]{"-textFile", "AirlineTestFile", "Delta", "102", "LAX", "5/13/2022", "10:00",  "am", "JFK",
+            "5/14/2022", "02:25", "pm"};
     assertThat(Project3.checkOptions(args).toString(), containsString("3 flights"));
   }
 }
