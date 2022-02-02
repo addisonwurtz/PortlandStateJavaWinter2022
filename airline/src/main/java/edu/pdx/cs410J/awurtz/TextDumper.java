@@ -7,6 +7,8 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.StringTokenizer;
 
 
 /**
@@ -34,19 +36,33 @@ public class TextDumper implements AirlineDumper<Airline> {
       ArrayList<Flight> flightList = (ArrayList<Flight>) airline.getFlights();
       if(!flightList.isEmpty()) {
         for (Flight flight : flightList) {
+
+          StringTokenizer departTimeTokenizer = new StringTokenizer(flight.getDepartTime(), " ");
+          StringTokenizer arriveTimeTokenizer =  new StringTokenizer(flight.getArriveTime(), " ");
           if(!firstIteration) {
             pw.println("***");
           }
           else {
             firstIteration = false;
           }
-          pw.println(flight.getNumber());
-          pw.println(flight.getSource());
-          pw.println(flight.getDepartDate());
-          pw.println(flight.getDepartTime());
-          pw.println(flight.getDestination());
-          pw.println(flight.getArriveDate());
-          pw.println(flight.getArriveTime());
+            pw.println(flight.getNumber());
+            pw.println(flight.getSource());
+            pw.println(flight.getDepartDate());
+          try {
+            pw.println(departTimeTokenizer.nextToken());
+            pw.println(departTimeTokenizer.nextToken());
+          }
+          catch (NoSuchElementException ex) {
+            throw new InvalidTimeException("Departure time " + flight.getDepartTime() + " is not a valid 12-hour time.");
+          }
+            pw.println(flight.getDestination());
+            pw.println(flight.getArriveDate());
+          try {
+            pw.println(arriveTimeTokenizer.nextToken());
+            pw.println(arriveTimeTokenizer.nextToken());
+          } catch (NoSuchElementException ex) {
+            throw new InvalidTimeException("Arrival time " + flight.getArriveTime() + " is not a valid 12-hour time.");
+          }
         }
       }
 

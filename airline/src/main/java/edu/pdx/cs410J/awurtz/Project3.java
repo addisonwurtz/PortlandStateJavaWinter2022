@@ -17,7 +17,7 @@ import static java.nio.file.Files.isWritable;
 /**
  * The main class for the CS410J Airline Project
  */
-public class Project2 {
+public class Project3 {
 
   /**
    * The checkOptions method initially checks for -README, -print, or -textFile options in args, checks for the correct number of args, and then
@@ -87,7 +87,7 @@ public class Project2 {
 
           //creates flight in case of no options
       else{
-              if (args.length > 8) {
+              if (args.length > 10) {
                   printErrorMessageAndExit("Too many command line arguments.");
               }
               airlineFromCommandLine.addFlight(parseArgsAndCreateFlight(args));
@@ -153,7 +153,8 @@ public class Project2 {
   }
 
   /**
-   * The parseArgsAndCreateFlight method is called in order to individually check that each of the args is properly formatted and, if they are,
+   * The parseArgsAndCreateFlight method is called in order to individually check that each of the args is properly
+   * formatted and, if they are,
    * returns a flight built from the freshly parsed parameters.
    * @param args
    *        The commandline arguments (options are ignored in this method)
@@ -163,7 +164,7 @@ public class Project2 {
    */
  static Flight parseArgsAndCreateFlight(String[] args) {
      String[] flightArgs;
-     int i = 0;
+     int i = 0, j = 0;
      int flightNumber;
      String source, departDate, departTime, destination, arriveDate, arriveTime;
 
@@ -174,39 +175,39 @@ public class Project2 {
      flightArgs = Arrays.copyOfRange(args, ++i, args.length);
 
      try {
-         flightNumber = parseInt(flightArgs[0]);
+         flightNumber = parseInt(flightArgs[j]);
     } catch(NumberFormatException ex) {
-      throw new InvalidFlightNumberException(flightArgs[0]);
+      throw new InvalidFlightNumberException(flightArgs[j]);
     } catch(ArrayIndexOutOfBoundsException ex) {
         throw new MissingCommandLineArgumentException("flight number");
     }
     try {
-        source = parseAirportCode(flightArgs[1]);
+        source = parseAirportCode(flightArgs[++j]);
     } catch(ArrayIndexOutOfBoundsException ex) {
         throw new MissingCommandLineArgumentException("source airport code");
     }
     try {
-        departDate = parseDate(flightArgs[2]);
+        departDate = parseDate(flightArgs[++j]);
     } catch (ArrayIndexOutOfBoundsException ex) {
         throw new MissingCommandLineArgumentException("departure date");
     }
     try {
-        departTime = parseTime(flightArgs[3]);
+        departTime = parseTime(flightArgs[++j], flightArgs[++j]);
     } catch (ArrayIndexOutOfBoundsException ex) {
         throw new MissingCommandLineArgumentException("departure time");
     }
     try {
-        destination = parseAirportCode(flightArgs[4]);
+        destination = parseAirportCode(flightArgs[++j]);
     } catch (ArrayIndexOutOfBoundsException ex) {
         throw new MissingCommandLineArgumentException("destination airport");
     }
     try {
-        arriveDate = parseDate(flightArgs[5]);
+        arriveDate = parseDate(flightArgs[++j]);
     } catch (ArrayIndexOutOfBoundsException ex) {
         throw new MissingCommandLineArgumentException("arrival date");
     }
     try {
-        arriveTime = parseTime(flightArgs[6]);
+        arriveTime = parseTime(flightArgs[++j], flightArgs[++j]);
     } catch (ArrayIndexOutOfBoundsException ex) {
         throw new MissingCommandLineArgumentException("arrival time");
     }
@@ -236,7 +237,8 @@ public class Project2 {
   }
 
   /**
-   * The parseDate method parses dates, verifying the format is mm/dd/yyyy or m/d/yyy (months and days can include or omit the leading zero).
+   * The parseDate method parses dates, verifying the format is mm/dd/yyyy or m/d/yyy (months and days can include or
+   * omit the leading zero).
    * If the date is properly formatted, the date string is returned. If it is a not exception with a descriptive error
    * message is thrown.
    * @param dateString
@@ -247,6 +249,7 @@ public class Project2 {
    *        Exception is thrown for dates that do not exist and dates that are not properly formatted.
    */
   static String parseDate(String dateString) throws InvalidDateException{
+
     StringTokenizer stringTokenizer = new StringTokenizer(dateString, "/");
 
     if(stringTokenizer.countTokens() != 3) {
@@ -273,15 +276,17 @@ public class Project2 {
   /**
    * The parseTime method takes a string and returns it if it is valid a valid time. If it is not, an error is thrown.
    * @param timeString
-   *        String in 24-hour time
+   *        String in 12-hour time
+   * @param amPm
+   *        String containing am or pm
    * @return
    *        Returns time string if is a properly formatted, valid 24-hour time.
    */
-  static String parseTime(String timeString) {
+  static String parseTime(String timeString, String amPm) {
     StringTokenizer stringTokenizer = new StringTokenizer(timeString, ":");
 
     if(stringTokenizer.countTokens() != 2) {
-      throw new InvalidTimeException(timeString);
+      throw new InvalidTimeException(timeString + " is not a valid time. Times should be of the form hh:mm.");
     }
 
     int hour, minute;
@@ -289,13 +294,19 @@ public class Project2 {
       hour = Integer.parseInt(stringTokenizer.nextToken());
       minute = Integer.parseInt(stringTokenizer.nextToken());
     } catch (NumberFormatException ex) {
-      throw new InvalidTimeException(timeString);
+      throw new InvalidTimeException(timeString + " is not a valid time.");
     }
-    if((hour < 0 || hour > 24) || (minute < 0 || minute > 60)) {
-      throw new InvalidTimeException(timeString);
+    if((hour < 1 || hour > 12) || (minute < 0 || minute > 60)) {
+      throw new InvalidTimeException(timeString + " is not a valid 12-hour time.");
+    }
+    if(amPm.equalsIgnoreCase("am") || amPm.equalsIgnoreCase("pm")) {
+        return timeString + " " + amPm;
+    }
+    else {
+        throw new InvalidTimeException("The time " + timeString + " must be followed by \"am\" or \"pm\". You entered "
+        + amPm);
     }
 
-    return timeString;
   }
 
   /**
@@ -304,7 +315,7 @@ public class Project2 {
   public static String getReadMe() throws IOException{
     StringBuilder readMeText = new StringBuilder();
     String line;
-    InputStream readme = Project2.class.getResourceAsStream("README.txt");
+    InputStream readme = Project3.class.getResourceAsStream("README.txt");
     assert readme != null;
     BufferedReader reader = new BufferedReader(new InputStreamReader(readme));
 
@@ -342,15 +353,15 @@ public class Project2 {
       printErrorMessageAndExit(ex.getInvalidAirportCode() + " is not a 3 letter airport code." + printCommandLineInterfaceDescription());
     } catch (InvalidDateException ex) {
       printErrorMessageAndExit(ex.getInvalidDate() + " is not a valid date." + printCommandLineInterfaceDescription());
-    } catch (InvalidTimeException ex) {
-      printErrorMessageAndExit(ex.getInvalidTime() + " is not a valid time" + printCommandLineInterfaceDescription());
+    } catch (InvalidTimeException | InvalidDepartureException | InvalidArrivalException ex) {
+      printErrorMessageAndExit(ex.getMessage());
     } catch (AirlineFromFileDoesNotMatchAirlineFromCommandLineException ex) {
         printErrorMessageAndExit("Airlines doe not match.\nAirline from file: " + ex.getAirlineFromFile() +
                                  "\nAirline from command line: " + ex.getAirlineFromCommandLine());
     }
 
 
-    System.exit(1);
+      System.exit(1);
   }
 
   /**
@@ -377,11 +388,9 @@ public class Project2 {
            "\tairline                   The name of the airline\n" +
            "\tflightNumber              The flight number\n" +
            "\tsrc                       Three-letter code of departure airport\n" +
-           "\tdepartDate                Departure date\n" +
-           "\tdepartTime                Departure time (24-hour time)\n" +
+           "\tdepart                    Departure date time (am/pm)\n" +
            "\tdest                      Three-letter code of arrival airport\n" +
-           "\tarriveDate                Arrival date\n" +
-           "\tarriveTime                Arrival time (24-hour time)\n" +
+           "\tarrive                    Arrival date time (am/pm)\n" +
            "options are (options may appear in any order):\n" +
            "\t-textFile file            Where to read/write the airline info\n" +
            "\t-print                    Prints a description of the new flight\n" +
@@ -441,14 +450,8 @@ class InvalidDateException extends RuntimeException {
 }
 
 class InvalidTimeException extends RuntimeException {
-  private final String invalidTime;
-
-  public InvalidTimeException(String invalidTime) {
-      this.invalidTime = invalidTime;}
-
-  public String getInvalidTime() {
-
-      return invalidTime;
+  public InvalidTimeException(String invalidTimeMessage) {
+      super(invalidTimeMessage);
   }
 }
 
@@ -483,6 +486,18 @@ class AirlineFromFileDoesNotMatchAirlineFromCommandLineException extends Runtime
      */
     public String getAirlineFromCommandLine() {
         return airlineFromCommandLine.getName();
+    }
+}
+
+class InvalidDepartureException extends RuntimeException {
+    public InvalidDepartureException(String message) {
+        super(message);
+    }
+}
+
+class InvalidArrivalException extends RuntimeException {
+    public InvalidArrivalException(String message) {
+        super(message);
     }
 }
 

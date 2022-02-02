@@ -1,12 +1,7 @@
 package edu.pdx.cs410J.awurtz;
 
 import edu.pdx.cs410J.InvokeMainTestCase;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -14,15 +9,15 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
- * An integration test for the {@link Project2} main class.
+ * An integration test for the {@link Project3} main class.
  */
-class Project2IT extends InvokeMainTestCase {
+class Project3IT extends InvokeMainTestCase {
 
   /**
-   * Invokes the main method of {@link Project2} with the given arguments.
+   * Invokes the main method of {@link Project3} with the given arguments.
    */
   private MainMethodResult invokeMain(String... args) {
-    return invokeMain(Project2.class, args);
+    return invokeMain(Project3.class, args);
   }
 
   /**
@@ -37,8 +32,8 @@ class Project2IT extends InvokeMainTestCase {
 
   @Test
   void parserDetectsTooManyCommandLineArguments() {
-    String[] args = new String[]{"-print", "Delta", "99", "PDX", "11/11/2011", "11:11", "SFO", "12/12/2012", "12:12",
-            "behind schedule"};
+    String[] args = new String[]{"-print", "Delta", "99", "PDX", "11/11/2011", "11:11", "am", "SFO", "12/12/2012",
+            "12:12", "pm", "behind schedule"};
     MainMethodResult result = invokeMain(args);
     assertThat(result.getTextWrittenToStandardError(), containsString("Too many command line arguments"));
 
@@ -47,7 +42,7 @@ class Project2IT extends InvokeMainTestCase {
 
   @Test
   void testNotEnoughCommandLineArguments() {
-    String[] args = new String[]{"-print", "Delta", "99", "PDX", "11/11/2011", "11:11", "SFO", "12/12/2012"};
+    String[] args = new String[]{"-print", "Delta", "99", "PDX", "11/11/2011", "11:11", "am", "SFO", "12/12/2012", "pm"};
     MainMethodResult result = invokeMain(args);
     assertThat(result.getTextWrittenToStandardError(), containsString("Missing arrival time"));
   }
@@ -89,7 +84,7 @@ class Project2IT extends InvokeMainTestCase {
 
   @Test
   void errorForInvalidDepartureTime() {
-    String[] args = new String[]{"Delta", "123", "PDX", "03/03/2022", "12:XX", "ORD", "03/03/2022", "16:00"};
+    String[] args = new String[]{"Delta", "123", "PDX", "03/03/2022", "12:XX", "pm", "ORD", "03/03/2022", "16:00", "pm"};
     MainMethodResult result = invokeMain(args);
     assertThat(result.getExitCode(),equalTo(1));
     assertThat(result.getTextWrittenToStandardError(), containsString("is not a valid time"));
@@ -97,7 +92,7 @@ class Project2IT extends InvokeMainTestCase {
 
   @Test
   void errorForInvalidArrivalDate() {
-    String[] args = new String[]{"Delta", "123", "PDX", "03/03/2022", "12:00", "ORD", "03/03/20/22", "16:00"};
+    String[] args = new String[]{"Delta", "123", "PDX", "03/03/2022", "12:00", "pm", "ORD", "03/03/20/22", "4:00", "pm"};
     MainMethodResult result = invokeMain(args);
     assertThat(result.getExitCode(),equalTo(1));
     assertThat(result.getTextWrittenToStandardError(), containsString("is not a valid date."));
@@ -113,7 +108,8 @@ class Project2IT extends InvokeMainTestCase {
 
   @Test
   void errorForExtraCommandLineArgument() {
-    String[] args = new String[]{"Delta", "123", "PDX", "03/03/2022", "12:00", "ORD", "03/03/2022", "16:00", "fred"};
+    String[] args = new String[]{"Delta", "123", "PDX", "03/03/2022", "12:00", "pm", "ORD", "03/03/2022", "4:00", "pm",
+            "fred"};
     MainMethodResult result = invokeMain(args);
     assertThat(result.getExitCode(),equalTo(1));
     assertThat(result.getTextWrittenToStandardError(), containsString("Too many command line arguments."));
@@ -153,7 +149,7 @@ class Project2IT extends InvokeMainTestCase {
 
   @Test
   void errorForMissingDestinationAirport() {
-    String[] args = new String[]{"Delta", "99", "PDX", "12/12/2022", "12:12"};
+    String[] args = new String[]{"Delta", "99", "PDX", "12/12/2022", "12:12", "am"};
     MainMethodResult result = invokeMain(args);
     assertThat(result.getExitCode(),equalTo(1));
     assertThat(result.getTextWrittenToStandardError(), containsString("Missing destination airport"));
@@ -161,7 +157,7 @@ class Project2IT extends InvokeMainTestCase {
 
   @Test
   void errorForMissingArrivalDate() {
-    String[] args = new String[]{"Delta", "99", "PDX", "12/12/2022", "12:12", "SFO"};
+    String[] args = new String[]{"Delta", "99", "PDX", "12/12/2022", "12:12", "am", "SFO"};
     MainMethodResult result = invokeMain(args);
     assertThat(result.getExitCode(),equalTo(1));
     assertThat(result.getTextWrittenToStandardError(), containsString("Missing arrival date"));
@@ -169,7 +165,7 @@ class Project2IT extends InvokeMainTestCase {
 
   @Test
   void errorForMissingArrivalTime () {
-    String[] args = new String[]{"Delta", "123", "PDX", "03/03/2022", "12:00", "ORD", "03/03/2022"};
+    String[] args = new String[]{"Delta", "123", "PDX", "03/03/2022", "12:00", "am", "ORD", "03/03/2022"};
     MainMethodResult result = invokeMain(args);
     assertThat(result.getExitCode(),equalTo(1));
     assertThat(result.getTextWrittenToStandardError(), containsString("Missing arrival time"));
@@ -185,8 +181,8 @@ class Project2IT extends InvokeMainTestCase {
 
   @Test
   void printOptionExitsWithErrorForTooManyArgs () {
-    String[] args = new String[] {"-print", "Delta", "123", "PDX", "03/03/2022", "12:00", "ORD", "03/03/2022", "16:00",
-            "extra arg"};
+    String[] args = new String[] {"-print", "Delta", "123", "PDX", "03/03/2022", "12:00", "am", "ORD", "03/03/2022",
+            "4:00", "pm", "extra arg"};
     MainMethodResult result = invokeMain(args);
     assertThat(result.getExitCode(),equalTo(1));
     assertThat(result.getTextWrittenToStandardError(), containsString("Too many command line arguments"));
@@ -194,10 +190,12 @@ class Project2IT extends InvokeMainTestCase {
 
   @Test
   void printOptionPrintsFlightString () {
-    String[] args = new String[] {"-print", "Delta", "123", "PDX", "03/03/2022", "12:00", "ORD", "03/03/2022", "16:00"};
+    String[] args = new String[] {"-print", "Delta", "123", "PDX", "03/03/2022", "12:00", "am", "ORD", "03/03/2022",
+            "4:00", "pm"};
     MainMethodResult result = invokeMain(args);
     assertThat(result.getExitCode(),equalTo(1));
-    assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 123 departs PDX at 12:00"));
+    assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 123 departs PDX at 3/3/22 12:00 PM"
+            + " arrives ORD at 3/3/22 4:00 AM"));
 
   }
 }

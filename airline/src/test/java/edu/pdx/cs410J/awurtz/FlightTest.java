@@ -1,6 +1,12 @@
 package edu.pdx.cs410J.awurtz;
 
+import edu.pdx.cs410J.ParserException;
 import org.junit.jupiter.api.Test;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -16,7 +22,7 @@ public class FlightTest {
   @Test
   void getArrivalStringReturnsArriveDateAndArriveTimeAsString() {
     Flight flight = createTestFlight();
-    assertThat(flight.getArrivalString(), is(flight.arriveTime + " " + flight.arriveDate));
+    assertThat(flight.getArrivalString(), is("2/9/22 1:13 PM"));
   }
 
   @Test
@@ -34,18 +40,13 @@ public class FlightTest {
   @Test
   void getDepartureStringReturnsDepartureString() {
     Flight flight = createTestFlight();
-    assertThat(flight.getDepartureString(), is(flight.departTime + " " + flight.departDate));
+    assertThat(flight.getDepartureString(), is("2/9/22 12:12 PM"));
   }
 
   @Test
   void getDestinationReturnsDestination() {
     Flight flight = createTestFlight();
     assertThat(flight.getDestination(), equalTo(flight.destination));
-  }
-  @Test
-  void forProject1ItIsOkayIfGetDepartureTimeReturnsNull() {
-    Flight flight = new Flight();
-    assertThat(flight.getDeparture(), is(nullValue()));
   }
 
   private static Flight createTestFlight() {
@@ -123,14 +124,47 @@ public class FlightTest {
   }
 
   @Test
-  void getArriveDateReturnsDepartDate() {
+  void getArriveDateReturnsArriveDate() {
     Flight flight = createTestFlight();
     assertThat(flight.getArriveDate(), equalTo(flight.arriveDate));
   }
 
   @Test
-  void getArriveTimeReturnsDepartTime() {
+  void getArriveTimeReturnsArriveTime() {
     Flight flight = createTestFlight();
     assertThat(flight.getArriveTime(), equalTo(flight.arriveTime));
   }
+
+  @Test
+  void getDepartureReturnsValidDateObject() throws ParseException {
+    Flight flight = createTestFlight();
+    String dateString = flight.getDepartDate() + " " + flight.getDepartTime();
+    SimpleDateFormat stringToDate = new SimpleDateFormat("MM/dd/yyyy k:mm");
+
+    Date date = stringToDate.parse(dateString);
+    assertThat(flight.getDeparture(), equalTo(date));
+  }
+
+  @Test
+  void getDepartureThrowsInvalidDepartureExceptionForInvalidDateString() {
+    Flight flight = new Flight();
+    assertThrows(InvalidDepartureException.class, flight::getDeparture);
+  }
+
+  @Test
+  void getArrivalReturnsValidDateObject() throws ParseException {
+    Flight flight = createTestFlight();
+    String dateString = flight.getArriveDate() + " " + flight.getArriveTime();
+    SimpleDateFormat stringToDate = new SimpleDateFormat("MM/dd/yyyy k:mm");
+
+    Date date = stringToDate.parse(dateString);
+    assertThat(flight.getArrival(), equalTo(date));
+  }
+
+  @Test
+  void getArrivalThrowsInvalidArrivalExceptionForInvalidDateString() {
+    Flight flight = new Flight();
+    assertThrows(InvalidArrivalException.class, flight::getArrival);
+  }
 }
+
