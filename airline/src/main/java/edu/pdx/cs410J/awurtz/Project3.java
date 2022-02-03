@@ -28,11 +28,13 @@ public class Project3 {
    * @throws IOException is thrown if there is a problem accessing the readme file. The exception is caught in the main method.
    */
   public static Airline checkOptions(String[] args) throws IOException {
-      Airline airlineFromFile, airlineFromCommandLine;
+      Airline airlineFromFile, airlineFromCommandLine, prettyAirline = null;
       Flight flight;
       Path airlineFile;
-      Boolean print = false, textFile = false;
-      String fileName = "";
+      Boolean print = false;
+      Boolean textFile = false;
+      Boolean prettyPrint = false;
+      String fileName = null, prettyFileName = null;
 
       int i = 0;
       while (args[i].contains("-")) {
@@ -41,17 +43,25 @@ public class Project3 {
                   System.out.println(getReadMe());
                   System.exit(1);
               }
-              case "-print" -> print = true;
+              case "-print" ->  {
+                  print = true;
+              }
               case "-textFile" -> {
                   textFile = true;
                   fileName = args[++i];
               }
+              case "-prettyPrint" -> {
+                  prettyPrint = true;
+                  prettyFileName = args[++i];
+              }
               default -> printErrorMessageAndExit(args[i] + " option is not supported.");
           }
-          if (i > 4) {
-              printErrorMessageAndExit("Too many options.");
-          }
           i++;
+      }
+
+      //check number of non-option commandline arguments
+      if (args.length > (i + 10)) {
+          printErrorMessageAndExit("Too many command line arguments.");
       }
 
       //creates airline and flight from commands line args
@@ -69,7 +79,12 @@ public class Project3 {
           if (airlineFile == null) {
               airlineFromCommandLine.addFlight(flight);
               writeAirlineToFile(airlineFromCommandLine, Files.createFile(Path.of(fileName)));
-              return airlineFromCommandLine;
+              if(prettyPrint) {
+                  prettyAirline = airlineFromCommandLine;
+              }
+              else {
+                  return airlineFromCommandLine;
+              }
           } else {
               airlineFromFile = attemptToReadFile(airlineFile);
 
@@ -78,26 +93,42 @@ public class Project3 {
               if (Objects.equals(airlineFromFile.getName(), airlineFromCommandLine.getName())) {
                   airlineFromFile.addFlight(flight);
                   writeAirlineToFile(airlineFromFile, airlineFile);
-                  return airlineFromFile;
+                  if(prettyPrint) {
+                      prettyAirline = airlineFromFile;
+                  }
+                  else {
+                      return airlineFromFile;
+                  }
               } else {
                   throw new AirlineFromFileDoesNotMatchAirlineFromCommandLineException(airlineFromFile, airlineFromCommandLine);
               }
           }
       }
 
+      //pretty prints airline
+      if (prettyPrint) {
+          if(!textFile) {
+              prettyAirline = airlineFromCommandLine;
+              prettyAirline.addFlight(flight);
+          }
+          prettyPrintAirline(prettyAirline, prettyFileName);
+          return prettyAirline;
+      }
+
           //creates flight in case of no options
-      else{
+      if (!print && !textFile && !prettyPrint){
               if (args.length > 10) {
                   printErrorMessageAndExit("Too many command line arguments.");
               }
               airlineFromCommandLine.addFlight(parseArgsAndCreateFlight(args));
               return airlineFromCommandLine;
-          }
+      }
+      return airlineFromCommandLine;
   }
 
     /**
      * checks if file exists
-     * @param fileName
+     * @param fileName name of file to be retrieved
      * @return file if it exists, otherwise null
      */
   static Path getValidFile(String fileName) {
@@ -114,7 +145,7 @@ public class Project3 {
 
     /**
      * reads airline and flights from file
-     * @param fileToRead
+     * @param fileToRead file to read from
      * @return airline read from file, returns null if file is empty
      */
   static Airline attemptToReadFile(Path fileToRead) {
@@ -137,8 +168,8 @@ public class Project3 {
 
     /**
      * writes airline and associated flights to file
-     * @param airline
-     * @param fileToWrite
+     * @param airline to be written to the file
+     * @param fileToWrite file to write airline in
      */
   static void writeAirlineToFile(Airline airline, Path fileToWrite) {
       TextDumper writer;
@@ -149,6 +180,35 @@ public class Project3 {
           }
       } catch (IOException ex) {
          printErrorMessageAndExit("There was a problem while writing to " + fileToWrite.getFileName());
+      }
+  }
+
+    /**
+     * Pretty prints to specified file or standard out (if fileName is "-");
+     * @param airline to be written
+     * @param fileName name of file to pretty print airline
+     */
+  static void prettyPrintAirline(Airline airline, String fileName) {
+      Path prettyFile = getValidFile(fileName);
+      PrettyPrinter prettyPrinter;
+
+      try {
+          if (fileName.equals("-")) {
+              //pretty print to standard out
+              prettyPrinter = new PrettyPrinter(new OutputStreamWriter(System.out));
+              System.out.println();
+              prettyPrinter.dump(airline);
+              System.out.println();
+          } else {
+              if (prettyFile == null) {
+                  prettyFile = Files.createFile(Path.of(fileName));
+              }
+              //Pretty print to file
+              prettyPrinter = new PrettyPrinter(new FileWriter(prettyFile.toFile()));
+          }
+          prettyPrinter.dump(airline);
+      } catch (IOException ex) {
+          printErrorMessageAndExit("There was a problem while pretty printing to " + fileName);
       }
   }
 
@@ -382,20 +442,22 @@ public class Project3 {
    *        Returns a formatted string.
    */
   private static String printCommandLineInterfaceDescription() {
-    return "\n" +
-           "\n" +
-           "args are (in this order): [options] <args>\n" +
-           "\tairline                   The name of the airline\n" +
-           "\tflightNumber              The flight number\n" +
-           "\tsrc                       Three-letter code of departure airport\n" +
-           "\tdepart                    Departure date time (am/pm)\n" +
-           "\tdest                      Three-letter code of arrival airport\n" +
-           "\tarrive                    Arrival date time (am/pm)\n" +
-           "options are (options may appear in any order):\n" +
-           "\t-textFile file            Where to read/write the airline info\n" +
-           "\t-print                    Prints a description of the new flight\n" +
-           "\t-README                   Prints a README for this project and exits\n" +
-           "Date and time should be in the format: mm/dd/yyy hh:mm\n";
+    return """
+
+
+            args are (in this order): [options] <args>
+            \tairline                   The name of the airline
+            \tflightNumber              The flight number
+            \tsrc                       Three-letter code of departure airport
+            \tdepart                    Departure date time (am/pm)
+            \tdest                      Three-letter code of arrival airport
+            \tarrive                    Arrival date time (am/pm)
+            options are (options may appear in any order):
+            \t-textFile file            Where to read/write the airline info
+            \t-print                    Prints a description of the new flight
+            \t-README                   Prints a README for this project and exits
+            Date and time should be in the format: mm/dd/yyy hh:mm
+            """;
 
   }
 }

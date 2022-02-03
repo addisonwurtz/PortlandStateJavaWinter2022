@@ -39,7 +39,8 @@ public class TextParserTest {
     InputStream resource = getClass().getResourceAsStream("valid-airline.txt");
     assertThat(resource, notNullValue());
 
-    Flight flight = new Flight(99, "PDX", "01/24/2022", "11:11", "SFO", "1/25/2022", "12:12");
+    Flight flight = new Flight(99, "PDX", "01/24/2022", "11:11 am", "SFO",
+            "1/25/2022", "12:12 pm");
     TextParser parser = new TextParser(new InputStreamReader(resource));
     Airline airline = parser.parse();
 

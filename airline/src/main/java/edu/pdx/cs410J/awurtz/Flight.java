@@ -23,8 +23,7 @@ public class Flight extends AbstractFlight implements Comparable<Flight>{
   String arriveDate;
   String arriveTime;
   Date arrive;
-  static final String prettyDateTimePattern = "EEE, MMM dd yyyy hh:mm a";  //"dd/MM/yyyy hh:mm a";
-  static final String dateTimePattern = "MM/dd/yyyy k:mm";
+  static final String dateTimePattern = "MM/dd/yyyy hh:mm a";
   /**
    * Creates a new <code>Flight</code> with default parameters
    */
@@ -60,6 +59,11 @@ public class Flight extends AbstractFlight implements Comparable<Flight>{
     this.arriveDate = arriveDate;
     this.arriveTime = arriveTime;
     this.arrive = getArrival();
+
+    if(depart.after(arrive)) {
+      throw new InvalidTimeException("Departure time " + depart + " is after arrival time " + arrive + " Departure" +
+              "times must before arrival times.");
+    }
   }
   @Override
   public int getNumber() {
@@ -88,7 +92,7 @@ public class Flight extends AbstractFlight implements Comparable<Flight>{
       try {
         return stringToDate.parse(dateString);
       } catch (ParseException e) {
-        throw new InvalidDepartureException("Departure date/Time (" + dateString + ") is not in the format MM/dd/yyyy hh:mm");
+        throw new InvalidDepartureException("Departure date/Time (" + dateString + ") is not in the format MM/dd/yyyy hh:mm am/pm");
       }
     }
     else {
@@ -153,10 +157,10 @@ public class Flight extends AbstractFlight implements Comparable<Flight>{
         return 0;
       }
       if(departureCmp < 0) {
-        return 1;
+        return -1;
       }
       else {
-        return -1;
+        return 1;
       }
     }
     if(sourceCmp > 0) {

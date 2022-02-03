@@ -195,8 +195,16 @@ class Project3IT extends InvokeMainTestCase {
             "4:00", "pm"};
     MainMethodResult result = invokeMain(args);
     assertThat(result.getExitCode(),equalTo(1));
-    assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 123 departs PDX at 3/3/22 12:00 PM"
-            + " arrives ORD at 3/3/22 4:00 AM"));
+    assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 123 departs PDX at 3/3/22 12:00 AM"
+            + " arrives ORD at 3/3/22 4:00 PM"));
+  }
 
+  @Test
+  void prettyPrintPrintsToCommandLine() {
+    String[] args = new String[] {"-prettyPrint", "-", "United", "456", "DEN", "3/1/2022", "6:53", "pm", "LAX", "3/1/2022",
+            "11:27", "pm"};
+    MainMethodResult result = invokeMain(args);
+    assertThat(result.getExitCode(), equalTo(1));
+    assertThat(result.getTextWrittenToStandardOut(), containsString("DEN -> LAX"));
   }
 }

@@ -1,9 +1,7 @@
 package edu.pdx.cs410J.awurtz;
 
-import edu.pdx.cs410J.ParserException;
 import org.junit.jupiter.api.Test;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -22,7 +20,7 @@ public class FlightTest {
   @Test
   void getArrivalStringReturnsArriveDateAndArriveTimeAsString() {
     Flight flight = createTestFlight();
-    assertThat(flight.getArrivalString(), is("2/9/22 1:13 AM"));
+    assertThat(flight.getArrivalString(), is("2/9/22 1:13 PM"));
   }
 
   @Test
@@ -40,7 +38,7 @@ public class FlightTest {
   @Test
   void getDepartureStringReturnsDepartureString() {
     Flight flight = createTestFlight();
-    assertThat(flight.getDepartureString(), is("2/9/22 12:12 PM"));
+    assertThat(flight.getDepartureString(), is("2/9/22 12:12 AM"));
   }
 
   @Test
@@ -53,10 +51,10 @@ public class FlightTest {
     String source = "PDX";
     Integer flightNumber = 36;
     String departDate = "02/09/2022";
-    String departTime = "12:12 pm";
+    String departTime = "12:12 am";
     String destination = "SFO";
     String arrivalDate = "2/9/2022";
-    String arrivalTime = "1:13 am";
+    String arrivalTime = "1:13 pm";
 
     return new Flight(flightNumber, source, departDate, departTime, destination, arrivalDate, arrivalTime);
   }
@@ -81,7 +79,7 @@ public class FlightTest {
 
   @Test
   void flightHasDepartTime() {
-    String departTime = "12:12 pm";
+    String departTime = "12:12 am";
     Flight testFlight = FlightTest.createTestFlight();
 
     assertThat(testFlight.departTime, is(departTime));
@@ -105,7 +103,7 @@ public class FlightTest {
 
   @Test
   void flightHasArriveTime() {
-    String arrivalTime = "1:13 am";
+    String arrivalTime = "1:13 pm";
     Flight testFlight = FlightTest.createTestFlight();
 
     assertThat(testFlight.arriveTime, is(arrivalTime));
@@ -139,7 +137,7 @@ public class FlightTest {
   void getDepartureReturnsValidDateObject() throws ParseException {
     Flight flight = createTestFlight();
     String dateString = flight.getDepartDate() + " " + flight.getDepartTime();
-    SimpleDateFormat stringToDate = new SimpleDateFormat("MM/dd/yyyy k:mm");
+    SimpleDateFormat stringToDate = new SimpleDateFormat("MM/dd/yyyy h:mm");
 
     Date date = stringToDate.parse(dateString);
     assertThat(flight.getDeparture(), equalTo(date));
@@ -155,7 +153,7 @@ public class FlightTest {
   void getArrivalReturnsValidDateObject() throws ParseException {
     Flight flight = createTestFlight();
     String dateString = flight.getArriveDate() + " " + flight.getArriveTime();
-    SimpleDateFormat stringToDate = new SimpleDateFormat("MM/dd/yyyy k:mm");
+    SimpleDateFormat stringToDate = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
 
     Date date = stringToDate.parse(dateString);
     assertThat(flight.getArrival(), equalTo(date));
@@ -177,7 +175,8 @@ public class FlightTest {
 
   @Test
   void compareToReturnsOneWhenComparingSourceDENToSourcePDX() {
-    Flight flight1 = new Flight(456, "DEN", "2/1/2022", "6:53 pm", "LAX", "2/1/2022", "11:27 pm");
+    Flight flight1 = new Flight(456, "DEN", "2/1/2022", "6:53 pm", "LAX",
+            "2/1/2022", "11:27 pm");
     Flight flight2 = createTestFlight();
 
     assertThat(flight1.compareTo(flight2), equalTo(-1));
@@ -186,25 +185,37 @@ public class FlightTest {
   @Test
   void compareToReturnsNegativeOneWhenComparingSourcePDXToSourceDEN() {
     Flight flight1 = createTestFlight();
-    Flight flight2 = new Flight(456, "DEN", "2/1/2022", "6:53 pm", "LAX", "2/1/2022", "11:27 pm");
+    Flight flight2 = new Flight(456, "DEN", "2/1/2022", "6:53 pm", "LAX",
+            "2/1/2022", "11:27 pm");
 
     assertThat(flight1.compareTo(flight2), equalTo(1));
   }
 
   @Test
   void compareToReturnsOneForFlightsWithSameSourceButFirstFlightDepartsEarlier() {
-    Flight flight1 = new Flight(456, "DEN", "2/1/2022", "6:53 pm", "LAX", "2/1/2022", "11:27 pm");
-    Flight flight2 = new Flight(456, "DEN", "3/1/2022", "6:53 pm", "LAX", "2/1/2022", "11:27 pm");
+    Flight flight1 = new Flight(456, "DEN", "2/1/2022", "6:53 pm", "LAX",
+            "2/1/2022", "11:27 pm");
+    Flight flight2 = new Flight(456, "DEN", "3/1/2022", "6:53 pm", "LAX",
+            "3/1/2022", "11:27 pm");
+
+    assertThat(flight1.compareTo(flight2), equalTo(-1));
+  }
+
+  @Test
+  void compareToReturnsNegative1ForFlightsWithSameSourceButSecondFlightDepartsEarlier() {
+    Flight flight1 = new Flight(456, "DEN", "2/2/2022", "6:53 pm", "LAX",
+            "2/2/2022", "11:27 pm");
+    Flight flight2 = new Flight(456, "DEN", "2/1/2022", "6:53 pm", "LAX",
+            "2/1/2022", "11:27 pm");
 
     assertThat(flight1.compareTo(flight2), equalTo(1));
   }
 
   @Test
-  void compareToReturnsNegative1ForFlightsWithSameSourceButSecondFlightDepartsEarlier() {
-    Flight flight1 = new Flight(456, "DEN", "3/1/2022", "6:53 pm", "LAX", "2/1/2022", "11:27 pm");
-    Flight flight2 = new Flight(456, "DEN", "2/1/2022", "6:53 pm", "LAX", "2/1/2022", "11:27 pm");
+  void flightConstructorThrowsExceptionWhenDepartureTimeIsAfterArrivalTime() {
 
-    assertThat(flight1.compareTo(flight2), equalTo(-1));
+    assertThrows(InvalidTimeException.class, () -> new Flight(456, "DEN", "3/1/2022",
+            "6:53 pm", "LAX", "2/1/2022", "11:27 pm"));
   }
 }
 

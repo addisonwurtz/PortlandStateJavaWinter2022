@@ -19,8 +19,8 @@ public class AirlineTest {
     @Test
     void addFlightAddsFlight() {
         Airline airline = new Airline("Delta");
-        Flight flight = new Flight(48, "PDX", "02/25/2022", "11:11", "LAX",
-                "02/25/2022", "14:25");
+        Flight flight = new Flight(48, "PDX", "02/25/2022", "11:11 am", "LAX",
+                "02/25/2022", "2:25 pm");
         airline.addFlight(flight);
         assertThat(airline.getFlights(), hasItem(flight));
     }
@@ -28,8 +28,8 @@ public class AirlineTest {
     @Test
     void getFlightsReturnsFlightArrayList() {
         Airline airline = new Airline("Delta");
-        Flight flight = new Flight(48, "PDX", "02/25/2022", "11:11", "LAX",
-                "02/25/2022", "14:25");
+        Flight flight = new Flight(48, "PDX", "02/25/2022", "11:11 am", "LAX",
+                "02/25/2022", "2:25 pm");
         ArrayList<Flight> flightList = new ArrayList<>();
         flightList.add(flight);
         airline.addFlight(flight);

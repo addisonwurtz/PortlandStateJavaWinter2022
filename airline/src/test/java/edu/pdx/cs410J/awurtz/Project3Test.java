@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 import static edu.pdx.cs410J.awurtz.Project3.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -123,7 +124,7 @@ class Project3Test {
   }
 
   @Test
-  void attemptToReadFileReturnsNewForFileThatDoesNotExist() throws IOException {
+  void attemptToReadFileReturnsNewForFileThatDoesNotExist() {
     String fileName = "fakeFile.txt";
     assertThat(Project3.getValidFile(fileName), equalTo(null));
   }
@@ -147,7 +148,7 @@ class Project3Test {
   }
 
   @Test
-  void getValidFileReturnsReadableFile() throws IOException {
+  void getValidFileReturnsReadableFile() {
     String fileName = "fakeFile.txt";
     assertThat(Project3.getValidFile(fileName), equalTo(null));
   }
@@ -197,5 +198,27 @@ class Project3Test {
     String[] args = new String[]{"-textFile", "AirlineTestFile", "Delta", "102", "LAX", "5/13/2022", "10:00",  "am", "JFK",
             "5/14/2022", "02:25", "pm"};
     assertThat(Project3.checkOptions(args).toString(), containsString("3 flights"));
+  }
+
+  @Test
+  void prettyPrintAirlinePrintsToFile() throws IOException {
+    Airline airline = new Airline("United");
+    Flight flight1 = new Flight(456, "DEN", "3/1/2022", "6:53 pm", "LAX",
+            "3/1/2022", "11:27 pm");
+    Flight flight2 = new Flight(456, "DEN", "2/1/2022", "6:53 pm", "LAX",
+            "2/1/2022", "11:27 pm");
+    Flight flight3 = new Flight(102, "LAX", "5/13/2022", "10:00 am", "JFK",
+            "5/14/2022", "02:25 pm");
+
+    airline.addFlight(flight1);
+    airline.addFlight(flight2);
+    airline.addFlight(flight3);
+
+    Project3.prettyPrintAirline(airline, "PrettyPrinterTest");
+
+    File textFile = new File("PrettyPrinterTest");
+    BufferedReader reader = new BufferedReader(new FileReader(textFile));
+    assertThat(reader.readLine(), containsString("United"));
+    reader.close();
   }
 }
