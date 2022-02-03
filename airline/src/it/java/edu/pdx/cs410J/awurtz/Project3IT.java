@@ -62,7 +62,7 @@ class Project3IT extends InvokeMainTestCase {
     String[] args = new String[]{"-print", "Delta", "99", "PDX9", "11/11/2011", "11:11", "SFO", "12/12/12", "12:12"};
     MainMethodResult result = invokeMain(args);
     assertThat(result.getExitCode(), equalTo(1));
-    assertThat(result.getTextWrittenToStandardError(), containsString(" is not a 3 letter airport code."));
+    assertThat(result.getTextWrittenToStandardError(), containsString(" is not a valid airport code."));
 
   }
 

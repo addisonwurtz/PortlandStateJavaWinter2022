@@ -1,5 +1,6 @@
 package edu.pdx.cs410J.awurtz;
 
+import edu.pdx.cs410J.AirportNames;
 import edu.pdx.cs410J.ParserException;
 
 import java.io.*;
@@ -293,6 +294,9 @@ public class Project3 {
         throw new InvalidAirportCodeException(string);
       }
     }
+    if(AirportNames.getName(string.toUpperCase()) == null) {
+        throw new InvalidAirportCodeException(string);
+    }
     return string.toUpperCase();
   }
 
@@ -410,7 +414,7 @@ public class Project3 {
     } catch (InvalidFlightNumberException ex) {
       printErrorMessageAndExit("Flight number " + ex.getInvalidFlightNumber() + " is not an integer." + printCommandLineInterfaceDescription());
     } catch (InvalidAirportCodeException ex) {
-      printErrorMessageAndExit(ex.getInvalidAirportCode() + " is not a 3 letter airport code." + printCommandLineInterfaceDescription());
+      printErrorMessageAndExit(ex.getInvalidAirportCode() + " is not a valid airport code." + printCommandLineInterfaceDescription());
     } catch (InvalidDateException ex) {
       printErrorMessageAndExit(ex.getInvalidDate() + " is not a valid date." + printCommandLineInterfaceDescription());
     } catch (InvalidTimeException | InvalidDepartureException | InvalidArrivalException ex) {
