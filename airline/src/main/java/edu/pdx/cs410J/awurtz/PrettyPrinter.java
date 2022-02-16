@@ -23,7 +23,7 @@ public class PrettyPrinter implements AirlineDumper<Airline> {
     }
 
     @Override
-    public void dump(Airline airline) throws IOException {
+    public void dump(Airline airline) {
         SimpleDateFormat formatter = new SimpleDateFormat(prettyDateTimePattern);
 
         try (
@@ -32,8 +32,8 @@ public class PrettyPrinter implements AirlineDumper<Airline> {
             pw.println(airline.getName() + " Airlines");
 
             ArrayList<Flight> flightList = (ArrayList<Flight>) airline.getFlights();
-            if(!flightList.isEmpty()) {
-                for(Flight flight: flightList) {
+            if (!flightList.isEmpty()) {
+                for (Flight flight : flightList) {
                     pw.println();
                     pw.println("Flight " + flight.getNumber() + "\t\t" + flight.getSource() + " -> " + flight.getDestination() + "\t\t" +
                             flightDurationInMinutes(flight) + " minutes");
@@ -44,7 +44,6 @@ public class PrettyPrinter implements AirlineDumper<Airline> {
             }
 
         }
-
     }
 
     public static int flightDurationInMinutes(Flight flight) {

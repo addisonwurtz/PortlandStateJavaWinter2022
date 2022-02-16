@@ -207,4 +207,15 @@ class Project3IT extends InvokeMainTestCase {
     assertThat(result.getExitCode(), equalTo(1));
     assertThat(result.getTextWrittenToStandardOut(), containsString("DEN -> LAX"));
   }
+
+  @Disabled
+  @Test
+  void testCaseWithTextFileAndPrettyPrintOptions() {
+    String[] args = new String[] {"-textFile", "valid-airline.txt", "-pretty", "-", "Project3", "400", "EVV",
+            "03/04/2022", "12:36", "pm", "LFT", "03/05/2022", "8:19", "pm"};
+    MainMethodResult result = invokeMain(args);
+    assertThat(result.getExitCode(), equalTo(1));
+    assertThat(result.getTextWrittenToStandardOut(), containsString("EVV -> LFT"));
+
+  }
 }

@@ -376,16 +376,21 @@ public class Project3 {
   /**
    * @return contents of README.txt as String
    */
-  public static String getReadMe() throws IOException{
+  public static String getReadMe() {
+
     StringBuilder readMeText = new StringBuilder();
     String line;
     InputStream readme = Project3.class.getResourceAsStream("README.txt");
     assert readme != null;
     BufferedReader reader = new BufferedReader(new InputStreamReader(readme));
 
-    while((line = reader.readLine()) != null) {
-      readMeText.append(line);
-      readMeText.append("\n");
+    try {
+        while ((line = reader.readLine()) != null) {
+            readMeText.append(line);
+            readMeText.append("\n");
+        }
+    } catch (IOException e) {
+        printErrorMessageAndExit("There was a problem reading README.txt");
     }
 
     return readMeText.toString();
@@ -410,7 +415,8 @@ public class Project3 {
     } catch(MissingCommandLineArgumentException ex) {
       printErrorMessageAndExit("Missing " + ex.getMissingArgument());
     } catch (IOException ex) {
-      printErrorMessageAndExit("README file was not be found.");
+        ex.printStackTrace();
+      printErrorMessageAndExit(ex.getMessage());
     } catch (InvalidFlightNumberException ex) {
       printErrorMessageAndExit("Flight number " + ex.getInvalidFlightNumber() + " is not an integer." + printCommandLineInterfaceDescription());
     } catch (InvalidAirportCodeException ex) {

@@ -22,7 +22,7 @@ public class TextParserTest {
 
     TextParser parser = new TextParser(new InputStreamReader(resource));
     Airline airline = parser.parse();
-    assertThat(airline.getName(), equalTo("Test Airline"));
+    assertThat(airline.getName(), equalTo("Project3"));
   }
 
   @Test

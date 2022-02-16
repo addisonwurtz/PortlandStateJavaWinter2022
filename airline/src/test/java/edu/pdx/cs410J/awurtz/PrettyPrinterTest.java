@@ -26,7 +26,7 @@ public class PrettyPrinterTest {
     }
 
     @Test
-    void flightInformationIsPrettyPrinted() throws IOException {
+    void flightInformationIsPrettyPrinted() {
         String airlineName = "Delta";
         Airline airline = new Airline(airlineName);
         Flight flight = new Flight(12, "PDX", "01/24/2022", "11:11 am", "SFO",
@@ -48,7 +48,7 @@ public class PrettyPrinterTest {
     }
 
     @Test
-    void prettyPrinterPrintsToTextFile() throws IOException {
+    void prettyPrinterPrintsToTextFile() {
         Airline airline = new Airline("Alaska");
         airline.addFlight(new Flight(456, "DEN", "2/1/2022", "6:53 pm", "LAX",
                 "2/1/2022", "11:27 pm"));
@@ -58,12 +58,18 @@ public class PrettyPrinterTest {
                 "AUS", "2/9/2022", "5:35 pm"));
 
         File textFile = new File("PrettyPrinterTest");
-        PrettyPrinter prettyPrinter = new PrettyPrinter(new FileWriter(textFile));
-        prettyPrinter.dump(airline);
+        try {
 
-        BufferedReader reader = new BufferedReader(new FileReader(textFile));
-        assertThat(reader.readLine(), containsString("Alaska"));
-        reader.close();
+            PrettyPrinter prettyPrinter = new PrettyPrinter(new FileWriter(textFile));
+            prettyPrinter.dump(airline);
+
+            BufferedReader reader = new BufferedReader(new FileReader(textFile));
+            assertThat(reader.readLine(), containsString("Alaska"));
+            reader.close();
+        } catch(IOException ex) {
+            ex.getMessage();
+            ex.printStackTrace();
+        }
     }
 
 
