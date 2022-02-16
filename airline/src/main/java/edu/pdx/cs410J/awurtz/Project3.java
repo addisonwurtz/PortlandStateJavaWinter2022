@@ -76,6 +76,7 @@ public class Project3 {
 
       //reads and writes to supplied text file
       if (textFile) {
+          //getValidFile returns null if file does not exist
           airlineFile = getValidFile(fileName);
           if (airlineFile == null) {
               airlineFromCommandLine.addFlight(flight);
