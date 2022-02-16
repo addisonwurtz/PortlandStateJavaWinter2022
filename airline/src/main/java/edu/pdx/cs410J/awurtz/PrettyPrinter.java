@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -32,6 +33,7 @@ public class PrettyPrinter implements AirlineDumper<Airline> {
             pw.println(airline.getName() + " Airlines");
 
             ArrayList<Flight> flightList = (ArrayList<Flight>) airline.getFlights();
+            Collections.sort(flightList);
             if (!flightList.isEmpty()) {
                 for (Flight flight : flightList) {
                     pw.println();

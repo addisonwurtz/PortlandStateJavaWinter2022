@@ -146,6 +146,10 @@ public class Flight extends AbstractFlight implements Comparable<Flight>{
     return dateFormatter.format(arrive) + " " + timeFormatter.format(arrive);
   }
 
+  /*
+  Flights are sorted alphabetically by the source airport code, and if they both have the same source airport, they
+  are sorted by departure time.
+   */
   @Override
   public int compareTo(Flight flight) {
     int sourceCmp = this.source.compareTo(flight.getSource());

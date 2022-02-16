@@ -217,5 +217,14 @@ public class FlightTest {
     assertThrows(InvalidTimeException.class, () -> new Flight(456, "DEN", "3/1/2022",
             "6:53 pm", "LAX", "2/1/2022", "11:27 pm"));
   }
+
+  @Test
+  void compareAirportSourceCodes() {
+    String source1 = "PDX";
+    String source2 = "SEA";
+
+    assertThat(source1.compareTo(source2), equalTo(-3));
+  }
+
 }
 

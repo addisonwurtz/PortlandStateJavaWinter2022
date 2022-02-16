@@ -5,10 +5,7 @@ import edu.pdx.cs410J.AirlineDumper;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.StringTokenizer;
+import java.util.*;
 
 
 /**
@@ -35,6 +32,8 @@ public class TextDumper implements AirlineDumper<Airline> {
 
       ArrayList<Flight> flightList = (ArrayList<Flight>) airline.getFlights();
       if(!flightList.isEmpty()) {
+        Collections.sort(flightList);
+
         for (Flight flight : flightList) {
 
           StringTokenizer departTimeTokenizer = new StringTokenizer(flight.getDepartTime(), " ");
