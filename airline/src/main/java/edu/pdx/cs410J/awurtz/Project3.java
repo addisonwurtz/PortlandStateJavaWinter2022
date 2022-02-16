@@ -51,7 +51,7 @@ public class Project3 {
                   textFile = true;
                   fileName = args[++i];
               }
-              case "-prettyPrint" -> {
+              case "-pretty" -> {
                   prettyPrint = true;
                   prettyFileName = args[++i];
               }

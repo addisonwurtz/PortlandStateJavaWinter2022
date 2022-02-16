@@ -201,7 +201,7 @@ class Project3IT extends InvokeMainTestCase {
 
   @Test
   void prettyPrintPrintsToCommandLine() {
-    String[] args = new String[] {"-prettyPrint", "-", "United", "456", "DEN", "3/1/2022", "6:53", "pm", "LAX", "3/1/2022",
+    String[] args = new String[] {"-pretty", "-", "United", "456", "DEN", "3/1/2022", "6:53", "pm", "LAX", "3/1/2022",
             "11:27", "pm"};
     MainMethodResult result = invokeMain(args);
     assertThat(result.getExitCode(), equalTo(1));
