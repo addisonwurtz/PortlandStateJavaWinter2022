@@ -18,7 +18,7 @@ import static java.nio.file.Files.isWritable;
 /**
  * The main class for the CS410J Airline Project
  */
-public class Project3 {
+public class Project4 {
 
   /**
    * The checkOptions method initially checks for -README, -print, or -textFile options in args, checks for the correct number of args, and then
@@ -381,7 +381,7 @@ public class Project3 {
 
     StringBuilder readMeText = new StringBuilder();
     String line;
-    InputStream readme = Project3.class.getResourceAsStream("README.txt");
+    InputStream readme = Project4.class.getResourceAsStream("README.txt");
     assert readme != null;
     BufferedReader reader = new BufferedReader(new InputStreamReader(readme));
 

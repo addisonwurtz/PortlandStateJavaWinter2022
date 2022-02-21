@@ -1,7 +1,6 @@
 package edu.pdx.cs410J.awurtz;
 
 import edu.pdx.cs410J.InvokeMainTestCase;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.containsString;
@@ -10,15 +9,15 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
- * An integration test for the {@link Project3} main class.
+ * An integration test for the {@link Project4} main class.
  */
-class Project3IT extends InvokeMainTestCase {
+class Project4IT extends InvokeMainTestCase {
 
   /**
-   * Invokes the main method of {@link Project3} with the given arguments.
+   * Invokes the main method of {@link Project4} with the given arguments.
    */
   private MainMethodResult invokeMain(String... args) {
-    return invokeMain(Project3.class, args);
+    return invokeMain(Project4.class, args);
   }
 
   /**

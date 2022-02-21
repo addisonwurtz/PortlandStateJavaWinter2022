@@ -8,7 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static edu.pdx.cs410J.awurtz.Project3.*;
+import static edu.pdx.cs410J.awurtz.Project4.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -21,12 +21,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * from <code>Project1IT</code> which is an integration test (and can handle the calls
  * to {@link System#exit(int)} and the like.
  */
-class Project3Test {
+class Project4Test {
 
   @Test
   void readmeCanBeReadAsResource() throws IOException {
     try (
-      InputStream readme = Project3.class.getResourceAsStream("README.txt")
+      InputStream readme = Project4.class.getResourceAsStream("README.txt")
     ) {
       assertThat(readme, not(nullValue()));
       BufferedReader reader = new BufferedReader(new InputStreamReader(readme));
@@ -38,7 +38,7 @@ class Project3Test {
   @Test
   void parseAirportCodeDetectsInvalidCode() {
     String code = "PDXX";
-    assertThrows(InvalidAirportCodeException.class, () -> Project3.parseAirportCode(code));
+    assertThrows(InvalidAirportCodeException.class, () -> Project4.parseAirportCode(code));
   }
 
   @Test
@@ -68,44 +68,44 @@ class Project3Test {
   @Test
   void parseDateThrowsInvalidDateExceptionForTwoDigitYear() {
     String date = "12/15/21";
-    assertThrows(InvalidDateException.class, () -> Project3.parseDate(date));
+    assertThrows(InvalidDateException.class, () -> Project4.parseDate(date));
   }
 
   @Test
   void parseDateThrowsInvalidDateExceptionForFebruaryThirtiethDate() {
     String date = "02/30/2022";
-    assertThrows(InvalidDateException.class, () -> Project3.parseDate(date));
+    assertThrows(InvalidDateException.class, () -> Project4.parseDate(date));
   }
 
   @Test
   void parseDateThrowsInvalidDateExceptionForAprilThirtyFirstDate() {
     String date = "4/31/2022";
-    assertThrows(InvalidDateException.class, () -> Project3.parseDate(date));
+    assertThrows(InvalidDateException.class, () -> Project4.parseDate(date));
   }
 
   @Test
   void parseTimeDetectsValidTime() {
     String time = "11:11";
     String amPm = "am";
-    assertThat(Project3.parseTime(time, amPm), equalTo(time + " " + amPm));
+    assertThat(Project4.parseTime(time, amPm), equalTo(time + " " + amPm));
   }
 
   @Test
   void parseDateThrowsInvalidDateExceptionForInvalidDate() {
    String date = "13/12/2012";
-   assertThrows(InvalidDateException.class, () -> Project3.parseDate(date));
+   assertThrows(InvalidDateException.class, () -> Project4.parseDate(date));
   }
 
   @Test
   void parseArgsAndCreateFlightThrowsInvalidSourceExceptionIfSourceIsTooNotThreeCharactersLong() {
     String[] args = new String[] {"Delta", "99", "PDXPDX", "11/11/2011", "11:11", "SFO", "12/12/12", "12:12"};
-    assertThrows(InvalidAirportCodeException.class, () -> Project3.parseArgsAndCreateFlight(args));
+    assertThrows(InvalidAirportCodeException.class, () -> Project4.parseArgsAndCreateFlight(args));
   }
 
   @Test
   void parseArgsAndCreateFlightThrowsInvalidSourceExceptionIfSourceIsNotAlphabetic() {
     String[] args = new String[] {"99", "999", "11/11/2011", "11:11", "SFO", "12/12/12", "12:12"};
-    assertThrows(InvalidAirportCodeException.class, () -> Project3.parseArgsAndCreateFlight(args));
+    assertThrows(InvalidAirportCodeException.class, () -> Project4.parseArgsAndCreateFlight(args));
   }
 
   @Test
@@ -113,20 +113,20 @@ class Project3Test {
     String[] args = new String[] {"Delta", "99", "PDX", "11/11/2011", "11:11", "am",  "SFO", "12/12/2012", "12:12", "pm"};
     Flight flight = new Flight(99, "PDX", "11/11/2011", "11:11 am", "SFO",
             "12/12/2012", "12:12 pm");
-    assertThat(Project3.parseArgsAndCreateFlight(args).destination, equalTo(flight.getDestination()));
+    assertThat(Project4.parseArgsAndCreateFlight(args).destination, equalTo(flight.getDestination()));
   }
 
   @Test
   void parseTimeThrowsInvalidTimeExceptionForIncompleteTime() {
     String time = "12";
     String amPm = "pm";
-    assertThrows(InvalidTimeException.class, () -> Project3.parseTime(time, amPm));
+    assertThrows(InvalidTimeException.class, () -> Project4.parseTime(time, amPm));
   }
 
   @Test
   void attemptToReadFileReturnsNewForFileThatDoesNotExist() {
     String fileName = "fakeFile.txt";
-    assertThat(Project3.getValidFile(fileName), equalTo(null));
+    assertThat(Project4.getValidFile(fileName), equalTo(null));
   }
 
   @Test
@@ -134,7 +134,7 @@ class Project3Test {
     String fileName = "realFile.txt";
     Path file = Files.createFile(Path.of(fileName));
 
-    assertThat(Files.exists(Project3.getValidFile(fileName)), equalTo(true));
+    assertThat(Files.exists(Project4.getValidFile(fileName)), equalTo(true));
     Files.delete(file);
   }
 
@@ -143,20 +143,20 @@ class Project3Test {
     String fileName = "fileDoesNotYetExist.txt";
     Path file = Files.createFile(Path.of(fileName));
 
-    assertThat(Files.exists(Project3.getValidFile(fileName)), equalTo(true));
+    assertThat(Files.exists(Project4.getValidFile(fileName)), equalTo(true));
     Files.delete(file);
   }
 
   @Test
   void getValidFileReturnsReadableFile() {
     String fileName = "fakeFile.txt";
-    assertThat(Project3.getValidFile(fileName), equalTo(null));
+    assertThat(Project4.getValidFile(fileName), equalTo(null));
   }
 
   @Test
   void checkOptionsReturnsAirlineBasedOnArgs() throws IOException {
     String[] args = new String[] {"Delta", "99", "PDX", "11/11/2011", "11:11", "am", "SFO", "12/12/2012", "12:12", "pm"};
-    assertThat(Project3.checkOptions(args).getName(), equalTo("Delta"));
+    assertThat(Project4.checkOptions(args).getName(), equalTo("Delta"));
   }
 
   @Disabled
@@ -164,14 +164,14 @@ class Project3Test {
   void checkOptionsCorrectlyReadsTextFileAndReturnsUpdatedAirline() throws IOException {
     String[] args = new String[] {"-textFile", "AirlineTestFile", "Delta", "99", "PDX", "11/11/2011", "11:11", "am", "SFO",
             "12/12/2012", "12:12", "pm"};
-     assertThat(Project3.checkOptions(args).toString(), containsString("Delta with 2 flights"));
+     assertThat(Project4.checkOptions(args).toString(), containsString("Delta with 2 flights"));
   }
 
   @Test
   void checkOptionsReturnsNewAirlineWhenGiveFileThatDoesNotExitYet() throws IOException {
     String[] args = new String[]{"-textFile", "NewAirlineFile", "Alaska", "99", "PDX", "11/11/2011", "11:11", "am", "SFO",
             "12/12/2012", "12:12","pm"};
-    assertThat(Project3.checkOptions(args).getName(), equalTo("Alaska"));
+    assertThat(Project4.checkOptions(args).getName(), equalTo("Alaska"));
     assertThat(Files.exists(Paths.get("NewAirlineFile")), equalTo(true));
     Files.delete(Paths.get("NewAirlineFile"));
   }
@@ -181,7 +181,7 @@ class Project3Test {
   void multipleFlightsAreReturnedWhenNewFlightIsAdded() throws IOException {
     String[] args = new String[]{"-textFile", "AirlineTestFile", "Delta", "99", "MSP", "1/27/2022", "15:00", "LAX",
             "1/27/2022", "19:25"};
-    assertThat(Project3.checkOptions(args).toString(), containsString("2 flights"));
+    assertThat(Project4.checkOptions(args).toString(), containsString("2 flights"));
   }
 
   @Test
@@ -197,7 +197,7 @@ class Project3Test {
   void threeFlightsAreReturnedWhenNewFlightIsAdded() throws IOException {
     String[] args = new String[]{"-textFile", "AirlineTestFile", "Delta", "102", "LAX", "5/13/2022", "10:00",  "am", "JFK",
             "5/14/2022", "02:25", "pm"};
-    assertThat(Project3.checkOptions(args).toString(), containsString("3 flights"));
+    assertThat(Project4.checkOptions(args).toString(), containsString("3 flights"));
   }
 
   @Test
@@ -214,11 +214,12 @@ class Project3Test {
     airline.addFlight(flight2);
     airline.addFlight(flight3);
 
-    Project3.prettyPrintAirline(airline, "PrettyPrinterTest");
+    Project4.prettyPrintAirline(airline, "PrettyPrinterTest");
 
     File textFile = new File("PrettyPrinterTest");
     BufferedReader reader = new BufferedReader(new FileReader(textFile));
     assertThat(reader.readLine(), containsString("United"));
     reader.close();
+    Files.delete(Paths.get(String.valueOf(textFile)));
   }
 }
