@@ -32,9 +32,9 @@ public class Project4 {
       Airline airlineFromFile, airlineFromCommandLine, prettyAirline = null;
       Flight flight;
       Path airlineFile;
-      Boolean print = false;
-      Boolean textFile = false;
-      Boolean prettyPrint = false;
+      boolean print = false;
+      boolean textFile = false;
+      boolean prettyPrint = false;
       String fileName = null, prettyFileName = null;
 
       int i = 0;
@@ -44,9 +44,8 @@ public class Project4 {
                   System.out.println(getReadMe());
                   System.exit(1);
               }
-              case "-print" ->  {
-                  print = true;
-              }
+              case "-print" -> print = true;
+
               case "-textFile" -> {
                   textFile = true;
                   fileName = args[++i];

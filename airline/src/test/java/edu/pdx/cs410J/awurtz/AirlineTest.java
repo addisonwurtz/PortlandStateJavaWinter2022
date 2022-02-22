@@ -1,8 +1,13 @@
 package edu.pdx.cs410J.awurtz;
 
 import org.junit.jupiter.api.Test;
+import org.xml.sax.SAXException;
 
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import static org.hamcrest.CoreMatchers.*;
@@ -10,6 +15,26 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class AirlineTest {
+
+    @Test
+    void constructorUsingRootElementCreatesProperAirline() throws IOException, SAXException, ParserConfigurationException {
+        AirlineXmlHelper helper = new AirlineXmlHelper();
+
+        DocumentBuilderFactory factory =
+                DocumentBuilderFactory.newInstance();
+        factory.setValidating(true);
+
+        DocumentBuilder builder =
+                factory.newDocumentBuilder();
+        builder.setErrorHandler(helper);
+        builder.setEntityResolver(helper);
+
+        Airline airline = new Airline
+                (builder.parse(this.getClass().getResourceAsStream("valid-airline.xml")).getDocumentElement());
+        assertThat(airline.getName(),
+                equalTo("Valid Airlines"));
+    }
+
     @Test
     void getNameReturnsName() {
         Airline airline = new Airline("Delta");

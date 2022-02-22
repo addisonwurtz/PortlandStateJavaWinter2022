@@ -1,9 +1,11 @@
 package edu.pdx.cs410J.awurtz;
 
 import edu.pdx.cs410J.AbstractAirline;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -11,7 +13,7 @@ import java.util.Collections;
  * Code for Airline class.
  */
 public class Airline extends AbstractAirline<Flight> {
-  private final String name;
+  private String name;
   private final ArrayList<Flight> flights = new ArrayList<>();
 
   /**
@@ -20,6 +22,32 @@ public class Airline extends AbstractAirline<Flight> {
    */
   public Airline(String name) {
     this.name = name;
+  }
+
+  /**
+   * Airline Constructor for XML files
+   * @param root of DOM
+   */
+  public Airline(Element root) {
+    NodeList nodeList = root.getChildNodes();
+    Node node;
+    Element element;
+
+    for (int i = 0; i < nodeList.getLength(); i++) {
+      node = nodeList.item(i);
+      if(!(node instanceof Element)) {
+        continue;
+      }
+     element = (Element) node;
+      switch (element.getNodeName()) {
+        case "name" -> this.name = element.getTextContent();
+        case "flight" -> this.addFlight(new Flight(element));
+      }
+    }
+
+
+
+    //must also add flights from DOM
   }
 
   @Override

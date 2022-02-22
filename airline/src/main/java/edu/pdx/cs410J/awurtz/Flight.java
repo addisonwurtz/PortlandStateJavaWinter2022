@@ -2,11 +2,17 @@ package edu.pdx.cs410J.awurtz;
 
 import edu.pdx.cs410J.AbstractFlight;
 import edu.pdx.cs410J.ParserException;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 
 /**
@@ -65,6 +71,92 @@ public class Flight extends AbstractFlight implements Comparable<Flight>{
               "times must before arrival times.");
     }
   }
+
+  /**
+   * Constructs flight from DOM element
+   * @param root representing flight
+   */
+  public Flight(Element root) {
+    NodeList nodeList = root.getChildNodes();
+
+    for (int i = 0; i < nodeList.getLength(); i++) {
+      Node node = nodeList.item(i);
+      if (!(node instanceof Element)) {
+        continue;
+      }
+      Element element = (Element) node;
+      switch (element.getNodeName()) {
+        case "number" -> this.flightNumber = Integer.valueOf(element.getTextContent());
+        case "src" -> this.source = element.getTextContent();
+        case "depart" -> {
+          GregorianCalendar calendar;
+          int day = 0, month = 0, year = 0, hour = 0, minute = 0;
+
+          NodeList dateNodes = element.getChildNodes();
+          for (int j = 0; j < dateNodes.getLength(); j++) {
+            Node dateNode = dateNodes.item(j);
+            if (!(dateNode instanceof Element)) {
+              continue;
+            }
+            Element dateElement = (Element) dateNode;
+            switch (dateElement.getNodeName()) {
+              case "date" -> {
+                day = Integer.parseInt(dateElement.getAttribute("day"));
+                month = Integer.parseInt(dateElement.getAttribute("month"));
+                year = Integer.parseInt(dateElement.getAttribute("year"));
+              }
+              case "time" -> {
+                hour = Integer.parseInt(dateElement.getAttribute("hour"));
+                minute = Integer.parseInt(dateElement.getAttribute("minute"));
+              }
+            }
+          }
+          calendar = new GregorianCalendar(year, month, day, hour, minute);
+          this.depart = calendar.getTime();
+          this.departDate = month + "/" + day + "/" + year;
+          if (hour > 12) {
+            this.departTime = (hour - 12) + ":" + minute + " pm";
+          } else {
+            this.departTime = hour + ":" + minute + " am";
+          }
+        }
+        case "dest" -> this.destination = element.getTextContent();
+        case "arrive" -> {
+          GregorianCalendar calendar;
+          int day = 0, month = 0, year = 0, hour = 0, minute = 0;
+
+          NodeList dateNodes = element.getChildNodes();
+          for (int j = 0; j < dateNodes.getLength(); j++) {
+            Node dateNode = dateNodes.item(j);
+            if (!(dateNode instanceof Element)) {
+              continue;
+            }
+            Element dateElement = (Element) dateNode;
+            switch (dateElement.getNodeName()) {
+              case "date" -> {
+                day = Integer.parseInt(dateElement.getAttribute("day"));
+                month = Integer.parseInt(dateElement.getAttribute("month"));
+                year = Integer.parseInt(dateElement.getAttribute("year"));
+              }
+              case "time" -> {
+                hour = Integer.parseInt(dateElement.getAttribute("hour"));
+                minute = Integer.parseInt(dateElement.getAttribute("minute"));
+              }
+            }
+          }
+          calendar = new GregorianCalendar(year, month, day, hour, minute);
+          this.arrive = calendar.getTime();
+          this.arriveDate = month + "/" + day + "/" + year;
+          if (hour > 12) {
+            this.arriveTime = (hour - 12) + ":" + minute + " pm";
+          } else {
+            this.arriveTime = hour + ":" + minute + " am";
+          }
+        }
+      }
+    }
+  }
+
   @Override
   public int getNumber() {
   return this.flightNumber;
