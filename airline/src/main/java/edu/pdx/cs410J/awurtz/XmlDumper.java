@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 
+import edu.pdx.cs410J.ParserException;
 import org.w3c.dom.*;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -91,12 +92,12 @@ public class XmlDumper implements AirlineDumper<Airline> {
             xform.setOutputProperty(OutputKeys.INDENT, "yes");
             xform.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, helper.SYSTEM_ID);
             xform.transform(src, res);
-        } catch (TransformerConfigurationException e) {
-            e.printStackTrace();
+
         } catch (TransformerException e) {
-            e.printStackTrace();
+            Project4.printErrorMessageAndExit("There was an problem writing airline to the XML file.");
         }
 
+        writer.close();
 
     }
 }

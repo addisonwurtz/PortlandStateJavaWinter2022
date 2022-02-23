@@ -3,6 +3,7 @@ package edu.pdx.cs410J.awurtz;
 import edu.pdx.cs410J.AirportNames;
 import edu.pdx.cs410J.ParserException;
 
+import javax.xml.transform.TransformerException;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -439,7 +440,7 @@ public class Project4 {
    * @param message
    *        Error message (usually from an exception thrown somewhere else in the program).
    */
-  private static void printErrorMessageAndExit(String message) {
+  public static void printErrorMessageAndExit(String message) {
     System.err.println(message);
     System.exit(1);
   }
@@ -572,4 +573,5 @@ class InvalidArrivalException extends RuntimeException {
         super(message);
     }
 }
+
 
