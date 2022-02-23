@@ -48,12 +48,8 @@ public class XmlParser implements AirlineParser<Airline> {
 
         doc = builder.parse(file);
 
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (SAXException e) {
-            e.printStackTrace();
+        } catch (ParserConfigurationException | SAXException | IOException e) {
+            throw new ParserException("XML file (" + this.file + ") could not be read.");
         }
 
         Element root = (Element) doc.getDocumentElement();

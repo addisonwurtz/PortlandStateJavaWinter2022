@@ -31,8 +31,9 @@ public class AirlineTest {
 
         Airline airline = new Airline
                 (builder.parse(this.getClass().getResourceAsStream("valid-airline.xml")).getDocumentElement());
-        assertThat(airline.getName(),
-                equalTo("Valid Airlines"));
+        assertThat(airline.getName(), equalTo("Valid Airlines"));
+        assertThat(airline.getFlights().toString(), containsString("1437"));
+        assertThat(airline.getFlights().toString(), containsString("7865"));
     }
 
     @Test

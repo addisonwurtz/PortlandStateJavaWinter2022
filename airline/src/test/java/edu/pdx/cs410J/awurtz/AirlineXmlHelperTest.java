@@ -18,12 +18,10 @@ class AirlineXmlHelperTest {
     AirlineXmlHelper helper = new AirlineXmlHelper();
 
 
-    DocumentBuilderFactory factory =
-      DocumentBuilderFactory.newInstance();
+    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     factory.setValidating(true);
 
-    DocumentBuilder builder =
-      factory.newDocumentBuilder();
+    DocumentBuilder builder = factory.newDocumentBuilder();
     builder.setErrorHandler(helper);
     builder.setEntityResolver(helper);
 
