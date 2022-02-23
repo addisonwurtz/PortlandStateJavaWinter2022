@@ -11,6 +11,9 @@ import org.w3c.dom.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.*;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 /**
  * Code for Airline project's XML Dumper
@@ -76,6 +79,21 @@ public class XmlDumper implements AirlineDumper<Airline> {
                 arrival.setAttribute("time", flight.getArriveTime());
             }
         } catch (DOMException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            Source src = new DOMSource(doc);
+            Result res = new StreamResult(writer);
+
+            TransformerFactory xFactory = TransformerFactory.newInstance();
+            Transformer xform = xFactory.newTransformer();
+            xform.setOutputProperty(OutputKeys.INDENT, "yes");
+            xform.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, helper.SYSTEM_ID);
+            xform.transform(src, res);
+        } catch (TransformerConfigurationException e) {
+            e.printStackTrace();
+        } catch (TransformerException e) {
             e.printStackTrace();
         }
 
