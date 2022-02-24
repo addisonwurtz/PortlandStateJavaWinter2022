@@ -2,14 +2,17 @@ package edu.pdx.cs410J.awurtz;
 
 import org.junit.Test;
 
+import javax.xml.transform.TransformerException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class XmlDumperTest {
 
@@ -35,5 +38,27 @@ public class XmlDumperTest {
         assertThat(fileLines, containsString("<number>48</number>"));
         assertThat(fileLines, containsString("<number>456</number>"));
         Files.deleteIfExists(Path.of(fileName));
+    }
+
+    @Test
+    public void ExceptionThrownWhenGivenNullAirline() throws IOException {
+        String fileName = "XmlDumperTestFile";
+        XmlDumper dumper = new XmlDumper(new FileWriter(fileName));
+
+        assertThrows(NullPointerException.class, () -> dumper.dump(null));
+
+    }
+
+    @Test
+    public void airlineIsDumpedInXMLFormat() throws IOException {
+        String airlineName = "Test Airline";
+        Airline airline = new Airline(airlineName);
+
+        StringWriter sw = new StringWriter();
+        XmlDumper dumper = new XmlDumper(sw);
+        dumper.dump(airline);
+
+        String text = sw.toString();
+        assertThat(text, containsString("<name>" + airlineName + "</name>"));
     }
 }

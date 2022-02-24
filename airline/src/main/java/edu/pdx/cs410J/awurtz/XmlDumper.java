@@ -32,6 +32,10 @@ public class XmlDumper implements AirlineDumper<Airline> {
         AirlineXmlHelper helper = new AirlineXmlHelper();
         Document doc = null;
 
+        if(airline == null) {
+            throw new NullPointerException("The airline object was null, and could not be written to XML");
+        }
+
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setValidating(true);

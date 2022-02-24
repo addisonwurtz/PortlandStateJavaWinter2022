@@ -3,6 +3,10 @@ package edu.pdx.cs410J.awurtz;
 import edu.pdx.cs410J.InvokeMainTestCase;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -205,6 +209,16 @@ class Project4IT extends InvokeMainTestCase {
     MainMethodResult result = invokeMain(args);
     assertThat(result.getExitCode(), equalTo(1));
     assertThat(result.getTextWrittenToStandardOut(), containsString("DEN -> LAX"));
+  }
+
+  @Test
+  void XMLOptionWritesAirlineToFileInXMLFormat() throws IOException {
+    String[] args = new String[] {"-xmlFile", "ValidXMLTestFile", "Valid Airlines", "456", "DEN", "3/1/2022", "6:53",
+            "pm", "LAX", "3/1/2022",
+            "11:27", "pm"};
+    MainMethodResult result = invokeMain(args);
+    assertThat(result.getExitCode(), equalTo(1));
+    assertThat(Files.readString(Path.of("ValidXMLTestFile")), containsString("<name>Valid Airlines</name>"));
   }
 
 

@@ -30,13 +30,14 @@ public class Project4 {
    * @throws IOException is thrown if there is a problem accessing the readme file. The exception is caught in the main method.
    */
   public static Airline checkOptions(String[] args) throws IOException {
-      Airline airlineFromFile, airlineFromCommandLine, prettyAirline = null;
+      Airline airlineFromFile = null, airlineFromCommandLine, prettyAirline = null;
       Flight flight;
       Path airlineFile;
       boolean print = false;
       boolean textFile = false;
       boolean prettyPrint = false;
-      String fileName = null, prettyFileName = null;
+      boolean xmlFile = false;
+      String fileName = null, prettyFileName = null, xmlFileName = null;
 
       int i = 0;
       while (args[i].contains("-")) {
@@ -54,6 +55,10 @@ public class Project4 {
               case "-pretty" -> {
                   prettyPrint = true;
                   prettyFileName = args[++i];
+              }
+              case "-xmlFile" -> {
+                  xmlFile = true;
+                  xmlFileName = args[++i];
               }
               default -> printErrorMessageAndExit(args[i] + " option is not supported.");
           }
@@ -77,6 +82,10 @@ public class Project4 {
       //reads and writes to supplied text file
       if (textFile) {
           //getValidFile returns null if file does not exist
+          if(xmlFile) {
+              printErrorMessageAndExit("You cannot specify both -textFile and -xmlFile options.");
+          }
+
           airlineFile = getValidFile(fileName);
           if (airlineFile == null) {
               airlineFromCommandLine.addFlight(flight);
@@ -107,6 +116,52 @@ public class Project4 {
           }
       }
 
+      if(xmlFile) {
+          if(!(Files.exists(Path.of(xmlFileName)))) {
+              airlineFromCommandLine.addFlight(flight);
+
+              //write airline to xmlFile
+              airlineFile = Files.createFile(Path.of(xmlFileName));
+              XmlDumper dumper = new XmlDumper(new FileWriter(String.valueOf(airlineFile)));
+              dumper.dump(airlineFromCommandLine);
+
+              if(prettyPrint) {
+                  prettyAirline = airlineFromCommandLine;
+              }
+              else {
+                  return airlineFromCommandLine;
+              }
+          }
+          else {
+              //parse airline from xml
+
+              XmlParser parser = new XmlParser(xmlFileName);
+              try {
+                  airlineFromFile = parser.parse();
+              } catch (ParserException ex) {
+                  printErrorMessageAndExit(ex.getMessage());
+              }
+              assert airlineFromFile != null;
+              if (Objects.equals(airlineFromFile.getName(), airlineFromCommandLine.getName())) {
+                  airlineFromFile.addFlight(flight);
+
+                  XmlDumper dumper = new XmlDumper(new FileWriter(xmlFileName));
+                  dumper.dump(airlineFromCommandLine);
+
+                  if(prettyPrint) {
+                      prettyAirline = airlineFromFile;
+                  }
+                  else {
+                      return airlineFromFile;
+                  }
+              } else {
+                  throw new AirlineFromFileDoesNotMatchAirlineFromCommandLineException(airlineFromFile, airlineFromCommandLine);
+              }
+          }
+
+      }
+
+
       //pretty prints airline
       if (prettyPrint) {
           if(!textFile) {
@@ -118,7 +173,7 @@ public class Project4 {
       }
 
           //creates flight in case of no options
-      if (!print && !textFile && !prettyPrint){
+      if (!print && !textFile && !prettyPrint && !xmlFile){
               if (args.length > 10) {
                   printErrorMessageAndExit("Too many command line arguments.");
               }
