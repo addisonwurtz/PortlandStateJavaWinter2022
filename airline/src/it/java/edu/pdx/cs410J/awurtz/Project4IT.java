@@ -240,4 +240,14 @@ class Project4IT extends InvokeMainTestCase {
     assertThat(result.getExitCode(), equalTo(1));
     assertThat(result.getTextWrittenToStandardError(), containsString("could not be read"));
   }
+
+  @Test
+  void TextAndXMLOptionTogetherReturnsError() throws IOException {
+    String[] args = new String[] {"-xmlFile", "InvalidXMLTestFile", "-textFile", "AirlineTestFile", "Valid Airlines", "456", "DEN", "3/1/2022", "6:53",
+            "pm", "LAX", "3/1/2022",
+            "11:27", "pm"};
+    MainMethodResult result = invokeMain(args);
+    assertThat(result.getExitCode(), equalTo(1));
+    assertThat(result.getTextWrittenToStandardError(), containsString("You cannot specify both -textFile and -xmlFile options."));
+  }
 }
