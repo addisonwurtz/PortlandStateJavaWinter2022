@@ -13,8 +13,8 @@ import java.nio.file.Path;
  * Converter class converts airline text files into airline XML files
  */
 public class Converter {
-    private final String textFile;
-    private final String xmlFile;
+    final String textFile;
+    final String xmlFile;
 
     public Converter(String textFile, String xmlFile) {
         this.textFile = textFile;
@@ -30,6 +30,9 @@ public class Converter {
 
             XmlDumper dumper = new XmlDumper(new FileWriter(converter.xmlFile));
             dumper.dump(airline);
+
+            System.exit(0);
+
 
         } catch (FileNotFoundException e) {
             System.out.println("File " + converter.textFile + " was not found.");

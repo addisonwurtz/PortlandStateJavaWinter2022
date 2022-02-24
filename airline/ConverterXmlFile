@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE airline SYSTEM "http://www.cs.pdx.edu/~whitlock/dtds/airline.dtd">
+<airline>
+    <name>Delta</name>
+    <flight>
+        <number>102</number>
+        <src>LAX</src>
+        <depart date="5/13/2022" time="10:00 am"/>
+        <dest>JFK</dest>
+        <arrive date="5/14/2022" time="02:25 pm"/>
+    </flight>
+    <flight>
+        <number>102</number>
+        <src>LAX</src>
+        <depart date="5/13/2022" time="10:00 am"/>
+        <dest>JFK</dest>
+        <arrive date="5/14/2022" time="02:25 pm"/>
+    </flight>
+</airline>

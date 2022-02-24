@@ -221,5 +221,23 @@ class Project4IT extends InvokeMainTestCase {
     assertThat(Files.readString(Path.of("ValidXMLTestFile")), containsString("<name>Valid Airlines</name>"));
   }
 
+  @Test
+  void XMLOptionWritesAirlineToFileInXMLFormatWithFileThatDoesNotExistYet() throws IOException {
+    String[] args = new String[] {"-xmlFile", "NewXMLTestFile", "Valid Airlines", "456", "DEN", "3/1/2022", "6:53",
+            "pm", "LAX", "3/1/2022",
+            "11:27", "pm"};
+    MainMethodResult result = invokeMain(args);
+    assertThat(result.getExitCode(), equalTo(1));
+    assertThat(Files.readString(Path.of("NewXMLTestFile")), containsString("<name>Valid Airlines</name>"));
+  }
 
+  @Test
+  void XMLOptionThrowsExceptionForInvalidXMLFormat() throws IOException {
+    String[] args = new String[] {"-xmlFile", "InvalidXMLTestFile", "Valid Airlines", "456", "DEN", "3/1/2022", "6:53",
+            "pm", "LAX", "3/1/2022",
+            "11:27", "pm"};
+    MainMethodResult result = invokeMain(args);
+    assertThat(result.getExitCode(), equalTo(1));
+    assertThat(result.getTextWrittenToStandardError(), containsString("could not be read"));
+  }
 }

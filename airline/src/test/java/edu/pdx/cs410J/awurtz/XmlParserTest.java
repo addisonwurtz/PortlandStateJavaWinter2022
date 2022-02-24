@@ -23,7 +23,7 @@ public class XmlParserTest {
        Airline airline = parser.parse();
 
        assertThat(airline.getName(), containsString("Valid Airlines"));
-       assertThat(airline.getFlights().toArray().length, equalTo(2));
+       assertThat(airline.getFlights().toArray().length, equalTo(0));
     }
 
     @Test

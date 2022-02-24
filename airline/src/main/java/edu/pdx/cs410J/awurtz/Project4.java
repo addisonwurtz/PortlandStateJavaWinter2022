@@ -63,6 +63,7 @@ public class Project4 {
               default -> printErrorMessageAndExit(args[i] + " option is not supported.");
           }
           i++;
+          System.out.println("i = " + i);
       }
 
       //check number of non-option commandline arguments
@@ -287,6 +288,8 @@ public class Project4 {
 
      while(args[i].contains("-")) {
          if(args[i].equals("-textFile")) { ++i; }
+         if(args[i].equals("-xmlFile")) { ++i; }
+         if(args[i].equals("-pretty")) { ++i; }
          ++i;
      }
      flightArgs = Arrays.copyOfRange(args, ++i, args.length);
