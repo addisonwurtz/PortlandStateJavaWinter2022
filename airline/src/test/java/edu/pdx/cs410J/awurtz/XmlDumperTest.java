@@ -1,8 +1,7 @@
 package edu.pdx.cs410J.awurtz;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import javax.xml.transform.TransformerException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
