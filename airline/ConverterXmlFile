@@ -5,15 +5,27 @@
     <flight>
         <number>102</number>
         <src>LAX</src>
-        <depart date="5/13/2022" time="10:00 am"/>
+        <depart>
+            <date day="13" month="4" year="2022"/>
+            <time hour="10" minute="0"/>
+        </depart>
         <dest>JFK</dest>
-        <arrive date="5/14/2022" time="02:25 pm"/>
+        <arrive>
+            <date day="14" month="4" year="2022"/>
+            <time hour="14" minute="25"/>
+        </arrive>
     </flight>
     <flight>
         <number>102</number>
         <src>LAX</src>
-        <depart date="5/13/2022" time="10:00 am"/>
+        <depart>
+            <date day="13" month="4" year="2022"/>
+            <time hour="10" minute="0"/>
+        </depart>
         <dest>JFK</dest>
-        <arrive date="5/14/2022" time="02:25 pm"/>
+        <arrive>
+            <date day="14" month="4" year="2022"/>
+            <time hour="14" minute="25"/>
+        </arrive>
     </flight>
 </airline>

@@ -8,8 +8,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.Objects;
 
-import static edu.pdx.cs410J.awurtz.Project4.parseArgsAndCreateFlight;
-import static java.lang.Integer.parseInt;
 
 /**
  * Parses contents of text file and creates an airline with associated flights using information from file.
@@ -82,7 +80,7 @@ public class TextParser implements AirlineParser<Airline> {
         }
 
         String[] flightArgs = {airlineName, flightNumber, source, departDate, departTime, departAmPm, destination, arriveDate, arriveTime, arriveAmpPm};
-        Flight flight = parseArgsAndCreateFlight(flightArgs);
+        Flight flight = new Flight(flightArgs);
         airline.addFlight(flight);
       } while (Objects.equals(br.readLine(), "***"));
       return airline;

@@ -13,7 +13,9 @@ import java.util.Collections;
  * Code for Airline class.
  */
 public class Airline extends AbstractAirline<Flight> {
+  /** Name of airline */
   private String name;
+  /** List of airline's flights */
   private final ArrayList<Flight> flights = new ArrayList<>();
 
   /**

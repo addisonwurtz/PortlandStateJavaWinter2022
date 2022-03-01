@@ -1,5 +1,6 @@
 package edu.pdx.cs410J.awurtz;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.FileWriter;
@@ -10,8 +11,7 @@ import java.nio.file.Path;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class XmlDumperTest {
 
@@ -31,7 +31,7 @@ public class XmlDumperTest {
         airline.addFlight(denverFlight);
 
         dumper.dump(airline);
-        assertEquals(Files.exists(Path.of(fileName)), true);
+        assertTrue(Files.exists(Path.of(fileName)));
         String fileLines = Files.readString(Path.of(fileName));
         assertThat(fileLines, containsString("Delta"));
         assertThat(fileLines, containsString("<number>48</number>"));
@@ -39,6 +39,8 @@ public class XmlDumperTest {
         Files.deleteIfExists(Path.of(fileName));
     }
 
+    //TODO delete this test?
+    @Disabled
     @Test
     public void ExceptionThrownWhenGivenNullAirline() throws IOException {
         String fileName = "XmlDumperTestFile";
