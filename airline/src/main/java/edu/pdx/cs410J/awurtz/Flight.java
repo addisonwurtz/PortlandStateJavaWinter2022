@@ -75,10 +75,7 @@ public class Flight extends AbstractFlight implements Comparable<Flight>{
   /**
    * Constructor builds flight from command line arguments
    * returns a flight built from the freshly parsed parameters.
-   * @param args
-   *        The commandline arguments (options are ignored in this method)
-   * @return
-   *        Returns the freshly constructed flight.
+   * @param args commandline arguments (options are ignored in this method)
    * @throws MissingCommandLineArgumentException that specifies which argument is missing
    */
   public Flight(String[] args) {

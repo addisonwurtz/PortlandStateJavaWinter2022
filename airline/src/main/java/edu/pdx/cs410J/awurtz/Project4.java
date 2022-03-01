@@ -30,6 +30,7 @@ public class Project4 {
    * @throws IOException is thrown if there is a problem accessing the readme file. The exception is caught in the main method.
    */
   public static Airline checkOptions(String[] args) throws IOException {
+
       Airline airlineFromFile = null, airlineFromCommandLine, prettyAirline = null;
       Flight flight;
       Path airlineFile;
@@ -76,6 +77,7 @@ public class Project4 {
       airlineFromCommandLine = new Airline(args[i]);
       System.out.println(airlineFromCommandLine);
       flight = new Flight(args);
+      airlineFromCommandLine.addFlight(flight);
       System.out.println(flight);
 
       //prints flight created with command line arguments
@@ -273,79 +275,7 @@ public class Project4 {
       }
   }
 
-  /**
-   * The parseArgsAndCreateFlight method is called in order to individually check that each of the args is properly
-   * formatted and, if they are,
-   * returns a flight built from the freshly parsed parameters.
-   * @param args
-   *        The commandline arguments (options are ignored in this method)
-   * @return
-   *        Returns the freshly constructed flight.
-   * @throws MissingCommandLineArgumentException that specifies which argument is missing
-   */
-  /*
- static Flight parseArgsAndCreateFlight(String[] args) {
-     String[] flightArgs;
-     int i = 0, j = 0;
-     int flightNumber;
-     String source, departDate, departTime, destination, arriveDate, arriveTime;
-
-     while(args[i].contains("-")) {
-         if(args[i].equals("-textFile")) { ++i; }
-         if(args[i].equals("-xmlFile")) { ++i; }
-         if(args[i].equals("-pretty")) { ++i; }
-         ++i;
-     }
-     flightArgs = Arrays.copyOfRange(args, ++i, args.length);
-
-     try {
-         flightNumber = parseInt(flightArgs[j]);
-    } catch(NumberFormatException ex) {
-      throw new InvalidFlightNumberException(flightArgs[j]);
-    } catch(ArrayIndexOutOfBoundsException ex) {
-        throw new MissingCommandLineArgumentException("flight number");
-    }
-    try {
-        source = parseAirportCode(flightArgs[++j]);
-    } catch(ArrayIndexOutOfBoundsException ex) {
-        throw new MissingCommandLineArgumentException("source airport code");
-    }
-    try {
-        departDate = parseDate(flightArgs[++j]);
-    } catch (ArrayIndexOutOfBoundsException ex) {
-        throw new MissingCommandLineArgumentException("departure date");
-    }
-    try {
-        departTime = parseTime(flightArgs[++j], flightArgs[++j]);
-    } catch (ArrayIndexOutOfBoundsException ex) {
-        throw new MissingCommandLineArgumentException("departure time");
-    }
-    try {
-        destination = parseAirportCode(flightArgs[++j]);
-    } catch (ArrayIndexOutOfBoundsException ex) {
-        throw new MissingCommandLineArgumentException("destination airport");
-    }
-    try {
-        arriveDate = parseDate(flightArgs[++j]);
-    } catch (ArrayIndexOutOfBoundsException ex) {
-        throw new MissingCommandLineArgumentException("arrival date");
-    }
-    try {
-        arriveTime = parseTime(flightArgs[++j], flightArgs[++j]);
-    } catch (ArrayIndexOutOfBoundsException ex) {
-        throw new MissingCommandLineArgumentException("arrival time");
-    }
-
-        return new Flight(flightNumber, source, departDate,departTime,destination,arriveDate, arriveTime);
-  }
-
-   */
-
-
-
-
-
-  /**
+    /**
    * @return contents of README.txt as String
    */
   public static String getReadMe() {
@@ -401,7 +331,7 @@ public class Project4 {
         printErrorMessageAndExit("Airlines doe not match.\nAirline from file: " + ex.getAirlineFromFile() +
                                  "\nAirline from command line: " + ex.getAirlineFromCommandLine());
     } catch (Exception e) {
-        e.getMessage();
+        printErrorMessageAndExit("There was an unexpected error: " + e.getMessage());
     }
 
 

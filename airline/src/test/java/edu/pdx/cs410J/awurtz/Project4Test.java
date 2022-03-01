@@ -7,6 +7,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 
 import static edu.pdx.cs410J.awurtz.Project4.*;
 import static org.hamcrest.CoreMatchers.*;
@@ -129,7 +130,7 @@ class Project4Test {
     String fileName = "realFile.txt";
     Path file = Files.createFile(Path.of(fileName));
 
-    assertThat(Files.exists(Project4.getValidFile(fileName)), equalTo(true));
+    assertThat(Files.exists(Objects.requireNonNull(getValidFile(fileName))), equalTo(true));
     Files.delete(file);
   }
 
@@ -138,7 +139,7 @@ class Project4Test {
     String fileName = "fileDoesNotYetExist.txt";
     Path file = Files.createFile(Path.of(fileName));
 
-    assertThat(Files.exists(Project4.getValidFile(fileName)), equalTo(true));
+    assertThat(Files.exists(Objects.requireNonNull(getValidFile(fileName))), equalTo(true));
     Files.delete(file);
   }
 

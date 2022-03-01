@@ -222,8 +222,6 @@ class Project4IT extends InvokeMainTestCase {
     assertThat(Files.readString(Path.of("ValidXMLTestFile")), containsString("<name>Valid Airlines</name>"));
   }
 
-  //TODO airline from command line is not being written to the xml file
-  @Disabled
   @Test
   void XMLOptionWritesAirlineToFileInXMLFormatWithFileThatDoesNotExistYet() throws IOException {
     Files.deleteIfExists(Path.of("NewXMLFile.xml"));
@@ -236,8 +234,6 @@ class Project4IT extends InvokeMainTestCase {
     assertThat(Files.readString(Path.of("NewXMLTestFile.xml")), containsString("<src>DEN</src>"));
   }
 
-  //TODO airline from command line is not being written to the xml file
-  @Disabled
   @Test
   void XMLOptionThrowsExceptionForInvalidXMLFormat() {
     String[] args = new String[] {"-xmlFile", "InvalidXMLTestFile", "Valid Airlines", "456", "DEN", "3/1/2022", "6:53",
@@ -267,5 +263,12 @@ class Project4IT extends InvokeMainTestCase {
     assertThat(result.getTextWrittenToStandardError(), equalTo(""));
   }
 
-  //TODO Write test for grader test 9 (pretty print from XML)
+  @Test
+  void PrettyPrintingXMLFile() {
+    String[] args = new String[] {"-xmlFile", "NewXMLTestFile.xml", "-pretty", "-", "Valid Airlines", "900", "HRL", "01/09/2022",
+            "9:00", "am", "FAT", "01/19/2022", "9:00", "pm"};
+    MainMethodResult result = invokeMain(args);
+    assertThat(result.getExitCode(), equalTo(1));
+    assertThat(result.getTextWrittenToStandardOut(), containsString("HRL -> FAT"));
+  }
 }

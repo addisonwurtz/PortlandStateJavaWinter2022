@@ -2,4 +2,17 @@
 <!DOCTYPE airline SYSTEM "http://www.cs.pdx.edu/~whitlock/dtds/airline.dtd">
 <airline>
     <name>Valid Airlines</name>
+    <flight>
+        <number>456</number>
+        <src>DEN</src>
+        <depart>
+            <date day="1" month="2" year="2022"/>
+            <time hour="18" minute="53"/>
+        </depart>
+        <dest>LAX</dest>
+        <arrive>
+            <date day="1" month="2" year="2022"/>
+            <time hour="23" minute="27"/>
+        </arrive>
+    </flight>
 </airline>

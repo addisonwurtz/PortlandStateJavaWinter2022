@@ -23,13 +23,13 @@ public class XmlParserTest {
        Airline airline = parser.parse();
 
        assertThat(airline.getName(), containsString("Valid Airlines"));
-       assertThat(airline.getFlights().toArray().length, equalTo(0));
+       assertThat(airline.getFlights().toArray().length, equalTo(1));
     }
 
     @Test
-    void cantParseInvalidXmlFile() throws ParserException {
+    void cantParseInvalidXmlFile() {
         XmlParser parser = new XmlParser("InvalidXMLTestFile");
 
-        assertThrows(ParserException.class, () -> parser.parse());
+        assertThrows(ParserException.class, parser::parse);
     }
 }
