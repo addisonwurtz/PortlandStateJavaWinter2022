@@ -226,5 +226,10 @@ public class FlightTest {
     assertThat(source1.compareTo(source2), equalTo(-3));
   }
 
+  @Test
+  void parseAirportCodeReturnsValidCodeInUppercase() {
+    String code = "msp";
+    assertThat(Flight.parseAirportCode(code), equalTo(code.toUpperCase()));
+  }
 }
 

@@ -30,6 +30,7 @@ public class Project4 {
    * @throws IOException is thrown if there is a problem accessing the readme file. The exception is caught in the main method.
    */
   public static Airline checkOptions(String[] args) throws IOException {
+
       Airline airlineFromFile = null, airlineFromCommandLine, prettyAirline = null;
       Flight flight;
       Path airlineFile;
@@ -37,6 +38,7 @@ public class Project4 {
       boolean textFile = false;
       boolean prettyPrint = false;
       boolean xmlFile = false;
+
       String fileName = null, prettyFileName = null, xmlFileName = null;
 
       int i = 0;
@@ -63,7 +65,7 @@ public class Project4 {
               default -> printErrorMessageAndExit(args[i] + " option is not supported.");
           }
           i++;
-          System.out.println("i = " + i);
+          //System.out.println("i = " + i);
       }
 
       //check number of non-option commandline arguments
@@ -73,7 +75,10 @@ public class Project4 {
 
       //creates airline and flight from commands line args
       airlineFromCommandLine = new Airline(args[i]);
-      flight = parseArgsAndCreateFlight(args);
+      System.out.println(airlineFromCommandLine);
+      flight = new Flight(args);
+      airlineFromCommandLine.addFlight(flight);
+      System.out.println(flight);
 
       //prints flight created with command line arguments
       if (print) {
@@ -178,7 +183,7 @@ public class Project4 {
               if (args.length > 10) {
                   printErrorMessageAndExit("Too many command line arguments.");
               }
-              airlineFromCommandLine.addFlight(parseArgsAndCreateFlight(args));
+              airlineFromCommandLine.addFlight(new Flight(args));
               return airlineFromCommandLine;
       }
       return airlineFromCommandLine;
@@ -270,169 +275,7 @@ public class Project4 {
       }
   }
 
-  /**
-   * The parseArgsAndCreateFlight method is called in order to individually check that each of the args is properly
-   * formatted and, if they are,
-   * returns a flight built from the freshly parsed parameters.
-   * @param args
-   *        The commandline arguments (options are ignored in this method)
-   * @return
-   *        Returns the freshly constructed flight.
-   * @throws MissingCommandLineArgumentException that specifies which argument is missing
-   */
- static Flight parseArgsAndCreateFlight(String[] args) {
-     String[] flightArgs;
-     int i = 0, j = 0;
-     int flightNumber;
-     String source, departDate, departTime, destination, arriveDate, arriveTime;
-
-     while(args[i].contains("-")) {
-         if(args[i].equals("-textFile")) { ++i; }
-         if(args[i].equals("-xmlFile")) { ++i; }
-         if(args[i].equals("-pretty")) { ++i; }
-         ++i;
-     }
-     flightArgs = Arrays.copyOfRange(args, ++i, args.length);
-
-     try {
-         flightNumber = parseInt(flightArgs[j]);
-    } catch(NumberFormatException ex) {
-      throw new InvalidFlightNumberException(flightArgs[j]);
-    } catch(ArrayIndexOutOfBoundsException ex) {
-        throw new MissingCommandLineArgumentException("flight number");
-    }
-    try {
-        source = parseAirportCode(flightArgs[++j]);
-    } catch(ArrayIndexOutOfBoundsException ex) {
-        throw new MissingCommandLineArgumentException("source airport code");
-    }
-    try {
-        departDate = parseDate(flightArgs[++j]);
-    } catch (ArrayIndexOutOfBoundsException ex) {
-        throw new MissingCommandLineArgumentException("departure date");
-    }
-    try {
-        departTime = parseTime(flightArgs[++j], flightArgs[++j]);
-    } catch (ArrayIndexOutOfBoundsException ex) {
-        throw new MissingCommandLineArgumentException("departure time");
-    }
-    try {
-        destination = parseAirportCode(flightArgs[++j]);
-    } catch (ArrayIndexOutOfBoundsException ex) {
-        throw new MissingCommandLineArgumentException("destination airport");
-    }
-    try {
-        arriveDate = parseDate(flightArgs[++j]);
-    } catch (ArrayIndexOutOfBoundsException ex) {
-        throw new MissingCommandLineArgumentException("arrival date");
-    }
-    try {
-        arriveTime = parseTime(flightArgs[++j], flightArgs[++j]);
-    } catch (ArrayIndexOutOfBoundsException ex) {
-        throw new MissingCommandLineArgumentException("arrival time");
-    }
-
-        return new Flight(flightNumber, source, departDate,departTime,destination,arriveDate, arriveTime);
-  }
-
-  /**
-   * Traverses a string and checks if each character in the string is a letter.
-   * @param string
-   *        Airport code string
-   * @return
-   *        Returns valid 3-letter airport code.
-   */
-  static String parseAirportCode(String string) {
-    if (string == null || string.length() != 3) {
-      throw new InvalidAirportCodeException(string);
-    }
-
-    for (int i = 0; i < string.length(); i++) {
-      char c = string.charAt(i);
-      if (!(c >= 'A' && c <= 'Z') && !(c >= 'a' && c <= 'z')) {
-        throw new InvalidAirportCodeException(string);
-      }
-    }
-    if(AirportNames.getName(string.toUpperCase()) == null) {
-        throw new InvalidAirportCodeException(string);
-    }
-    return string.toUpperCase();
-  }
-
-  /**
-   * The parseDate method parses dates, verifying the format is mm/dd/yyyy or m/d/yyy (months and days can include or
-   * omit the leading zero).
-   * If the date is properly formatted, the date string is returned. If it is a not exception with a descriptive error
-   * message is thrown.
-   * @param dateString
-   *        A string to be parsed (that is hopefully a properly formatted date)
-   * @return
-   *        Returns dateString if it is a valid date in a valid format
-   * @throws InvalidDateException
-   *        Exception is thrown for dates that do not exist and dates that are not properly formatted.
-   */
-  static String parseDate(String dateString) throws InvalidDateException{
-
-    StringTokenizer stringTokenizer = new StringTokenizer(dateString, "/");
-
-    if(stringTokenizer.countTokens() != 3) {
-      throw new InvalidDateException(dateString);
-    }
-
-    int month, day, year;
-    try {
-      month = Integer.parseInt(stringTokenizer.nextToken());
-      day = Integer.parseInt(stringTokenizer.nextToken());
-      year = Integer.parseInt(stringTokenizer.nextToken());
-      } catch (NumberFormatException ex) {
-      throw new InvalidDateException(dateString);
-    }
-    if(month < 1 || month > 12 || day < 1 || day > 31 || year < 1000 || year > 9999) {
-      throw new InvalidDateException(dateString);
-    }
-    if((month == 2 && day > 29) || ((month == 4 || month == 6 || month == 9 || month == 11) && (day > 30))) {
-      throw new InvalidDateException(dateString);
-    }
-    return dateString;
-  }
-
-  /**
-   * The parseTime method takes a string and returns it if it is valid a valid time. If it is not, an error is thrown.
-   * @param timeString
-   *        String in 12-hour time
-   * @param amPm
-   *        String containing am or pm
-   * @return
-   *        Returns time string if is a properly formatted, valid 24-hour time.
-   */
-  static String parseTime(String timeString, String amPm) {
-    StringTokenizer stringTokenizer = new StringTokenizer(timeString, ":");
-
-    if(stringTokenizer.countTokens() != 2) {
-      throw new InvalidTimeException(timeString + " is not a valid time. Times should be of the form hh:mm.");
-    }
-
-    int hour, minute;
-    try{
-      hour = Integer.parseInt(stringTokenizer.nextToken());
-      minute = Integer.parseInt(stringTokenizer.nextToken());
-    } catch (NumberFormatException ex) {
-      throw new InvalidTimeException(timeString + " is not a valid time.");
-    }
-    if((hour < 1 || hour > 12) || (minute < 0 || minute > 60)) {
-      throw new InvalidTimeException(timeString + " is not a valid 12-hour time.");
-    }
-    if(amPm.equalsIgnoreCase("am") || amPm.equalsIgnoreCase("pm")) {
-        return timeString + " " + amPm;
-    }
-    else {
-        throw new InvalidTimeException("The time " + timeString + " must be followed by \"am\" or \"pm\". You entered "
-        + amPm);
-    }
-
-  }
-
-  /**
+    /**
    * @return contents of README.txt as String
    */
   public static String getReadMe() {
@@ -487,6 +330,8 @@ public class Project4 {
     } catch (AirlineFromFileDoesNotMatchAirlineFromCommandLineException ex) {
         printErrorMessageAndExit("Airlines doe not match.\nAirline from file: " + ex.getAirlineFromFile() +
                                  "\nAirline from command line: " + ex.getAirlineFromCommandLine());
+    } catch (Exception e) {
+        printErrorMessageAndExit("There was an unexpected error: " + e.getMessage());
     }
 
 

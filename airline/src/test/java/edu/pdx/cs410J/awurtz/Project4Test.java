@@ -7,6 +7,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 
 import static edu.pdx.cs410J.awurtz.Project4.*;
 import static org.hamcrest.CoreMatchers.*;
@@ -38,74 +39,69 @@ class Project4Test {
   @Test
   void parseAirportCodeDetectsInvalidCode() {
     String code = "PDXX";
-    assertThrows(InvalidAirportCodeException.class, () -> Project4.parseAirportCode(code));
+    assertThrows(InvalidAirportCodeException.class, () -> Flight.parseAirportCode(code));
   }
 
-  @Test
-  void parseAirportCodeReturnsValidCodeInUppercase() {
-    String code = "msp";
-    assertThat(parseAirportCode(code), equalTo(code.toUpperCase()));
-  }
 
   @Test
   void parserDetectsValidDateFormat() {
     String date = "02/20/2022";
-    assertThat(parseDate(date), equalTo(date));
+    assertThat(Flight.parseDate(date), equalTo(date));
   }
 
   @Test
   void parseDateDetectsValidDateWithSingleDigitMonth() {
     String date = "1/23/2022";
-    assertThat(parseDate(date), equalTo(date));
+    assertThat(Flight.parseDate(date), equalTo(date));
   }
 
   @Test
   void parseDateDetectsValidDateWithSingleDigitDay() {
     String date = "12/3/2022";
-    assertThat(parseDate(date), equalTo(date));
+    assertThat(Flight.parseDate(date), equalTo(date));
   }
 
   @Test
   void parseDateThrowsInvalidDateExceptionForTwoDigitYear() {
     String date = "12/15/21";
-    assertThrows(InvalidDateException.class, () -> Project4.parseDate(date));
+    assertThrows(InvalidDateException.class, () -> Flight.parseDate(date));
   }
 
   @Test
   void parseDateThrowsInvalidDateExceptionForFebruaryThirtiethDate() {
     String date = "02/30/2022";
-    assertThrows(InvalidDateException.class, () -> Project4.parseDate(date));
+    assertThrows(InvalidDateException.class, () -> Flight.parseDate(date));
   }
 
   @Test
   void parseDateThrowsInvalidDateExceptionForAprilThirtyFirstDate() {
     String date = "4/31/2022";
-    assertThrows(InvalidDateException.class, () -> Project4.parseDate(date));
+    assertThrows(InvalidDateException.class, () -> Flight.parseDate(date));
   }
 
   @Test
   void parseTimeDetectsValidTime() {
     String time = "11:11";
     String amPm = "am";
-    assertThat(Project4.parseTime(time, amPm), equalTo(time + " " + amPm));
+    assertThat(Flight.parseTime(time, amPm), equalTo(time + " " + amPm));
   }
 
   @Test
   void parseDateThrowsInvalidDateExceptionForInvalidDate() {
    String date = "13/12/2012";
-   assertThrows(InvalidDateException.class, () -> Project4.parseDate(date));
+   assertThrows(InvalidDateException.class, () -> Flight.parseDate(date));
   }
 
   @Test
   void parseArgsAndCreateFlightThrowsInvalidSourceExceptionIfSourceIsTooNotThreeCharactersLong() {
     String[] args = new String[] {"Delta", "99", "PDXPDX", "11/11/2011", "11:11", "SFO", "12/12/12", "12:12"};
-    assertThrows(InvalidAirportCodeException.class, () -> Project4.parseArgsAndCreateFlight(args));
+    assertThrows(InvalidAirportCodeException.class, () -> new Flight(args));
   }
 
   @Test
   void parseArgsAndCreateFlightThrowsInvalidSourceExceptionIfSourceIsNotAlphabetic() {
     String[] args = new String[] {"99", "999", "11/11/2011", "11:11", "SFO", "12/12/12", "12:12"};
-    assertThrows(InvalidAirportCodeException.class, () -> Project4.parseArgsAndCreateFlight(args));
+    assertThrows(InvalidAirportCodeException.class, () -> new Flight(args));
   }
 
   @Test
@@ -113,14 +109,14 @@ class Project4Test {
     String[] args = new String[] {"Delta", "99", "PDX", "11/11/2011", "11:11", "am",  "SFO", "12/12/2012", "12:12", "pm"};
     Flight flight = new Flight(99, "PDX", "11/11/2011", "11:11 am", "SFO",
             "12/12/2012", "12:12 pm");
-    assertThat(Project4.parseArgsAndCreateFlight(args).destination, equalTo(flight.getDestination()));
+    assertThat(new Flight(args).destination, equalTo(flight.getDestination()));
   }
 
   @Test
   void parseTimeThrowsInvalidTimeExceptionForIncompleteTime() {
     String time = "12";
     String amPm = "pm";
-    assertThrows(InvalidTimeException.class, () -> Project4.parseTime(time, amPm));
+    assertThrows(InvalidTimeException.class, () -> Flight.parseTime(time, amPm));
   }
 
   @Test
@@ -134,7 +130,7 @@ class Project4Test {
     String fileName = "realFile.txt";
     Path file = Files.createFile(Path.of(fileName));
 
-    assertThat(Files.exists(Project4.getValidFile(fileName)), equalTo(true));
+    assertThat(Files.exists(Objects.requireNonNull(getValidFile(fileName))), equalTo(true));
     Files.delete(file);
   }
 
@@ -143,7 +139,7 @@ class Project4Test {
     String fileName = "fileDoesNotYetExist.txt";
     Path file = Files.createFile(Path.of(fileName));
 
-    assertThat(Files.exists(Project4.getValidFile(fileName)), equalTo(true));
+    assertThat(Files.exists(Objects.requireNonNull(getValidFile(fileName))), equalTo(true));
     Files.delete(file);
   }
 

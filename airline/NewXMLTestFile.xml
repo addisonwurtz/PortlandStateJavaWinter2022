@@ -5,8 +5,14 @@
     <flight>
         <number>456</number>
         <src>DEN</src>
-        <depart date="3/1/2022" time="6:53 pm"/>
+        <depart>
+            <date day="1" month="2" year="2022"/>
+            <time hour="18" minute="53"/>
+        </depart>
         <dest>LAX</dest>
-        <arrive date="3/1/2022" time="11:27 pm"/>
+        <arrive>
+            <date day="1" month="2" year="2022"/>
+            <time hour="23" minute="27"/>
+        </arrive>
     </flight>
 </airline>
