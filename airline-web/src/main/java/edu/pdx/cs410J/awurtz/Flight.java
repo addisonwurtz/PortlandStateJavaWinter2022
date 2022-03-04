@@ -218,6 +218,10 @@ public class Flight extends AbstractFlight implements Comparable<Flight>{
         }
     }
 
+    public Flight(int flightNumber) {
+        this.flightNumber = flightNumber;
+    }
+
     @Override
     public int getNumber() {
         return this.flightNumber;
