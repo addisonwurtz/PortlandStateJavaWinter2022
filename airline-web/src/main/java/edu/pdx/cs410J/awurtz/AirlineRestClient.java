@@ -36,6 +36,7 @@ public class AirlineRestClient extends HttpRequestHelper
    * Returns all dictionary entries from the server
    */
   public Map<String, String> getAllDictionaryEntries() throws IOException, ParserException {
+      //response is result of get request to url
     Response response = get(this.url, Map.of());
 
     TextParser parser = new TextParser(new StringReader(response.getContent()));

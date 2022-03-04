@@ -38,3 +38,4 @@ public class TextDumperParserTest {
     assertThat(read, equalTo(map));
   }
 }
+

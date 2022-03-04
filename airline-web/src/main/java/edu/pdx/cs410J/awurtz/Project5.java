@@ -121,4 +121,88 @@ public class Project5 {
 
         System.exit(1);
     }
+
+
 }
+
+class MissingCommandLineArgumentException extends RuntimeException {
+    private final String missingArgument;
+
+    public MissingCommandLineArgumentException(String missingArgument) {
+        this.missingArgument = missingArgument;
+    }
+
+    public String getMissingArgument() {return missingArgument;}
+}
+
+class InvalidFlightNumberException extends NumberFormatException {
+    private final String invalidFlightNumber;
+
+    public InvalidFlightNumberException(String invalidFlightNumber) {
+        this.invalidFlightNumber = invalidFlightNumber;}
+
+    public String getInvalidFlightNumber() {return invalidFlightNumber;}
+}
+
+class InvalidAirportCodeException extends RuntimeException {
+    private final String invalidAirportCode;
+
+    public InvalidAirportCodeException(String invalidAirportCode) {
+        this.invalidAirportCode = invalidAirportCode;
+    }
+
+    public String getInvalidAirportCode() {return invalidAirportCode;}
+}
+
+class InvalidDateException extends RuntimeException {
+    private final String invalidDate;
+
+    public InvalidDateException(String invalidDate) {
+        this.invalidDate = invalidDate;
+    }
+
+    public String getInvalidDate() {return invalidDate;}
+}
+
+class InvalidTimeException extends RuntimeException {
+    public InvalidTimeException(String invalidTimeMessage) {
+        super(invalidTimeMessage);
+    }
+}
+
+/**
+ *  Exception class is used when the name of the airline from the commandline does not match the name of
+ *  the airline in the file referenced with the -textFile commandline option.
+ */
+class AirlineFromFileDoesNotMatchAirlineFromCommandLineException extends RuntimeException {
+    private final Airline airlineFromFile;
+    private final Airline airlineFromCommandLine;
+
+    public AirlineFromFileDoesNotMatchAirlineFromCommandLineException(Airline airlineFromFile,
+                                                                      Airline airlineFromCommandLine) {
+        this.airlineFromFile = airlineFromFile;
+        this.airlineFromCommandLine = airlineFromCommandLine;
+    }
+
+    public String getAirlineFromFile() {
+        return airlineFromFile.getName();
+    }
+
+    public String getAirlineFromCommandLine() {
+        return airlineFromCommandLine.getName();
+    }
+}
+
+class InvalidDepartureException extends RuntimeException {
+    public InvalidDepartureException(String message) {
+        super(message);
+    }
+}
+
+class InvalidArrivalException extends RuntimeException {
+    public InvalidArrivalException(String message) {
+        super(message);
+    }
+}
+
+

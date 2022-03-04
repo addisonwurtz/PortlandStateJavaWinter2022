@@ -3,6 +3,8 @@ package edu.pdx.cs410J.awurtz;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -40,7 +42,7 @@ public class PrettyPrinterTest {
     }
 
     @Test
-    void prettyPrinterPrintsToTextFile() {
+    void prettyPrinterPrintsToTextFile() throws IOException {
         Airline airline = new Airline("Alaska");
         airline.addFlight(new Flight(456, "DEN", "2/1/2022", "6:53 pm", "LAX",
                 "2/1/2022", "11:27 pm"));
@@ -62,7 +64,8 @@ public class PrettyPrinterTest {
             ex.getMessage();
             ex.printStackTrace();
         }
-    }
 
+        Files.delete(Path.of(String.valueOf(textFile)));
+    }
 
 }
