@@ -38,16 +38,12 @@ public class PrettyPrinter implements AirlineDumper<Airline> {
       if (!flightList.isEmpty()) {
         for (Flight flight : flightList) {
           pw.println();
-          pw.println("Flight " + flight.getNumber());
-
-          /*
-          + "\t\t" + flight.getSource() + " -> " + flight.getDestination() + "\t\t" +
+          pw.println("Flight " + flight.getNumber() + "\t\t" + flight.getSource() + " -> " + flight.getDestination() + "\t\t" +
                   flightDurationInMinutes(flight) + " minutes");
           pw.println("Departs from " + AirportNames.getName(flight.getSource()) + " on " +
                   formatter.format(flight.getDeparture()));
           pw.println("Arrives at " + AirportNames.getName(flight.getDestination()) + " on " + formatter.format((flight.getArrival())));
 
-           */
         }
       }
 

@@ -95,8 +95,9 @@ public class Project5 {
                 //add the flight
                 airlineName = args[i];
                 flightNumberString = args[++i];
-                client.addFlight(airlineName, new Flight(Integer.parseInt(flightNumberString)));
-                //client.addFlight(airlineName, new Flight(args));
+                //client.addFlight(airlineName, new Flight(Integer.parseInt(flightNumberString)));
+                //TODO change to full flight constructor once all flight args are supported.
+                client.addFlight(airlineName, new Flight(args));
             }
 
         } catch (IOException | ParserException ex ) {

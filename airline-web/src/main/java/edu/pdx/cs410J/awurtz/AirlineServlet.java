@@ -24,8 +24,8 @@ public class AirlineServlet extends HttpServlet {
 
   /**
    * Handles an HTTP GET request from a client by writing the definition of the
-   * word specified in the "word" HTTP parameter to the HTTP response.  If the
-   * "word" parameter is not specified, all of the entries in the dictionary
+   * airline specified in the "airline" HTTP parameter to the HTTP response.  If the
+   * "flight" parameter is not specified, all of the flights in the airline
    * are written to the HTTP response.
    */
   @Override
