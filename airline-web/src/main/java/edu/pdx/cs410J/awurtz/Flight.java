@@ -85,9 +85,9 @@ public class Flight extends AbstractFlight implements Comparable<Flight>{
         //String source, departDate, departTime, destination, arriveDate, arriveTime;
 
         while(args[i].contains("-")) {
-            if(args[i].equals("-textFile")) { ++i; }
-            if(args[i].equals("-xmlFile")) { ++i; }
-            if(args[i].equals("-pretty")) { ++i; }
+            if(args[i].equals("-host")) { ++i; }
+            if(args[i].equals("-port")) { ++i; }
+            if(args[i].equals("-search")) { ++i; }
             ++i;
         }
         flightArgs = Arrays.copyOfRange(args, ++i, args.length);
@@ -219,7 +219,16 @@ public class Flight extends AbstractFlight implements Comparable<Flight>{
     }
 
     public Flight(int flightNumber) {
+
         this.flightNumber = flightNumber;
+        this.source = "PDX";
+        this.departDate = "03/12/2022";
+        this.departTime = "6:30 am";
+        this.depart = getDeparture();
+        this.destination = "LAX";
+        this.arriveDate = "03/12/2022";
+        this.arriveTime = "10:30 am";
+        this.arrive = getArrival();
     }
 
     @Override

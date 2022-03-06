@@ -16,38 +16,12 @@ public class PrettyPrinter implements AirlineDumper<Airline> {
   private final Writer writer;
   private static final String prettyDateTimePattern = "EEE, MMM dd yyyy 'at' hh:mm a";
 
-  @VisibleForTesting
-  static String formatWordCount(int count )
-  {
-    return String.format( "Dictionary on server contains %d words", count );
-  }
-
-  @VisibleForTesting
-  static String formatDictionaryEntry(String word, String definition )
-  {
-    return String.format("  %s : %s", word, definition);
-  }
-
-
   public PrettyPrinter(Writer writer) {
     this.writer = writer;
   }
 
-  public void dump(Map<String, String> dictionary) {
-    try (
-      PrintWriter pw = new PrintWriter(this.writer)
-    ) {
-
-      pw.println(formatWordCount(dictionary.size()));
-
-      for (Map.Entry<String, String> entry : dictionary.entrySet()) {
-        String word = entry.getKey();
-        String definition = entry.getValue();
-        pw.println(formatDictionaryEntry(word, definition));
-      }
-
-      pw.flush();
-    }
+  public static String formatFlightNumber(int flightNumber) {
+    return String.valueOf(flightNumber);
   }
 
   @Override
@@ -57,18 +31,23 @@ public class PrettyPrinter implements AirlineDumper<Airline> {
     try (
             PrintWriter pw = new PrintWriter(this.writer)
     ) {
-      pw.println(airline.getName() + " Airlines");
+      pw.println(airline.getName());
 
       ArrayList<Flight> flightList = (ArrayList<Flight>) airline.getFlights();
       Collections.sort(flightList);
       if (!flightList.isEmpty()) {
         for (Flight flight : flightList) {
           pw.println();
-          pw.println("Flight " + flight.getNumber() + "\t\t" + flight.getSource() + " -> " + flight.getDestination() + "\t\t" +
+          pw.println("Flight " + flight.getNumber());
+
+          /*
+          + "\t\t" + flight.getSource() + " -> " + flight.getDestination() + "\t\t" +
                   flightDurationInMinutes(flight) + " minutes");
           pw.println("Departs from " + AirportNames.getName(flight.getSource()) + " on " +
                   formatter.format(flight.getDeparture()));
           pw.println("Arrives at " + AirportNames.getName(flight.getDestination()) + " on " + formatter.format((flight.getArrival())));
+
+           */
         }
       }
 

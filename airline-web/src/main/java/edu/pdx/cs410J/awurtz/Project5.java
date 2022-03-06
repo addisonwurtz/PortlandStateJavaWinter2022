@@ -2,9 +2,7 @@ package edu.pdx.cs410J.awurtz;
 
 import edu.pdx.cs410J.ParserException;
 
-import java.io.IOException;
-import java.io.PrintStream;
-import java.io.StringWriter;
+import java.io.*;
 import java.util.Map;
 
 /**
@@ -15,43 +13,67 @@ public class Project5 {
 
     public static final String MISSING_ARGS = "Missing command line arguments";
 
-    public static void main(String... args) {
+    public static void main(String... args) throws IOException {
+        Boolean hostNameOption = false;
+        Boolean portStringOption = false;
+        Boolean searchOption = false;
+        Boolean printOption = false;
+
         String hostName = null;
         String portString = null;
-        String word = null;
-        String definition = null;
+        String searchString = null;
+        String airlineName = null;
+        String flightNumberString = null;
+        String source = null;
+        String departure = null;
+        String destination = null;
+        String arrival = null;
 
-        for (String arg : args) {
-            if (hostName == null) {
-                hostName = arg;
-
-            } else if ( portString == null) {
-                portString = arg;
-
-            } else if (word == null) {
-                word = arg;
-
-            } else if (definition == null) {
-                definition = arg;
-
-            } else {
-                usage("Extraneous command line argument: " + arg);
+        int i = 0;
+        //parse options
+        while(i < args.length && args[i].contains("-")) {
+            switch (args[i]) {
+                case "-README" -> {
+                    printReadmeAndExit();
+                }
+                case "-host" -> {
+                    hostNameOption = true;
+                    hostName = args[++i];
+                }
+                case "-port" -> {
+                    portStringOption = true;
+                    portString = args[++i];
+                }
+                case "-search" -> {
+                    searchOption = true;
+                    searchString = args[++i];
+                }
+                case "-print" -> {
+                    printOption = true;
+                }
             }
+            i++;
         }
 
-        if (hostName == null) {
-            usage( MISSING_ARGS );
+
+        if(args.length == 0) {
+            usage(MISSING_ARGS);
+            return;
+        } else if (hostName == null) {
+            usage( "Missing host" );
             return;
 
         } else if ( portString == null) {
             usage( "Missing port" );
             return;
         }
+//        else if (airlineName == null) {
+//            usage("Missing airline name");
+//        }
 
         int port;
         try {
             port = Integer.parseInt( portString );
-
         } catch (NumberFormatException ex) {
             usage("Port \"" + portString + "\" must be an integer");
             return;
@@ -59,24 +81,22 @@ public class Project5 {
 
         AirlineRestClient client = new AirlineRestClient(hostName, port);
 
-        String message;
         try {
-            if (word == null) {
-                // Print all word/definition pairs
-                Map<String, String> dictionary = client.getAllDictionaryEntries();
-                StringWriter sw = new StringWriter();
-                PrettyPrinter pretty = new PrettyPrinter(sw);
-                pretty.dump(dictionary);
-                message = sw.toString();
-
-            } else if (definition == null) {
-                // Print all dictionary entries
-                message = PrettyPrinter.formatDictionaryEntry(word, client.getDefinition(word));
-
+            //Pretty print all flights from specified airline
+            if (args.length == 5) {
+                airlineName = args[i];
+                Airline airline = client.getAirline(airlineName);
+                new PrettyPrinter(new OutputStreamWriter(System.out)).dump(airline);
+            } else if(searchOption) {
+                //TODO implement search
+                usage("Search is not yet implemented.");
+                return;
             } else {
-                // Post the word/definition pair
-                client.addDictionaryEntry(word, definition);
-                message = Messages.definedWordAs(word, definition);
+                //add the flight
+                airlineName = args[i];
+                flightNumberString = args[++i];
+                client.addFlight(airlineName, new Flight(Integer.parseInt(flightNumberString)));
+                //client.addFlight(airlineName, new Flight(args));
             }
 
         } catch (IOException | ParserException ex ) {
@@ -84,9 +104,19 @@ public class Project5 {
             return;
         }
 
-        System.out.println(message);
-
         System.exit(0);
+    }
+
+    private static void printReadmeAndExit() throws IOException {
+        InputStream readme = Project5.class.getResourceAsStream("README.txt");
+        try (
+                BufferedReader reader = new BufferedReader(new InputStreamReader(readme))
+        ) {
+            for (String line = reader.readLine(); line != null; line = reader.readLine()) {
+                System.out.println(line);
+            }
+        }
+
     }
 
     private static void error( String message )
@@ -106,7 +136,7 @@ public class Project5 {
         PrintStream err = System.err;
         err.println("** " + message);
         err.println();
-        err.println("usage: java Project5 host port [word] [definition]");
+        err.println("usage: java Project5 host port [host_name] [port_number]");
         err.println("  host         Host of web server");
         err.println("  port         Port of web server");
         err.println("  word         Word in dictionary");

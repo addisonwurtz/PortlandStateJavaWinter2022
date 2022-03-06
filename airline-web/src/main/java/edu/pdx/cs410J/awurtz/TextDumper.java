@@ -17,6 +17,10 @@ public class TextDumper {
     ){
       pw.println(airline.getName());
 
+      airline.getFlights().forEach(flight -> {
+        pw.println(flight.getNumber());
+      });
+
       pw.flush();
     }
   }

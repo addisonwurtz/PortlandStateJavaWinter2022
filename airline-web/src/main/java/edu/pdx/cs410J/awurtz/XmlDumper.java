@@ -47,10 +47,11 @@ public class XmlDumper implements AirlineDumper<Airline> {
             doc = buildDocument(helper);
 
         } catch (ParserConfigurationException | DOMException e) {
-            System.err.println("There was an error while attemping to write the airline to xml: " + e.getMessage());
+            System.err.println("There was an error while attempting to write the airline to xml: " + e.getMessage());
         }
 
         try {
+            assert doc != null;
             Element root = doc.getDocumentElement();
 
             addElementNodeWithTextContent(doc, "name", root, airline.getName());
@@ -69,6 +70,8 @@ public class XmlDumper implements AirlineDumper<Airline> {
             }
         } catch (DOMException e) {
             e.printStackTrace();
+        } catch (NullPointerException e) {
+            System.err.println("Null pointer exception thrown from xml dumper. ");
         }
 
         try {
@@ -117,7 +120,7 @@ public class XmlDumper implements AirlineDumper<Airline> {
     }
 
     /**
-     * Adds the departure or arrival elements and children to the DOM tree (including date and time elements and thier
+     * Adds the departure or arrival elements and children to the DOM tree (including date and time elements and their
      * associated attributes)
      * @param doc is the Document object
      * @param elementName specified either "depart" or "arrive" element

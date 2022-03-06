@@ -64,11 +64,8 @@ public class AirlineServlet extends HttpServlet {
           return;
       }
 
-      Airline airline = getAirline(airlineName);
-      if( airline == null) {
-          airline = new Airline(airlineName);
-          this.airlines.put(airlineName, airline);
-      }
+      Airline airline = getOrCreateAirline(airlineName);
+
       airline.addFlight(new Flight(Integer.parseInt(flightNumberString)));
 
       response.setStatus( HttpServletResponse.SC_OK);
@@ -106,13 +103,13 @@ public class AirlineServlet extends HttpServlet {
   }
 
   /**
-   * Writes the definition of the given word to the HTTP response.
+   * Writes the definition of the given airline to the HTTP response.
    *
    * The text of the message is formatted with {@link TextDumper}
    */
-  private void dumpAirline(String word, HttpServletResponse response) throws IOException {
+  private void dumpAirline(String airlineName, HttpServletResponse response) throws IOException {
       //TODO update this method to support airline
-    Airline airline = getAirline(word);
+    Airline airline = getAirline(airlineName);
 
     if (airline == null) {
       response.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -145,7 +142,18 @@ public class AirlineServlet extends HttpServlet {
   }
 
   @VisibleForTesting
-  Airline getAirline(String word) {
-      return this.airlines.get(word);
+  Airline getOrCreateAirline(String airlineName) {
+      Airline airline = this.airlines.get(airlineName);
+      if( airline == null) {
+          airline = new Airline(airlineName);
+          this.airlines.put(airlineName, airline);
+      }
+      return airline;
   }
+
+  @VisibleForTesting
+  private Airline getAirline(String airlineName) {
+      return this.airlines.get(airlineName);
+  }
+
 }

@@ -26,30 +26,22 @@ class Project5IT extends InvokeMainTestCase {
 
     @Test
     void test0RemoveAllMappings() throws IOException {
-      AirlineRestClient client = new AirlineRestClient(HOSTNAME, Integer.parseInt(PORT));
-      client.removeAllDictionaryEntries();
+        AirlineRestClient client = new AirlineRestClient(HOSTNAME, Integer.parseInt(PORT));
+        client.removeAllAirlines();
     }
 
     @Test
     void test1NoCommandLineArguments() {
-        MainMethodResult result = invokeMain( Project5.class );
+        MainMethodResult result = invokeMain(Project5.class);
         assertThat(result.getExitCode(), equalTo(1));
         assertThat(result.getTextWrittenToStandardError(), containsString(Project5.MISSING_ARGS));
     }
 
     @Test
-    void test2EmptyServer() {
-        MainMethodResult result = invokeMain( Project5.class, HOSTNAME, PORT );
-        assertThat(result.getTextWrittenToStandardError(), result.getExitCode(), equalTo(0));
-        String out = result.getTextWrittenToStandardOut();
-        assertThat(out, out, containsString(PrettyPrinter.formatWordCount(0)));
-    }
-
-    @Test
-    void test3NoDefinitionsThrowsAppointmentBookRestException() {
-        String word = "WORD";
+    void test3NoFlightsThrowsAirlineRestException() {
+        String airlineName = "Test Airline";
         try {
-            invokeMain(Project5.class, HOSTNAME, PORT, word);
+            invokeMain(Project5.class, "-host", HOSTNAME, "-port", PORT, airlineName);
             fail("Should have thrown a RestException");
 
         } catch (UncaughtExceptionInMain ex) {
@@ -59,21 +51,38 @@ class Project5IT extends InvokeMainTestCase {
     }
 
     @Test
-    void test4AddDefinition() {
-        String word = "WORD";
-        String definition = "DEFINITION";
+    void test4AddFlight() {
+        String airlineName = "Test Airline";
+        int flightNumber = 12345;
 
-        MainMethodResult result = invokeMain( Project5.class, HOSTNAME, PORT, word, definition );
+        MainMethodResult result = invokeMain(Project5.class, "-host", HOSTNAME, "-port", PORT, airlineName,
+                String.valueOf(flightNumber));
         assertThat(result.getTextWrittenToStandardError(), result.getExitCode(), equalTo(0));
+
+        result = invokeMain(Project5.class, "-host", HOSTNAME, "-port", PORT, airlineName);
         String out = result.getTextWrittenToStandardOut();
-        assertThat(out, out, containsString(Messages.definedWordAs(word, definition)));
-
-        result = invokeMain( Project5.class, HOSTNAME, PORT, word );
-        out = result.getTextWrittenToStandardOut();
-        assertThat(out, out, containsString(PrettyPrinter.formatDictionaryEntry(word, definition)));
-
-        result = invokeMain( Project5.class, HOSTNAME, PORT );
-        out = result.getTextWrittenToStandardOut();
-        assertThat(out, out, containsString(PrettyPrinter.formatDictionaryEntry(word, definition)));
+        assertThat(out, out, containsString(PrettyPrinter.formatFlightNumber(flightNumber)));
     }
+
+    @Test
+    void readmeOptionPrintsREADME() {
+        MainMethodResult result = invokeMain(Project5.class, "-README");
+        assertThat(result.getTextWrittenToStandardOut(), containsString("Addison Wurtz"));
+    }
+
+    @Test
+    void errorIfHostIsSpecifiedButPortIsNot() {
+        MainMethodResult result = invokeMain(Project5.class, "-host", "localhost");
+        assertThat(result.getTextWrittenToStandardError(),
+                containsString("Missing port"));
+    }
+
+    @Test
+    void errorIfPortIsSpecifiedButHostIsNot() {
+        MainMethodResult result = invokeMain(Project5.class, "-port", "8080");
+        assertThat(result.getTextWrittenToStandardError(),
+                containsString("Missing host"));
+    }
+
+
 }

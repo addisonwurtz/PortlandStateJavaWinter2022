@@ -32,37 +32,34 @@ public class AirlineRestClient extends HttpRequestHelper
         this.url = String.format( "http://%s:%d/%s/%s", hostName, port, WEB_APP, SERVLET );
     }
 
-  /**
-   * Returns all dictionary entries from the server
-   */
-  public Map<String, String> getAllDictionaryEntries() throws IOException, ParserException {
-      //response is result of get request to url
-    Response response = get(this.url, Map.of());
+    /**
+     * Returns all dictionary entries from the server
+     */
+    public Map<String, String> getAllDictionaryEntries() throws IOException, ParserException {
+        throw new UnsupportedOperationException("Delete me!");
+    }
 
-    TextParser parser = new TextParser(new StringReader(response.getContent()));
-    return parser.parse();
-  }
-
-  /**
-   * Returns the definition for the given word
+    /**
+   * Returns the definition of the given airline
    */
-  public String getDefinition(String word) throws IOException, ParserException {
-    Response response = get(this.url, Map.of("word", word));
+  public Airline getAirline(String airlineName) throws IOException, ParserException {
+    //response is result of get request to url
+    Response response = get(this.url, Map.of("airline", airlineName));
     throwExceptionIfNotOkayHttpStatus(response);
     String content = response.getContent();
 
     TextParser parser = new TextParser(new StringReader(content));
-    return parser.parse().get(word);
+    return parser.parse();
   }
 
-  public void addDictionaryEntry(String word, String definition) throws IOException {
-    Response response = post(this.url, Map.of("word", word, "definition", definition));
-    throwExceptionIfNotOkayHttpStatus(response);
+  public void addFlight(String airlineName, Flight flight) throws IOException {
+      Response response = post(this.url, Map.of("airline", airlineName, "flightNumber", String.valueOf(flight.getNumber())));
+      throwExceptionIfNotOkayHttpStatus(response);
   }
 
-  public void removeAllDictionaryEntries() throws IOException {
-    Response response = delete(this.url, Map.of());
-    throwExceptionIfNotOkayHttpStatus(response);
+  public void removeAllAirlines() throws IOException {
+        Response response = delete(this.url, Map.of());
+        throwExceptionIfNotOkayHttpStatus(response);
   }
 
   private void throwExceptionIfNotOkayHttpStatus(Response response) {
