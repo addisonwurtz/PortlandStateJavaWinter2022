@@ -33,7 +33,8 @@ public class PrettyPrinter implements AirlineDumper<Airline> {
     ) {
       pw.println(airline.getName());
 
-      ArrayList<Flight> flightList = (ArrayList<Flight>) airline.getFlights();
+      ArrayList<Flight> flightList;
+      flightList = (ArrayList<Flight>) airline.getFlights();
       Collections.sort(flightList);
       if (!flightList.isEmpty()) {
         for (Flight flight : flightList) {

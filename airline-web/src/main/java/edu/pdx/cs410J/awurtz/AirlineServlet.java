@@ -25,7 +25,7 @@ public class AirlineServlet extends HttpServlet {
   /**
    * Handles an HTTP GET request from a client by writing the definition of the
    * airline specified in the "airline" HTTP parameter to the HTTP response.  If the
-   * "flight" parameter is not specified, all of the flights in the airline
+   * "flight" parameter is not specified, all the flights in the airline
    * are written to the HTTP response.
    */
   @Override
