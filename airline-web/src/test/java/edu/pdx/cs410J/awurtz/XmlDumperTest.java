@@ -39,17 +39,6 @@ public class XmlDumperTest {
         Files.deleteIfExists(Path.of(fileName));
     }
 
-    //TODO delete this test?
-    @Disabled
-    @Test
-    public void ExceptionThrownWhenGivenNullAirline() throws IOException {
-        String fileName = "XmlDumperTestFile";
-        XmlDumper dumper = new XmlDumper(new FileWriter(fileName));
-
-        assertThrows(NullPointerException.class, () -> dumper.dump(null));
-
-    }
-
     @Test
     public void airlineIsDumpedInXMLFormat() throws IOException {
         String airlineName = "Test Airline";
@@ -61,5 +50,19 @@ public class XmlDumperTest {
 
         String text = sw.toString();
         assertThat(text, containsString("<name>" + airlineName + "</name>"));
+    }
+
+    @Test
+    void canParseValidXmlAirline() throws IOException {
+        Airline airline = new Airline("Test Airline");
+        airline.addFlight(new Flight(777, "PDX"));
+
+        StringWriter sw = new StringWriter();
+        XmlDumper dumper = new XmlDumper(sw);
+        dumper.dump(airline);
+
+        String airlineXml = sw.toString();
+        assertThat(airlineXml, containsString("<name>Test Airline</name>"));
+        assertThat(airlineXml, containsString("<number>777</number>"));
     }
 }

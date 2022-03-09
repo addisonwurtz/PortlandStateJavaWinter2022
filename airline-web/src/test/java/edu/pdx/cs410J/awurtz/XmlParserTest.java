@@ -4,6 +4,9 @@ import edu.pdx.cs410J.ParserException;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.io.StringWriter;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
@@ -29,5 +32,8 @@ public class XmlParserTest {
 
         assertThrows(ParserException.class, parser::parse);
     }
+
+
+
 }
 

@@ -48,7 +48,7 @@ public class AirlineRestClient extends HttpRequestHelper
     throwExceptionIfNotOkayHttpStatus(response);
     String content = response.getContent();
 
-    TextParser parser = new TextParser(new StringReader(content));
+    XmlParser parser = new XmlParser(content);
     return parser.parse();
   }
 

@@ -218,10 +218,10 @@ public class Flight extends AbstractFlight implements Comparable<Flight>{
         }
     }
 
-    public Flight(int flightNumber) {
+    public Flight(int flightNumber, String source) {
 
         this.flightNumber = flightNumber;
-        this.source = "PDX";
+        this.source = source;
         this.departDate = "03/12/2022";
         this.departTime = "6:30 am";
         this.depart = getDeparture();

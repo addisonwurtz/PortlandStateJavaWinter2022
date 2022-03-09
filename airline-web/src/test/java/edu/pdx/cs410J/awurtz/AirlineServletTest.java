@@ -11,6 +11,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Collection;
 
+import static edu.pdx.cs410J.awurtz.AirlineServlet.FLIGHT_SOURCE_PARAMETER;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
@@ -43,10 +44,12 @@ class AirlineServletTest {
 
     String airlineName = "Test Airlines";
     int flightNumber = 123;
+    String source = "MSP";
 
     HttpServletRequest request = mock(HttpServletRequest.class);
     when(request.getParameter(AirlineServlet.AIRLINE_NAME_PARAMETER)).thenReturn(airlineName);
     when(request.getParameter(AirlineServlet.FLIGHT_NUMBER_PARAMETER)).thenReturn(String.valueOf(flightNumber));
+    when(request.getParameter(AirlineServlet.FLIGHT_SOURCE_PARAMETER)).thenReturn(source);
 
     HttpServletResponse response = mock(HttpServletResponse.class);
 
@@ -62,16 +65,17 @@ class AirlineServletTest {
     assertThat(flights, hasSize(1));
     Flight flight = flights.iterator().next();
     assertThat(flight.getNumber() , equalTo(flightNumber));
+    assertThat(flight.getSource(), equalTo(source));
   }
 
   @Test
-  void returnTextRepresentationOfAirline() throws IOException, ParserException {
+  void returnXmlRepresentationOfAirline() throws IOException, ParserException {
     String airlineName = "Test Airlines";
     int flightNumber = 123;
 
     AirlineServlet servlet = new AirlineServlet();
-    Airline airline = servlet.getOrCreateAirline(airlineName);
-    airline.addFlight(new Flight(flightNumber));
+    Airline airline1 = servlet.getOrCreateAirline(airlineName);
+    airline1.addFlight(new Flight(flightNumber, "PDX"));
 
     HttpServletRequest request = mock(HttpServletRequest.class);
     when(request.getParameter(AirlineServlet.AIRLINE_NAME_PARAMETER)).thenReturn(airlineName);
@@ -86,7 +90,7 @@ class AirlineServletTest {
     verify(response).setStatus(eq(HttpServletResponse.SC_OK));
 
     String text = sw.toString();
-    Airline airline2 = new TextParser(new StringReader(text)).parse();
+    Airline airline2 = new XmlParser(text).parse();
 
     assertThat(airline2.getName(), equalTo(airlineName));
     Collection<Flight> flights = airline2.getFlights();

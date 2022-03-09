@@ -19,6 +19,10 @@ import java.util.Map;
 public class AirlineServlet extends HttpServlet {
   static final String AIRLINE_NAME_PARAMETER = "airline";
   static final String FLIGHT_NUMBER_PARAMETER = "flightNumber";
+  static final String FLIGHT_SOURCE_PARAMETER = "source";
+  static final String FLIGHT_DEPART_PARAMETER = "depart";
+  static final String FLIGHT_DEST_PARAMETER = "dest";
+  static final String FLIGHT_ARRIVE_PARAMETER = "arrive";
 
   private final Map<String, Airline> airlines = new HashMap<>();
 
@@ -31,7 +35,7 @@ public class AirlineServlet extends HttpServlet {
   @Override
   protected void doGet( HttpServletRequest request, HttpServletResponse response ) throws IOException
   {
-      response.setContentType( "text/plain" );
+      response.setContentType("application/xml");
 
       String airlineName = getParameter( AIRLINE_NAME_PARAMETER, request );
       if (airlineName != null) {
@@ -64,9 +68,11 @@ public class AirlineServlet extends HttpServlet {
           return;
       }
 
+      String flightSource = getParameter(FLIGHT_SOURCE_PARAMETER, request);
+
       Airline airline = getOrCreateAirline(airlineName);
 
-      airline.addFlight(new Flight(Integer.parseInt(flightNumberString)));
+      airline.addFlight(new Flight(Integer.parseInt(flightNumberString), flightSource));
 
       response.setStatus( HttpServletResponse.SC_OK);
   }
@@ -108,7 +114,7 @@ public class AirlineServlet extends HttpServlet {
    * The text of the message is formatted with {@link TextDumper}
    */
   private void dumpAirline(String airlineName, HttpServletResponse response) throws IOException {
-      //TODO update this method to support airline
+
     Airline airline = getAirline(airlineName);
 
     if (airline == null) {
@@ -117,8 +123,7 @@ public class AirlineServlet extends HttpServlet {
     } else {
       PrintWriter pw = response.getWriter();
 
-      //Map<String, String> wordDefinition = Map.of(word, definition);
-      TextDumper dumper = new TextDumper(pw);
+      XmlDumper dumper = new XmlDumper(pw);
       dumper.dump(airline);
 
       response.setStatus(HttpServletResponse.SC_OK);

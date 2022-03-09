@@ -41,7 +41,7 @@ class AirlineRestClientIT {
     AirlineRestClient client = newAirlineRestClient();
     String airlineName = "Test Airline";
     int flightNumber = 1234;
-    client.addFlight(airlineName, new Flight(flightNumber));
+    client.addFlight(airlineName, new Flight(flightNumber, "PDX"));
 
     Airline airline = client.getAirline(airlineName);
     assertThat(airline, notNullValue());

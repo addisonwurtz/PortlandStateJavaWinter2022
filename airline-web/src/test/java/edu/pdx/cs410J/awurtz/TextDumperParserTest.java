@@ -31,7 +31,7 @@ public class TextDumperParserTest {
     String airlineName = "Airline Name";
     int flightNumber = 123;
     Airline airline = new Airline(airlineName);
-    airline.addFlight(new Flight(flightNumber));
+    airline.addFlight(new Flight(flightNumber, "PDX"));
 
     Airline airline2 = dumpAndParse(airline);
     assertThat(airline2.getName(), equalTo(airlineName));

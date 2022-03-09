@@ -4,6 +4,7 @@ import edu.pdx.cs410J.AirlineParser;
 import edu.pdx.cs410J.ParserException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -11,20 +12,20 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
-import java.io.Reader;
+import java.io.StringReader;
 
 /**
  * Code for Airline project's XML file parser class.
  */
 public class XmlParser implements AirlineParser<Airline> {
-    private final File file;
+    private final String airlineString;
 
     /**
      * XML parser constructor
-     * @param fileName string representation of XML file name
+     * @param airlineString string representation airline as XML object
      */
-    public XmlParser(String fileName) {
-        file = new File(fileName);
+    public XmlParser(String airlineString) {
+        this.airlineString = airlineString;
     }
 
 
@@ -46,10 +47,11 @@ public class XmlParser implements AirlineParser<Airline> {
             builder.setErrorHandler(helper);
             builder.setEntityResolver(helper);
 
-            doc = builder.parse(file);
+            InputSource xmlInput = new InputSource(new StringReader(airlineString));
+            doc = builder.parse(xmlInput);
 
         } catch (ParserConfigurationException | SAXException | IOException e) {
-            throw new ParserException("XML file (" + this.file + ") could not be read.");
+            throw new ParserException("XML file (" + this.airlineString + ") could not be read.");
         }
 
         Element root = (Element) doc.getDocumentElement();
