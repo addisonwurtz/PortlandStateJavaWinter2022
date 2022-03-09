@@ -81,8 +81,6 @@ public class Flight extends AbstractFlight implements Comparable<Flight>{
     public Flight(String[] args) {
         String[] flightArgs;
         int i = 0, j = 0;
-        //int flightNumber;
-        //String source, departDate, departTime, destination, arriveDate, arriveTime;
 
         while(args[i].contains("-")) {
             if(args[i].equals("-host")) { ++i; }
@@ -229,6 +227,22 @@ public class Flight extends AbstractFlight implements Comparable<Flight>{
         this.arriveDate = "03/12/2022";
         this.arriveTime = "10:30 am";
         this.arrive = getArrival();
+    }
+
+    public Flight(int flightNumber, String source, String departure, String destination, String arrival) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateTimePattern);
+
+        try {
+            this.flightNumber = flightNumber;
+            this.source = source;
+            this.depart = simpleDateFormat.parse(departure);
+            this.destination = destination;
+            this.arrive = simpleDateFormat.parse(arrival);
+
+        } catch (ParseException ex) {
+            System.err.println("Invalid date format: " + ex.getMessage());
+            System.exit(1);
+        }
     }
 
     @Override

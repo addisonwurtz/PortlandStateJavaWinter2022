@@ -9,7 +9,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 
 import static edu.pdx.cs410J.awurtz.AirlineServlet.FLIGHT_SOURCE_PARAMETER;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -39,17 +43,24 @@ class AirlineServletTest {
   }
 
   @Test
-  void addOneFlightToAirline() throws IOException {
+  void addOneFlightToAirline() throws IOException, ParseException {
+    SimpleDateFormat dateFormat = new SimpleDateFormat(Flight.dateTimePattern);
     AirlineServlet servlet = new AirlineServlet();
 
     String airlineName = "Test Airlines";
     int flightNumber = 123;
     String source = "MSP";
+    Date departure = dateFormat.parse("03/08/2022 5:11 pm");
+    String destination = "SFO";
+    Date arrival = dateFormat.parse("03/08/2022 11:30 pm");
 
     HttpServletRequest request = mock(HttpServletRequest.class);
     when(request.getParameter(AirlineServlet.AIRLINE_NAME_PARAMETER)).thenReturn(airlineName);
     when(request.getParameter(AirlineServlet.FLIGHT_NUMBER_PARAMETER)).thenReturn(String.valueOf(flightNumber));
     when(request.getParameter(AirlineServlet.FLIGHT_SOURCE_PARAMETER)).thenReturn(source);
+    when(request.getParameter(AirlineServlet.FLIGHT_DEPART_PARAMETER)).thenReturn(dateFormat.format(departure));
+    when(request.getParameter(AirlineServlet.FLIGHT_DEST_PARAMETER)).thenReturn(destination);
+    when(request.getParameter(AirlineServlet.FLIGHT_ARRIVE_PARAMETER)).thenReturn(dateFormat.format(arrival));
 
     HttpServletResponse response = mock(HttpServletResponse.class);
 
@@ -66,6 +77,9 @@ class AirlineServletTest {
     Flight flight = flights.iterator().next();
     assertThat(flight.getNumber() , equalTo(flightNumber));
     assertThat(flight.getSource(), equalTo(source));
+    assertThat(flight.getDeparture(), equalTo(departure));
+    assertThat(flight.getDestination(), equalTo(destination));
+    assertThat(flight.getArrival(), equalTo(arrival));
   }
 
   @Test

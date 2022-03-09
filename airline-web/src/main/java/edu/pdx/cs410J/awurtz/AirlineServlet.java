@@ -68,11 +68,30 @@ public class AirlineServlet extends HttpServlet {
           return;
       }
 
-      String flightSource = getParameter(FLIGHT_SOURCE_PARAMETER, request);
+      String source = getParameter(FLIGHT_SOURCE_PARAMETER, request);
+      if (source == null) {
+          missingRequiredParameter(response, FLIGHT_SOURCE_PARAMETER);
+          return;
+      }
+
+      String departure = getParameter(FLIGHT_DEPART_PARAMETER, request);
+      if(departure == null) {
+          missingRequiredParameter(response, FLIGHT_DEPART_PARAMETER);
+      }
+
+      String destination = getParameter(FLIGHT_DEST_PARAMETER, request);
+      if(destination == null) {
+          missingRequiredParameter(response, FLIGHT_DEST_PARAMETER);
+      }
+
+      String arrival = getParameter(FLIGHT_ARRIVE_PARAMETER, request);
+      if(arrival == null) {
+          missingRequiredParameter(response, FLIGHT_ARRIVE_PARAMETER);
+      }
 
       Airline airline = getOrCreateAirline(airlineName);
 
-      airline.addFlight(new Flight(Integer.parseInt(flightNumberString), flightSource));
+      airline.addFlight(new Flight(Integer.parseInt(flightNumberString), source, departure, destination, arrival));
 
       response.setStatus( HttpServletResponse.SC_OK);
   }
