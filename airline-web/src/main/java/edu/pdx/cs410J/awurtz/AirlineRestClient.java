@@ -53,7 +53,9 @@ public class AirlineRestClient extends HttpRequestHelper
   }
 
   public void addFlight(String airlineName, Flight flight) throws IOException {
-      Response response = post(this.url, Map.of("airline", airlineName, "flightNumber", String.valueOf(flight.getNumber())));
+      Response response = post(this.url, Map.of("airline", airlineName, "flightNumber",
+              String.valueOf(flight.getNumber()), "source", flight.getSource(), "depart",
+              flight.getDepartureString(), "dest", flight.getDestination(), "arrive", flight.getArrivalString()));
       throwExceptionIfNotOkayHttpStatus(response);
   }
 

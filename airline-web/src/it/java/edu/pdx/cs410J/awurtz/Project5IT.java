@@ -53,9 +53,8 @@ class Project5IT extends InvokeMainTestCase {
         }
     }
 
-    @Disabled
     @Test
-    void test4AddFlight() {
+    void test4AddFlight() throws IOException {
         String airlineName = "Test Airline";
         int flightNumber = 12345;
 
@@ -69,12 +68,13 @@ class Project5IT extends InvokeMainTestCase {
 
         result = invokeMain(Project5.class, "-host", HOSTNAME, "-port", PORT, airlineName);
         String out = result.getTextWrittenToStandardOut();
-        //assertThat(out, out, containsString(PrettyPrinter.formatFlightNumber(flightNumber)));
         StringWriter sw = new StringWriter();
         PrettyPrinter prettyPrinter = new PrettyPrinter(sw);
         prettyPrinter.dump(airline);
         String text = sw.toString();
-        assertThat(out, out, containsString(text));
+        //assertThat(out, out, containsString(text));
+        assertThat(out, out, containsString(PrettyPrinter.formatFlightNumber(flightNumber)));
+        assertThat(out, out, containsString("SEA -> ORD"));
 
     }
 

@@ -11,6 +11,8 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.lang.Integer.parseInt;
+
 public class TextParser {
   private final Reader reader;
 
@@ -19,24 +21,9 @@ public class TextParser {
   }
 
   public Airline parse() throws ParserException {
-   
-//    try (
-//      BufferedReader br = new BufferedReader(this.reader)
-//    ) {
-//      Airline airline = null;
-//      for (String line = br.readLine(); line != null; line = br.readLine()) {
-//        if(airline == null) {
-//          String airlineName = line;
-//          airline = new Airline(airlineName);
-//        } else
-//          //TODO update parser to parse all flight args
-//          airline.addFlight(new Flight(Integer.parseInt(line)));
-//      }
-//      return airline;
-//
-//    } catch (IOException e) {
-//      throw new ParserException("While parsing airline", e);
-//    }
+
+    String flightNumber = null;
+    Airline airline = null;
 
     try (
             BufferedReader br = new BufferedReader(this.reader)
@@ -47,63 +34,47 @@ public class TextParser {
         throw new ParserException("Missing airline name");
       }
 
-      Airline airline = new Airline(airlineName);
+      airline = new Airline(airlineName);
 
       do {
-        String flightNumber = br.readLine();
+        flightNumber = br.readLine();
         if (flightNumber == null) {
-          throw new ParserException("Flight number missing from file.");
+          throw new ParserException("Flight number missing from flight.");
         }
 
         String source = br.readLine();
         if (source == null) {
-          throw new ParserException("Flight source missing from file.");
+          throw new ParserException("Flight source missing from flight.");
         }
 
-        String departDate = br.readLine();
-        if (departDate == null) {
-          throw new ParserException("Departure date missing from surgery.");
-        }
-
-
-        String departTime = br.readLine();
-        if (departTime == null) {
-          throw new ParserException("Departure time missing from file.");
-        }
-
-        String departAmPm = br.readLine();
-        if (departAmPm == null) {
-          throw new ParserException("Departure am/pm missing from file");
+        String departure = br.readLine();
+        if (departure == null) {
+          throw new ParserException("Departure date missing from flight.");
         }
 
         String destination = br.readLine();
         if (destination == null) {
-          throw new ParserException("Flight destination missing from file.");
+          throw new ParserException("Flight destination missing from flight.");
         }
 
-        String arriveDate = br.readLine();
-        if (arriveDate == null) {
-          throw new ParserException("Arrival date missing from file.");
+        String arrival = br.readLine();
+        if (arrival == null) {
+          throw new ParserException("Arrival date missing from flight.");
         }
 
-        String arriveTime = br.readLine();
-        if (arriveTime == null) {
-          throw new ParserException("Arrival time missing from file.");
-        }
-
-        String arriveAmpPm = br.readLine();
-        if(arriveAmpPm == null) {
-          throw new ParserException("Arrival am/pm missing from file.");
-        }
-
-        String[] flightArgs = {airlineName, flightNumber, source, departDate, departTime, departAmPm, destination, arriveDate, arriveTime, arriveAmpPm};
-        Flight flight = new Flight(flightArgs);
+        Flight flight = new Flight(parseInt(flightNumber), source, departure, destination, arrival);
         airline.addFlight(flight);
+
       } while (Objects.equals(br.readLine(), "***"));
       return airline;
 
-    } catch (IOException ex) {
-      throw new ParserException("Airline information could not be read from file.");
+    } catch (IOException e) {
+      throw new ParserException("While parsing airline", e);
+    } catch (NumberFormatException exception) {
+      System.err.println(flightNumber + " is not a valid integer value.");
+      System.exit(1);
     }
+    assert(airline != null);
+    return airline;
   }
 }

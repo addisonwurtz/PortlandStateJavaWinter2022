@@ -20,8 +20,9 @@ public class TextDumper {
       airline.getFlights().forEach(flight -> {
         pw.println(flight.getNumber());
         pw.println(flight.getSource());
-
-
+        pw.println(flight.getDepartureString());
+        pw.println(flight.getDestination());
+        pw.println(flight.getArrivalString());
       });
 
       pw.flush();
