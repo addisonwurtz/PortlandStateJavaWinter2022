@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Collection;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,12 +39,36 @@ public class AirlineServlet extends HttpServlet {
   {
       response.setContentType("application/xml");
 
-      String airlineName = getParameter( AIRLINE_NAME_PARAMETER, request );
-      if (airlineName != null) {
-          dumpAirline(airlineName, response);
+      int parameterCount = getHttpRequestParameterCount(request);
 
-      } else {
+      if(parameterCount == 0) {
           missingRequiredParameter(response, AIRLINE_NAME_PARAMETER);
+      }
+      if(parameterCount == 1) {
+
+          String airlineName = getParameter(AIRLINE_NAME_PARAMETER, request);
+          if (airlineName != null) {
+              dumpAirline(airlineName, response);
+
+          } else {
+              missingRequiredParameter(response, AIRLINE_NAME_PARAMETER);
+          }
+      } else if (parameterCount == 3) {
+
+          String airlineName = getParameter(AIRLINE_NAME_PARAMETER, request);
+          if (airlineName == null) {
+              missingRequiredParameter(response, AIRLINE_NAME_PARAMETER);
+          }
+          String flightSource = getParameter(FLIGHT_SOURCE_PARAMETER, request);
+          if(flightSource == null) {
+              missingRequiredParameter(response, FLIGHT_SOURCE_PARAMETER);
+          }
+          String flightDestination = getParameter(FLIGHT_DEST_PARAMETER, request);
+          if(flightDestination == null) {
+              missingRequiredParameter(response, FLIGHT_DEST_PARAMETER);
+          }
+
+          searchFlightsAndDump(airlineName, flightSource, flightDestination, response);
       }
   }
 
@@ -54,7 +80,6 @@ public class AirlineServlet extends HttpServlet {
   @Override
   protected void doPost( HttpServletRequest request, HttpServletResponse response ) throws IOException
   {
-      response.setContentType( "text/plain" );
 
       String airlineName = getParameter(AIRLINE_NAME_PARAMETER, request );
       if (airlineName == null) {
@@ -149,6 +174,30 @@ public class AirlineServlet extends HttpServlet {
     }
   }
 
+  private void searchFlightsAndDump(String airlineName, String source, String destination, HttpServletResponse response) throws IOException {
+      Airline airline = getAirline(airlineName);
+
+      if(airline == null) {
+          response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+      }
+      else {
+          Airline airlineWithMatchingFlights = new Airline(airlineName);
+
+          Collection<Flight> flights = airline.getFlights();
+          for (Flight flight : flights) {
+              if (flight.getSource().equals(source) && flight.getDestination().equals(destination)) {
+                  airlineWithMatchingFlights.addFlight(flight);
+              }
+          }
+          PrintWriter pw = response.getWriter();
+
+          XmlDumper dumper = new XmlDumper(pw);
+          dumper.dump(airlineWithMatchingFlights);
+
+          response.setStatus(HttpServletResponse.SC_OK);
+      }
+  }
+
     /**
    * Returns the value of the HTTP request parameter with the given name.
    *
@@ -164,6 +213,32 @@ public class AirlineServlet extends HttpServlet {
       return value;
     }
   }
+
+  public int getHttpRequestParameterCount(HttpServletRequest request) {
+      int i = 0;
+
+      if (getParameter(AIRLINE_NAME_PARAMETER, request) != null) {
+          ++i;
+      }
+      if (getParameter(FLIGHT_NUMBER_PARAMETER, request) != null) {
+          ++i;
+      }
+      if(getParameter(FLIGHT_SOURCE_PARAMETER, request) != null) {
+          ++i;
+      }
+      if(getParameter(FLIGHT_DEPART_PARAMETER, request) != null) {
+          ++i;
+      }
+      if(getParameter(FLIGHT_DEST_PARAMETER, request) != null) {
+          ++i;
+      }
+      if(getParameter(FLIGHT_ARRIVE_PARAMETER, request) != null) {
+          ++i;
+      }
+
+      return i;
+  }
+
 
   @VisibleForTesting
   Airline getOrCreateAirline(String airlineName) {

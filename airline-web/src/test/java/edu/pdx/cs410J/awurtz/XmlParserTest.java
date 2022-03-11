@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class XmlParserTest {
 
+    //These tests are disabled because they rely on files that are not bundled in the submit.sh script
     @Disabled
     @Test
     void canParseValidXmlFile() throws ParserException {

@@ -14,7 +14,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class AirlineXmlHelperTest {
 
-    @Disabled
     @Test
     void canParseValidXmlFile() throws ParserConfigurationException, IOException, SAXException {
         AirlineXmlHelper helper = new AirlineXmlHelper();
@@ -29,7 +28,6 @@ class AirlineXmlHelperTest {
         builder.parse(this.getClass().getResourceAsStream("valid-airline.xml"));
     }
 
-    @Disabled
     @Test
     void cantParseInvalidXmlFile() throws ParserConfigurationException {
         AirlineXmlHelper helper = new AirlineXmlHelper();

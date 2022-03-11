@@ -72,7 +72,7 @@ class Project5IT extends InvokeMainTestCase {
         PrettyPrinter prettyPrinter = new PrettyPrinter(sw);
         prettyPrinter.dump(airline);
         String text = sw.toString();
-        //assertThat(out, out, containsString(text));
+
         assertThat(out, out, containsString(PrettyPrinter.formatFlightNumber(flightNumber)));
         assertThat(out, out, containsString("SEA -> ORD"));
 

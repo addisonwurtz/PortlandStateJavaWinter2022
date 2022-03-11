@@ -47,8 +47,6 @@ public class Airline extends AbstractAirline<Flight> {
             }
         }
 
-
-
         //must also add flights from DOM
     }
 

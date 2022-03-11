@@ -1,21 +1,23 @@
 package edu.pdx.cs410J.awurtz;
 
 import edu.pdx.cs410J.ParserException;
+import org.apache.groovy.json.internal.JsonParserLax;
+import org.checkerframework.checker.units.qual.A;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.swing.plaf.metal.MetalScrollPaneUI;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
+import java.util.*;
 
-import static edu.pdx.cs410J.awurtz.AirlineServlet.FLIGHT_SOURCE_PARAMETER;
+import static edu.pdx.cs410J.awurtz.AirlineServlet.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
@@ -94,7 +96,6 @@ class AirlineServletTest {
     HttpServletRequest request = mock(HttpServletRequest.class);
     when(request.getParameter(AirlineServlet.AIRLINE_NAME_PARAMETER)).thenReturn(airlineName);
 
-    //when(request.getParameter(AirlineServlet.FLIGHT_NUMBER_PARAMETER)).thenReturn(String.valueOf(flightNumber));
     HttpServletResponse response = mock(HttpServletResponse.class);
     StringWriter sw = new StringWriter();
     when(response.getWriter()).thenReturn(new PrintWriter(sw, true));
@@ -111,5 +112,74 @@ class AirlineServletTest {
     assertThat(flights, hasSize(1));
     Flight flight = flights.iterator().next();
     assertThat(flight.getNumber() , equalTo(flightNumber));
+  }
+
+  @Test
+  void returnFlightsThatMatchSearchSrcAndDest() throws ParseException, IOException, ParserException {
+    SimpleDateFormat dateFormat = new SimpleDateFormat(Flight.dateTimePattern);
+
+    String airlineName = "Delta";
+    int flightNumber = 123;
+    String source = "MSP";
+    Date departure = dateFormat.parse("03/08/2022 5:11 pm");
+    String destination = "SFO";
+    Date arrival = dateFormat.parse("03/08/2022 11:30 pm");
+
+    AirlineServlet servlet = new AirlineServlet();
+    Airline airline = servlet.getOrCreateAirline(airlineName);
+    airline.addFlight(new Flight(flightNumber, source, dateFormat.format(departure), destination, dateFormat.format(arrival)));
+    airline.addFlight(new Flight(666, "LAX", "01/01/2023", "12:00 am", "SFO",
+            "01/01/2023", "2:00 am"));
+    airline.addFlight(new Flight(111, source, dateFormat.format(departure), "LAX",
+            dateFormat.format(arrival)));
+    airline.addFlight(new Flight(789, source, dateFormat.format(departure), destination, dateFormat.format(arrival)));
+
+    HttpServletRequest request = mock(HttpServletRequest.class);
+    when(request.getParameter(AirlineServlet.AIRLINE_NAME_PARAMETER)).thenReturn(airlineName);
+    when(request.getParameter(AirlineServlet.FLIGHT_SOURCE_PARAMETER)).thenReturn(source);
+    when(request.getParameter(AirlineServlet.FLIGHT_DEST_PARAMETER)).thenReturn(destination);
+
+    HttpServletResponse response = mock(HttpServletResponse.class);
+    StringWriter sw = new StringWriter();
+    when(response.getWriter()).thenReturn(new PrintWriter(sw, true));
+
+    servlet.doGet(request, response);
+
+    verify(response).setStatus(eq(HttpServletResponse.SC_OK));
+
+    String text = sw.toString();
+    Airline airline2 = new XmlParser(text).parse();
+
+    Collection<Flight> flights = airline2.getFlights();
+    assertThat(flights.size(), equalTo(2));
+    for (Flight flight: flights) {
+      assertThat(flight.getSource(), equalTo(source));
+      assertThat(flight.getDestination(), equalTo(destination));
+    }
+  }
+
+  @Test
+  void testGetHttpParameterCountReturns0WithNoParameters() {
+    AirlineServlet servlet = new AirlineServlet();
+
+    HttpServletRequest request = mock(HttpServletRequest.class);
+
+    assertThat(servlet.getHttpRequestParameterCount(request), equalTo(0));
+  }
+
+  @Test
+  void testGetHttpParameterCountReturns3ForMockSearchRequest() {
+    String airlineName = "Delta";
+    String source = "MSP";
+    String destination = "SFO";
+
+    AirlineServlet servlet = new AirlineServlet();
+
+    HttpServletRequest request = mock(HttpServletRequest.class);
+    when(request.getParameter(AirlineServlet.AIRLINE_NAME_PARAMETER)).thenReturn(airlineName);
+    when(request.getParameter(AirlineServlet.FLIGHT_SOURCE_PARAMETER)).thenReturn(source);
+    when(request.getParameter(AirlineServlet.FLIGHT_DEST_PARAMETER)).thenReturn(destination);
+
+    assertThat(servlet.getHttpRequestParameterCount(request), equalTo(3));
   }
 }
