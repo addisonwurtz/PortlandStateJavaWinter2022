@@ -334,10 +334,16 @@ public class Flight extends AbstractFlight implements Comparable<Flight>{
 
     @Override
     public String getArrivalString() {
+        String dateTimePattern = "MM/dd/yyyy hh:mm a";
+        SimpleDateFormat dateFormat = new SimpleDateFormat(dateTimePattern);
+        return dateFormat.format(this.getArrival());
+        /*
         Locale currentLocale = Locale.US;
         DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.SHORT, currentLocale);
         DateFormat timeFormatter = DateFormat.getTimeInstance(DateFormat.SHORT, currentLocale);
         return dateFormatter.format(arrive) + " " + timeFormatter.format(arrive);
+
+         */
     }
 
     /*

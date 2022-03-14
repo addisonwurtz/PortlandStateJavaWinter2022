@@ -81,6 +81,10 @@ public class Project5 {
                 Airline airline = client.getAirline(airlineName);
                 new PrettyPrinter(new OutputStreamWriter(System.out)).dump(airline);
             } else if(searchOption) {
+                if(args.length - i < 3) {
+                    System.err.println("-search options requires the airlineName, source airport, and destination airport.");
+                    System.exit(1);
+                }
                 airlineName = args[i];
                 source = args[++i];
                 destination = args[++i];
@@ -98,8 +102,13 @@ public class Project5 {
                 }
             } else {
                 //add the flight
+                //TODO check for print option and print
+                Flight flight = new Flight(args);
                 airlineName = args[i];
-                client.addFlight(airlineName, new Flight(args));
+                client.addFlight(airlineName, flight);
+                if(printOption) {
+                    System.out.println(flight.toString());
+                }
             }
 
         } catch (IOException | ParserException ex ) {

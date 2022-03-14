@@ -21,7 +21,7 @@ public class FlightTest {
     @Test
     void getArrivalStringReturnsArriveDateAndArriveTimeAsString() {
         Flight flight = createTestFlight();
-        assertThat(flight.getArrivalString(), is("2/9/22 1:13 PM"));
+        assertThat(flight.getArrivalString(), is("02/09/2022 01:13 PM"));
     }
 
     @Test

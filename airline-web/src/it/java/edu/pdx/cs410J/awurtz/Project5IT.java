@@ -158,5 +158,12 @@ class Project5IT extends InvokeMainTestCase {
         assertThat(result.getTextWrittenToStandardError(), containsString("not a valid airport code"));
     }
 
+    @Test
+    void testThatFlightDurationIsCorrect() {
+        MainMethodResult result = invokeMain(Project5.class, "-host", "localhost", "-port", "8080",
+                "AirDave", "123", "PDX", "07/19/2022", "1:02",  "pm", "ORD", "07/19/2022", "6:22", "pm");
 
+    }
+
+    //TODO add test for -print option
 }
