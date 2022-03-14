@@ -79,7 +79,8 @@ public class Project5 {
             } else if(searchOption) {
                 if(args.length - i < 3) {
                     System.err.println("-search options requires the airlineName, source airport, and destination airport.");
-                    System.exit(1);
+                    usage("Missing required arguments for -search");
+                    return;
                 }
                 airlineName = args[i];
                 source = args[++i];
