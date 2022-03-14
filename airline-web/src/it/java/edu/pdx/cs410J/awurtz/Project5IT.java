@@ -159,11 +159,12 @@ class Project5IT extends InvokeMainTestCase {
     }
 
     @Test
-    void testThatFlightDurationIsCorrect() {
-        MainMethodResult result = invokeMain(Project5.class, "-host", "localhost", "-port", "8080",
+    void testThatPrintOptionPrintsDescriptionOfNewFlight() {
+        MainMethodResult result = invokeMain(Project5.class, "-host", "localhost", "-port", "8080", "-print",
                 "AirDave", "123", "PDX", "07/19/2022", "1:02",  "pm", "ORD", "07/19/2022", "6:22", "pm");
-
+        Flight flight = new Flight(123, "PDX", "07/19/2022 1:02 pm", "ORD",
+                "07/19/2022 6:22 pm");
+        assertThat(result.getTextWrittenToStandardOut(), containsString(flight.toString()));
     }
 
-    //TODO add test for -print option
 }

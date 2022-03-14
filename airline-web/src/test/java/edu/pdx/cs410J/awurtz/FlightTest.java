@@ -238,5 +238,99 @@ public class FlightTest {
         String date = "01/01/2021 11:11 am";
         assertThat(Flight.parseDateTime(date).toLowerCase(Locale.ROOT), containsString(date));
     }
+
+    @Test
+    void parseAirportCodeDetectsInvalidCode() {
+        String code = "PDXX";
+        assertThrows(InvalidAirportCodeException.class, () -> Flight.parseAirportCode(code));
+    }
+
+    @Test
+    void parserDetectsValidDateFormat() {
+        String date = "02/20/2022";
+        assertThat(Flight.parseDate(date), equalTo(date));
+    }
+
+    @Test
+    void parseDateDetectsValidDateWithSingleDigitMonth() {
+        String date = "1/23/2022";
+        assertThat(Flight.parseDate(date), equalTo(date));
+    }
+
+    @Test
+    void parseDateDetectsValidDateWithSingleDigitDay() {
+        String date = "12/3/2022";
+        assertThat(Flight.parseDate(date), equalTo(date));
+    }
+
+    @Test
+    void parseDateThrowsInvalidDateExceptionForTwoDigitYear() {
+        String date = "12/15/21";
+        assertThrows(InvalidDateException.class, () -> Flight.parseDate(date));
+    }
+
+    @Test
+    void parseDateThrowsInvalidDateExceptionForFebruaryThirtiethDate() {
+        String date = "02/30/2022";
+        assertThrows(InvalidDateException.class, () -> Flight.parseDate(date));
+    }
+
+    @Test
+    void parseDateThrowsInvalidDateExceptionForAprilThirtyFirstDate() {
+        String date = "4/31/2022";
+        assertThrows(InvalidDateException.class, () -> Flight.parseDate(date));
+    }
+
+    @Test
+    void parseTimeDetectsValidTime() {
+        String time = "11:11";
+        String amPm = "am";
+        assertThat(Flight.parseTime(time, amPm), equalTo(time + " " + amPm));
+    }
+
+    @Test
+    void parseDateThrowsInvalidDateExceptionForInvalidDate() {
+        String date = "13/12/2012";
+        assertThrows(InvalidDateException.class, () -> Flight.parseDate(date));
+    }
+
+    @Test
+    void parseArgsAndCreateFlightThrowsInvalidSourceExceptionIfSourceIsTooNotThreeCharactersLong() {
+        String[] args = new String[]{"Delta", "99", "PDXPDX", "11/11/2011", "11:11", "SFO", "12/12/12", "12:12"};
+        assertThrows(InvalidAirportCodeException.class, () -> new Flight(args));
+    }
+
+    @Test
+    void parseArgsAndCreateFlightThrowsInvalidSourceExceptionIfSourceIsNotAlphabetic() {
+        String[] args = new String[]{"99", "999", "11/11/2011", "11:11", "SFO", "12/12/12", "12:12"};
+        assertThrows(InvalidAirportCodeException.class, () -> new Flight(args));
+    }
+
+    @Test
+    void parseArgsAndReturnFlightReturnsFlight() {
+        String[] args = new String[]{"Delta", "99", "PDX", "11/11/2011", "11:11", "am", "SFO", "12/12/2012", "12:12", "pm"};
+        Flight flight = new Flight(99, "PDX", "11/11/2011", "11:11 am", "SFO",
+                "12/12/2012", "12:12 pm");
+        assertThat(new Flight(args).destination, equalTo(flight.getDestination()));
+    }
+
+    @Test
+    void parseTimeThrowsInvalidTimeExceptionForIncompleteTime() {
+        String time = "12";
+        String amPm = "pm";
+        assertThrows(InvalidTimeException.class, () -> Flight.parseTime(time, amPm));
+    }
+
+    @Test
+    void testMissingCommandLineArgumentException() {
+        String[] args = new String[] {"Delta", "99"};
+        assertThrows(MissingCommandLineArgumentException.class, () -> new Flight(args));
+    }
+
+    @Test
+    void testInvalidFlightNumberException() {
+        String[] args = new String[]{"Delta", "i99", "PDX", "11/11/2011", "11:11", "am", "SFO", "12/12/2012", "12:12", "pm"};
+        assertThrows(InvalidFlightNumberException.class,() -> new Flight(args));
+    }
 }
 

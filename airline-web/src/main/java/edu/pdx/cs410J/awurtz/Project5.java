@@ -15,8 +15,6 @@ public class Project5 {
     public static final String MISSING_ARGS = "Missing command line arguments";
 
     public static void main(String... args) throws IOException {
-        Boolean hostNameOption = false;
-        Boolean portStringOption = false;
         Boolean searchOption = false;
         Boolean printOption = false;
 
@@ -34,11 +32,9 @@ public class Project5 {
                     printReadmeAndExit();
                 }
                 case "-host" -> {
-                    hostNameOption = true;
                     hostName = args[++i];
                 }
                 case "-port" -> {
-                    portStringOption = true;
                     portString = args[++i];
                 }
                 case "-search" -> {
@@ -102,7 +98,6 @@ public class Project5 {
                 }
             } else {
                 //add the flight
-                //TODO check for print option and print
                 Flight flight = new Flight(args);
                 airlineName = args[i];
                 client.addFlight(airlineName, flight);
@@ -211,29 +206,6 @@ class InvalidDateException extends RuntimeException {
 class InvalidTimeException extends RuntimeException {
     public InvalidTimeException(String invalidTimeMessage) {
         super(invalidTimeMessage);
-    }
-}
-
-/**
- *  Exception class is used when the name of the airline from the commandline does not match the name of
- *  the airline in the file referenced with the -textFile commandline option.
- */
-class AirlineFromFileDoesNotMatchAirlineFromCommandLineException extends RuntimeException {
-    private final Airline airlineFromFile;
-    private final Airline airlineFromCommandLine;
-
-    public AirlineFromFileDoesNotMatchAirlineFromCommandLineException(Airline airlineFromFile,
-                                                                      Airline airlineFromCommandLine) {
-        this.airlineFromFile = airlineFromFile;
-        this.airlineFromCommandLine = airlineFromCommandLine;
-    }
-
-    public String getAirlineFromFile() {
-        return airlineFromFile.getName();
-    }
-
-    public String getAirlineFromCommandLine() {
-        return airlineFromCommandLine.getName();
     }
 }
 
