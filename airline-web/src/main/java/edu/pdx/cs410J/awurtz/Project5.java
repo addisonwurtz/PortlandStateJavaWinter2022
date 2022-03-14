@@ -1,6 +1,7 @@
 package edu.pdx.cs410J.awurtz;
 
 import edu.pdx.cs410J.ParserException;
+import edu.pdx.cs410J.web.HttpRequestHelper;
 
 import java.io.*;
 import java.util.Map;
@@ -21,17 +22,13 @@ public class Project5 {
 
         String hostName = null;
         String portString = null;
-        String searchString = null;
-        String airlineName = null;
-        String flightNumberString = null;
-        String source = null;
-        String departure = null;
-        String destination = null;
-        String arrival = null;
+        String airlineName;
+        String source;
+        String destination;
 
         int i = 0;
         //parse options
-        while(i < args.length && args[i].contains("-")) {
+        while(i < args.length && args[i].startsWith("-")) {
             switch (args[i]) {
                 case "-README" -> {
                     printReadmeAndExit();
@@ -46,7 +43,6 @@ public class Project5 {
                 }
                 case "-search" -> {
                     searchOption = true;
-                    searchString = args[++i];
                 }
                 case "-print" -> {
                     printOption = true;
@@ -55,7 +51,7 @@ public class Project5 {
             i++;
         }
 
-
+        //errors if either host or port is omitted
         if(args.length == 0) {
             usage(MISSING_ARGS);
             return;
@@ -67,9 +63,6 @@ public class Project5 {
             usage( "Missing port" );
             return;
         }
-//        else if (airlineName == null) {
-//            usage("Missing airline name");
-//        }
 
         int port;
         try {
@@ -88,21 +81,32 @@ public class Project5 {
                 Airline airline = client.getAirline(airlineName);
                 new PrettyPrinter(new OutputStreamWriter(System.out)).dump(airline);
             } else if(searchOption) {
-                //TODO implement search
-                usage("Search is not yet implemented.");
-                return;
+                airlineName = args[i];
+                source = args[++i];
+                destination = args[++i];
+                Airline airline = client.searchFlights(airlineName, source, destination);
+                if(airline == null) {
+                    System.out.println("There were no " + airlineName + " flights from " + source + " to " + destination);
+                    System.exit(1);
+                }
+                if(airline.getFlights().size() == 0) {
+                    System.out.println("There were no " + airlineName + " flights from " + source + " to " + destination);
+                    System.exit(1);
+                }
+                else {
+                    new PrettyPrinter(new OutputStreamWriter(System.out)).dump(airline);
+                }
             } else {
                 //add the flight
                 airlineName = args[i];
-                flightNumberString = args[++i];
-                //client.addFlight(airlineName, new Flight(Integer.parseInt(flightNumberString)));
-                //TODO change to full flight constructor once all flight args are supported.
                 client.addFlight(airlineName, new Flight(args));
             }
 
         } catch (IOException | ParserException ex ) {
             error("While contacting server: " + ex);
             return;
+        } catch (HttpRequestHelper.RestException ex) {
+            error(ex.getMessage());
         }
 
         System.exit(0);

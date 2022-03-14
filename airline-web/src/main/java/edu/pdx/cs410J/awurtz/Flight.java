@@ -14,6 +14,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static java.lang.Integer.parseInt;
+import static java.text.DateFormat.Field.*;
+import static java.time.temporal.ChronoField.YEAR;
 
 /**
  * code for <code>Flight</code> class
@@ -129,6 +131,11 @@ public class Flight extends AbstractFlight implements Comparable<Flight>{
             throw new MissingCommandLineArgumentException("arrival time");
         }
         this.arrive = getArrival();
+
+        if(depart.after(arrive)) {
+            throw new InvalidTimeException("Departure time " + depart + " is after arrival time " + arrive + " Departure" +
+                    "times must before arrival times.");
+        }
     }
 
     /**
@@ -214,6 +221,7 @@ public class Flight extends AbstractFlight implements Comparable<Flight>{
                 }
             }
         }
+
     }
 
     public Flight(int flightNumber, String source) {
@@ -282,10 +290,16 @@ public class Flight extends AbstractFlight implements Comparable<Flight>{
 
     @Override
     public String getDepartureString() {
+        String dateTimePattern = "MM/dd/yyyy hh:mm a";
+        SimpleDateFormat dateFormat = new SimpleDateFormat(dateTimePattern);
+        return dateFormat.format(this.getDeparture());
+/*
+        return dateFormatter.format(depart) + " " + timeFormatter.format(depart);
         Locale currentLocale = Locale.US;
         DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.SHORT, currentLocale);
         DateFormat timeFormatter = DateFormat.getTimeInstance(DateFormat.SHORT, currentLocale);
-        return dateFormatter.format(depart) + " " + timeFormatter.format(depart);
+
+ */
     }
 
     @Override
@@ -441,6 +455,48 @@ public class Flight extends AbstractFlight implements Comparable<Flight>{
             throw new InvalidTimeException("The time " + timeString + " must be followed by \"am\" or \"pm\". You entered "
                     + amPm);
         }
+    }
+
+    static String parseDateTime(String dateTime) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(dateTimePattern);
+        Date date;
+        try {
+            date = dateFormat.parse(dateTime);
+        } catch (ParseException ex) {
+            throw new InvalidDateException(dateTime);
+        }
+
+        String dateString, timeString, monthString, dayString, yearString;
+
+        StringTokenizer stringTokenizer = new StringTokenizer(dateTime, " ");
+
+        if(stringTokenizer.countTokens() != 3) {
+            throw new InvalidDateException(dateTime);
+        }
+        else {
+            try {
+                dateString = stringTokenizer.nextToken();
+                StringTokenizer dateTokenizer = new StringTokenizer(dateString, "/");
+                monthString = dateTokenizer.nextToken();
+                dayString = dateTokenizer.nextToken();
+                yearString = dateTokenizer.nextToken();
+                if(parseInt(monthString) >  12 || parseInt(dayString) > 31) {
+                    throw new InvalidDateException(dateTime);
+                }
+                int length = yearString.length();
+                if(!(length == 2 || length == 4)) {
+                    throw new InvalidDateException(dateTime);
+                }
+
+                timeString = parseTime(stringTokenizer.nextToken(), stringTokenizer.nextToken());
+
+            } catch (InvalidDateException | InvalidTimeException | NumberFormatException ex) {
+                throw new InvalidDateException(dateTime);
+            }
+        }
+
+
+        return dateFormat.format(date);
     }
 }
 

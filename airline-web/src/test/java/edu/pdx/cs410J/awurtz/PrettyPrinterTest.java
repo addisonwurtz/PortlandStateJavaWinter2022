@@ -34,7 +34,7 @@ public class PrettyPrinterTest {
         String text = sw.toString();
 
         assertThat(text, containsString("Delta"));
-        /*
+
         assertThat(text, containsString("12"));
         assertThat(text, containsString("Portland, OR"));
         assertThat(text, containsString("Mon, Jan 24 2022 at 11:11 AM"));
@@ -42,7 +42,7 @@ public class PrettyPrinterTest {
         assertThat(text, containsString("Mon, Jan 24 2022 at 12:12 PM"));
         assertThat(text, containsString("61 minutes"));
 
-         */
+
     }
 
     @Test
@@ -65,7 +65,7 @@ public class PrettyPrinterTest {
             assertThat(reader.readLine(), containsString("Alaska"));
             reader.close();
         } catch(IOException ex) {
-            ex.getMessage();
+            System.err.println(ex.getMessage());
             ex.printStackTrace();
         }
 

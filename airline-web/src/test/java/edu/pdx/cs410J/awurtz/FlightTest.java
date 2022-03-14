@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -38,7 +39,7 @@ public class FlightTest {
     @Test
     void getDepartureStringReturnsDepartureString() {
         Flight flight = createTestFlight();
-        assertThat(flight.getDepartureString(), is("2/9/22 12:12 AM"));
+        assertThat(flight.getDepartureString(), is("02/09/2022 12:12 AM"));
     }
 
     @Test
@@ -230,6 +231,12 @@ public class FlightTest {
     void parseAirportCodeReturnsValidCodeInUppercase() {
         String code = "msp";
         assertThat(Flight.parseAirportCode(code), equalTo(code.toUpperCase()));
+    }
+
+    @Test
+    void parseDateTimeCorrectlyParsesValidDate() {
+        String date = "01/01/2021 11:11 am";
+        assertThat(Flight.parseDateTime(date).toLowerCase(Locale.ROOT), containsString(date));
     }
 }
 

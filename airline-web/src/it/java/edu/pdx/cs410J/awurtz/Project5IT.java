@@ -11,6 +11,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.net.HttpURLConnection;
+import java.util.Collection;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -42,19 +43,16 @@ class Project5IT extends InvokeMainTestCase {
 
     @Test
     void test3NoFlightsThrowsAirlineRestException() {
-        String airlineName = "Test Airline";
-        try {
-            invokeMain(Project5.class, "-host", HOSTNAME, "-port", PORT, airlineName);
-            fail("Should have thrown a RestException");
+        String airlineName = "Non-Existent Airline";
 
-        } catch (UncaughtExceptionInMain ex) {
-            RestException cause = (RestException) ex.getCause();
-            assertThat(cause.getHttpStatusCode(), equalTo(HttpURLConnection.HTTP_NOT_FOUND));
-        }
+        MainMethodResult result = invokeMain(Project5.class, "-host", HOSTNAME, "-port", PORT, airlineName);
+
+        assertThat(result.getExitCode(), equalTo(1));
+        //assertThat(result.getTextWrittenToStandardError(), containsString("not found"));
     }
 
     @Test
-    void test4AddFlight() throws IOException {
+    void test4AddFlight() {
         String airlineName = "Test Airline";
         int flightNumber = 12345;
 
@@ -96,6 +94,68 @@ class Project5IT extends InvokeMainTestCase {
         MainMethodResult result = invokeMain(Project5.class, "-port", "8080");
         assertThat(result.getTextWrittenToStandardError(),
                 containsString("Missing host"));
+    }
+
+    @Test
+    void searchOptionReturnsNoMatchingFlights() {
+       invokeMain(Project5.class, "-host", HOSTNAME, "-port", PORT, "Test Airline",
+               "345", "SEA", "07/19/2022", "1:02", "pm", "ORD", "07/19/2022", "6:22", "pm");
+
+        String[] args = new String[] {"-search", "-port", "8080", "-host", "localhost", "Test Airline", "SFO", "MSP"};
+        MainMethodResult result = invokeMain(Project5.class, args);
+
+        assertThat(result.getTextWrittenToStandardOut(), containsString("There were no Test Airline flights from"));
+    }
+
+    @Test
+    void searchForAirlineThatDoesNotExistThrowsHttpException() {
+        String[] args = new String[] {"-search", "-port", "8080", "-host", "localhost", "Test Airline", "JFK", "JFK"};
+
+        try {
+            MainMethodResult result = invokeMain(Project5.class, args);
+        } catch (UncaughtExceptionInMain ex) {
+            RestException cause = (RestException) ex.getCause();
+            assertThat(cause.getHttpStatusCode(), equalTo(HttpURLConnection.HTTP_NOT_FOUND));
+        }
+    }
+
+    @Test
+    void prettyPrintAllFlightsThatMatchSearchConditions() {
+       MainMethodResult result = invokeMain(Project5.class, "-host", HOSTNAME, "-port", PORT, "Delta",
+                "345", "SEA", "07/19/2022", "1:02", "pm", "ORD", "07/19/2022", "6:22", "pm");
+       assertThat(result.getExitCode(), equalTo(0));
+       result = invokeMain(Project5.class, "-host", HOSTNAME, "-port", PORT, "Delta",
+                "567", "SEA", "07/20/2022", "4:42", "pm", "ORD", "07/20/2022", "7:25", "pm");
+        assertThat(result.getExitCode(), equalTo(0));
+       result = invokeMain(Project5.class, "-host", HOSTNAME, "-port", PORT, "United",
+                "666", "SEA", "02/09/2022", "4:42", "pm", "ORD", "02/09/2022", "9:25", "pm");
+        assertThat(result.getExitCode(), equalTo(0));
+       result = invokeMain(Project5.class, "-host", HOSTNAME, "-port", PORT, "Delta",
+                "111", "PDX", "08/20/2023", "4:42", "pm", "ORD", "08/20/2023", "8:25", "pm");
+        assertThat(result.getExitCode(), equalTo(0));
+
+       result = invokeMain(Project5.class, "-host", HOSTNAME, "-port", PORT, "-search", "Delta", "SEA", "ORD");
+
+       assertThat(result.getExitCode(), equalTo(0));
+       assertThat(result.getTextWrittenToStandardOut(), containsString("SEA -> ORD"));
+       assertThat(result.getTextWrittenToStandardOut(), containsString("Jul 19 2022"));
+       assertThat(result.getTextWrittenToStandardOut(), containsString("Jul 20 2022"));
+    }
+
+    @Test
+    void gracefulExitWithInvalidSourceForSearchOption() {
+        MainMethodResult result = invokeMain(Project5.class, "-host", HOSTNAME, "-port", PORT, "-search", "Delta",
+                "345", "SEA");
+        assertThat(result.getExitCode(), equalTo(1));
+        assertThat(result.getTextWrittenToStandardError(), containsString("not a valid airport code"));
+    }
+
+    @Test
+    void gracefulExitWithInvalidDestinationForSearchOption() {
+        MainMethodResult result = invokeMain(Project5.class, "-host", HOSTNAME, "-port", PORT, "-search", "Delta",
+                "sjd", "SEAA");
+        assertThat(result.getExitCode(), equalTo(1));
+        assertThat(result.getTextWrittenToStandardError(), containsString("not a valid airport code"));
     }
 
 

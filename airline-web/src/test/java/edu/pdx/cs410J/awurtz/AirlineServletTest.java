@@ -45,6 +45,24 @@ class AirlineServletTest {
   }
 
   @Test
+  void dumpingAirlineThatIsNotInServerThrowsRestException() throws IOException {
+    String airlineName = "New Airline";
+    AirlineServlet servlet = new AirlineServlet();
+
+    HttpServletRequest request = mock(HttpServletRequest.class);
+    HttpServletResponse response = mock(HttpServletResponse.class);
+    PrintWriter pw = mock(PrintWriter.class);
+
+    when(response.getWriter()).thenReturn(pw);
+    when(request.getParameter(AIRLINE_NAME_PARAMETER)).thenReturn(airlineName);
+
+    servlet.doGet(request, response);
+
+    verify(response).sendError(HttpServletResponse.SC_NOT_FOUND,  airlineName + " was not found.");
+
+  }
+
+  @Test
   void addOneFlightToAirline() throws IOException, ParseException {
     SimpleDateFormat dateFormat = new SimpleDateFormat(Flight.dateTimePattern);
     AirlineServlet servlet = new AirlineServlet();
@@ -159,6 +177,31 @@ class AirlineServletTest {
   }
 
   @Test
+  void SearchWithNoMatchingFLightsHasNoContentStatus() throws IOException {
+    String airlineName = "Delta";
+    String source = "MSP";
+    String destination = "SFO";
+
+    AirlineServlet servlet = new AirlineServlet();
+
+    Airline airline = servlet.getOrCreateAirline(airlineName);
+    airline.addFlight(new Flight(1234, "PDX", "01/01/2021 11:11 am", "LAX",
+            "01/01/2021 12:12 pm"));
+
+    HttpServletRequest request = mock(HttpServletRequest.class);
+    HttpServletResponse response = mock(HttpServletResponse.class);
+
+    when(request.getParameter(AirlineServlet.AIRLINE_NAME_PARAMETER)).thenReturn(airlineName);
+    when(request.getParameter(AirlineServlet.FLIGHT_SOURCE_PARAMETER)).thenReturn(source);
+    when(request.getParameter(AirlineServlet.FLIGHT_DEST_PARAMETER)).thenReturn(destination);
+
+    servlet.doGet(request, response);
+
+    verify(response).setStatus(HttpServletResponse.SC_NO_CONTENT);
+  }
+
+
+  @Test
   void testGetHttpParameterCountReturns0WithNoParameters() {
     AirlineServlet servlet = new AirlineServlet();
 
@@ -181,5 +224,173 @@ class AirlineServletTest {
     when(request.getParameter(AirlineServlet.FLIGHT_DEST_PARAMETER)).thenReturn(destination);
 
     assertThat(servlet.getHttpRequestParameterCount(request), equalTo(3));
+  }
+
+  @Test
+  void doGetReturnsPreconditionFailedStatusForInvalidSourceAirport() throws IOException {
+    String airlineName = "Delta";
+    String source = "AAA";
+    String destination = "SFO";
+
+    AirlineServlet servlet = new AirlineServlet();
+
+    HttpServletRequest request = mock(HttpServletRequest.class);
+    when(request.getParameter(AirlineServlet.AIRLINE_NAME_PARAMETER)).thenReturn(airlineName);
+    when(request.getParameter(AirlineServlet.FLIGHT_SOURCE_PARAMETER)).thenReturn(source);
+    when(request.getParameter(AirlineServlet.FLIGHT_DEST_PARAMETER)).thenReturn(destination);
+
+    HttpServletResponse response = mock(HttpServletResponse.class);
+
+    servlet.doGet(request, response);
+    verify(response).sendError(HttpServletResponse.SC_PRECONDITION_FAILED, source + " is not a valid airport code.");
+  }
+
+  @Test
+  void doGetReturnsPreconditionFailedStatusForInvalidDestinationAirport() throws IOException {
+    String airlineName = "Delta";
+    String source = "SFO";
+    String destination = "123";
+
+    AirlineServlet servlet = new AirlineServlet();
+
+    HttpServletRequest request = mock(HttpServletRequest.class);
+    when(request.getParameter(AirlineServlet.AIRLINE_NAME_PARAMETER)).thenReturn(airlineName);
+    when(request.getParameter(AirlineServlet.FLIGHT_SOURCE_PARAMETER)).thenReturn(source);
+    when(request.getParameter(AirlineServlet.FLIGHT_DEST_PARAMETER)).thenReturn(destination);
+
+    HttpServletResponse response = mock(HttpServletResponse.class);
+
+    servlet.doGet(request, response);
+    verify(response).sendError(HttpServletResponse.SC_PRECONDITION_FAILED, destination + " is not a valid airport code.");
+  }
+
+  @Test
+  void doPostReturnsPreconditionFailedStatusForInvalidFlightNumber() throws IOException {
+    String airlineName = "Delta";
+    String flightNumber = "12z";
+    String source = "MSP";
+    String departure = "03/08/2022 5:11 pm";
+    String destination = "SFO";
+    String arrival = "03/08/2022 11:30 pm";
+
+    AirlineServlet servlet = new AirlineServlet();
+
+    HttpServletRequest request = mock(HttpServletRequest.class);
+
+    when(request.getParameter(AirlineServlet.AIRLINE_NAME_PARAMETER)).thenReturn(airlineName);
+    when(request.getParameter(AirlineServlet.FLIGHT_NUMBER_PARAMETER)).thenReturn(flightNumber);
+    when(request.getParameter(AirlineServlet.FLIGHT_SOURCE_PARAMETER)).thenReturn(source);
+    when(request.getParameter(AirlineServlet.FLIGHT_DEPART_PARAMETER)).thenReturn(departure);
+    when(request.getParameter(AirlineServlet.FLIGHT_DEST_PARAMETER)).thenReturn(destination);
+    when(request.getParameter(AirlineServlet.FLIGHT_ARRIVE_PARAMETER)).thenReturn(arrival);
+
+    HttpServletResponse response = mock(HttpServletResponse.class);
+
+    servlet.doPost(request, response);
+    verify(response).sendError(HttpServletResponse.SC_PRECONDITION_FAILED, flightNumber + " is not a valid flight number.");
+  }
+
+  @Test
+  void doPostReturnsPreconditionFailedStatusForInvalidSource() throws IOException {
+    String airlineName = "Delta";
+    String flightNumber = "122";
+    String source = "MS5";
+    String departure = "03/08/2022 5:11 pm";
+    String destination = "SFO";
+    String arrival = "03/08/2022 11:30 pm";
+
+    AirlineServlet servlet = new AirlineServlet();
+
+    HttpServletRequest request = mock(HttpServletRequest.class);
+
+    when(request.getParameter(AirlineServlet.AIRLINE_NAME_PARAMETER)).thenReturn(airlineName);
+    when(request.getParameter(AirlineServlet.FLIGHT_NUMBER_PARAMETER)).thenReturn(flightNumber);
+    when(request.getParameter(AirlineServlet.FLIGHT_SOURCE_PARAMETER)).thenReturn(source);
+    when(request.getParameter(AirlineServlet.FLIGHT_DEPART_PARAMETER)).thenReturn(departure);
+    when(request.getParameter(AirlineServlet.FLIGHT_DEST_PARAMETER)).thenReturn(destination);
+    when(request.getParameter(AirlineServlet.FLIGHT_ARRIVE_PARAMETER)).thenReturn(arrival);
+
+    HttpServletResponse response = mock(HttpServletResponse.class);
+
+    servlet.doPost(request, response);
+    verify(response).sendError(HttpServletResponse.SC_PRECONDITION_FAILED, source + " is not a valid airport code.");
+  }
+
+  @Test
+  void doPostReturnsPreconditionFailedStatusForInvalidDestination() throws IOException {
+    String airlineName = "Delta";
+    String flightNumber = "122";
+    String source = "MSp";
+    String departure = "03/08/2022 5:11 pm";
+    String destination = "(SFO)";
+    String arrival = "03/08/2022 11:30 pm";
+
+    AirlineServlet servlet = new AirlineServlet();
+
+    HttpServletRequest request = mock(HttpServletRequest.class);
+
+    when(request.getParameter(AirlineServlet.AIRLINE_NAME_PARAMETER)).thenReturn(airlineName);
+    when(request.getParameter(AirlineServlet.FLIGHT_NUMBER_PARAMETER)).thenReturn(flightNumber);
+    when(request.getParameter(AirlineServlet.FLIGHT_SOURCE_PARAMETER)).thenReturn(source);
+    when(request.getParameter(AirlineServlet.FLIGHT_DEPART_PARAMETER)).thenReturn(departure);
+    when(request.getParameter(AirlineServlet.FLIGHT_DEST_PARAMETER)).thenReturn(destination);
+    when(request.getParameter(AirlineServlet.FLIGHT_ARRIVE_PARAMETER)).thenReturn(arrival);
+
+    HttpServletResponse response = mock(HttpServletResponse.class);
+
+    servlet.doPost(request, response);
+    verify(response).sendError(HttpServletResponse.SC_PRECONDITION_FAILED, destination + " is not a valid airport code.");
+  }
+
+  @Test
+  void doPostReturnsPreconditionFailedStatusForInvalidDepartureDate() throws IOException {
+    String airlineName = "Delta";
+    String flightNumber = "122";
+    String source = "MSP";
+    String departure = "03/08/2022 13:11 pm";
+    String destination = "SFO";
+    String arrival = "03/08/2022 11:30 pm";
+
+    AirlineServlet servlet = new AirlineServlet();
+
+    HttpServletRequest request = mock(HttpServletRequest.class);
+
+    when(request.getParameter(AirlineServlet.AIRLINE_NAME_PARAMETER)).thenReturn(airlineName);
+    when(request.getParameter(AirlineServlet.FLIGHT_NUMBER_PARAMETER)).thenReturn(flightNumber);
+    when(request.getParameter(AirlineServlet.FLIGHT_SOURCE_PARAMETER)).thenReturn(source);
+    when(request.getParameter(AirlineServlet.FLIGHT_DEPART_PARAMETER)).thenReturn(departure);
+    when(request.getParameter(AirlineServlet.FLIGHT_DEST_PARAMETER)).thenReturn(destination);
+    when(request.getParameter(AirlineServlet.FLIGHT_ARRIVE_PARAMETER)).thenReturn(arrival);
+
+    HttpServletResponse response = mock(HttpServletResponse.class);
+
+    servlet.doPost(request, response);
+    verify(response).sendError(HttpServletResponse.SC_PRECONDITION_FAILED, departure + " is not a valid date.");
+  }
+
+  @Test
+  void doPostReturnsPreconditionFailedStatusForInvalidArrivalDate() throws IOException {
+    String airlineName = "Delta";
+    String flightNumber = "122";
+    String source = "MSP";
+    String departure = "03/08/2022 3:11 pm";
+    String destination = "SFO";
+    String arrival = "03/08/222 11:30 pm";
+
+    AirlineServlet servlet = new AirlineServlet();
+
+    HttpServletRequest request = mock(HttpServletRequest.class);
+
+    when(request.getParameter(AirlineServlet.AIRLINE_NAME_PARAMETER)).thenReturn(airlineName);
+    when(request.getParameter(AirlineServlet.FLIGHT_NUMBER_PARAMETER)).thenReturn(flightNumber);
+    when(request.getParameter(AirlineServlet.FLIGHT_SOURCE_PARAMETER)).thenReturn(source);
+    when(request.getParameter(AirlineServlet.FLIGHT_DEPART_PARAMETER)).thenReturn(departure);
+    when(request.getParameter(AirlineServlet.FLIGHT_DEST_PARAMETER)).thenReturn(destination);
+    when(request.getParameter(AirlineServlet.FLIGHT_ARRIVE_PARAMETER)).thenReturn(arrival);
+
+    HttpServletResponse response = mock(HttpServletResponse.class);
+
+    servlet.doPost(request, response);
+    verify(response).sendError(HttpServletResponse.SC_PRECONDITION_FAILED, arrival + " is not a valid date.");
   }
 }

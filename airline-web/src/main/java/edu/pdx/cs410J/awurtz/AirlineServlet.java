@@ -1,6 +1,7 @@
 package edu.pdx.cs410J.awurtz;
 
 import com.google.common.annotations.VisibleForTesting;
+import edu.pdx.cs410J.web.HttpRequestHelper;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -37,6 +38,7 @@ public class AirlineServlet extends HttpServlet {
   @Override
   protected void doGet( HttpServletRequest request, HttpServletResponse response ) throws IOException
   {
+
       response.setContentType("application/xml");
 
       int parameterCount = getHttpRequestParameterCount(request);
@@ -59,13 +61,23 @@ public class AirlineServlet extends HttpServlet {
           if (airlineName == null) {
               missingRequiredParameter(response, AIRLINE_NAME_PARAMETER);
           }
+
           String flightSource = getParameter(FLIGHT_SOURCE_PARAMETER, request);
-          if(flightSource == null) {
-              missingRequiredParameter(response, FLIGHT_SOURCE_PARAMETER);
-          }
           String flightDestination = getParameter(FLIGHT_DEST_PARAMETER, request);
-          if(flightDestination == null) {
-              missingRequiredParameter(response, FLIGHT_DEST_PARAMETER);
+          //validate parameters
+          try {
+              flightSource = Flight.parseAirportCode(flightSource);
+              if (flightSource == null) {
+                  missingRequiredParameter(response, flightSource);
+              }
+
+              flightDestination = Flight.parseAirportCode(flightDestination);
+              if (flightDestination == null) {
+                  missingRequiredParameter(response, flightDestination);
+              }
+          } catch (InvalidAirportCodeException ex) {
+              String message = ex.getInvalidAirportCode() + " is not a valid airport code.";
+              response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, message);
           }
 
           searchFlightsAndDump(airlineName, flightSource, flightDestination, response);
@@ -80,43 +92,59 @@ public class AirlineServlet extends HttpServlet {
   @Override
   protected void doPost( HttpServletRequest request, HttpServletResponse response ) throws IOException
   {
-
       String airlineName = getParameter(AIRLINE_NAME_PARAMETER, request );
+      String flightNumberString = getParameter(FLIGHT_NUMBER_PARAMETER, request );
+      String source = getParameter(FLIGHT_SOURCE_PARAMETER, request);
+      String departure = getParameter(FLIGHT_DEPART_PARAMETER, request);
+      String destination = getParameter(FLIGHT_DEST_PARAMETER, request);
+      String arrival = getParameter(FLIGHT_ARRIVE_PARAMETER, request);
+
+      try {
       if (airlineName == null) {
           missingRequiredParameter(response, AIRLINE_NAME_PARAMETER);
           return;
       }
 
-      String flightNumberString = getParameter(FLIGHT_NUMBER_PARAMETER, request );
       if ( flightNumberString == null) {
           missingRequiredParameter( response, FLIGHT_NUMBER_PARAMETER);
           return;
       }
 
-      String source = getParameter(FLIGHT_SOURCE_PARAMETER, request);
       if (source == null) {
           missingRequiredParameter(response, FLIGHT_SOURCE_PARAMETER);
           return;
       }
+      source = Flight.parseAirportCode(source);
 
-      String departure = getParameter(FLIGHT_DEPART_PARAMETER, request);
       if(departure == null) {
           missingRequiredParameter(response, FLIGHT_DEPART_PARAMETER);
       }
+      departure = Flight.parseDateTime(departure);
 
-      String destination = getParameter(FLIGHT_DEST_PARAMETER, request);
       if(destination == null) {
           missingRequiredParameter(response, FLIGHT_DEST_PARAMETER);
       }
+      destination = Flight.parseAirportCode(destination);
 
-      String arrival = getParameter(FLIGHT_ARRIVE_PARAMETER, request);
+
       if(arrival == null) {
           missingRequiredParameter(response, FLIGHT_ARRIVE_PARAMETER);
       }
+      arrival = Flight.parseDateTime(arrival);
 
       Airline airline = getOrCreateAirline(airlineName);
 
-      airline.addFlight(new Flight(Integer.parseInt(flightNumberString), source, departure, destination, arrival));
+          airline.addFlight(new Flight(Integer.parseInt(flightNumberString), source, departure, destination, arrival));
+      } catch (NumberFormatException ex) {
+          String message = flightNumberString + " is not a valid flight number.";
+          response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, message);
+      } catch (InvalidAirportCodeException ex) {
+          String message = ex.getInvalidAirportCode() + " is not a valid airport code.";
+          response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, message);
+      } catch (InvalidDateException ex) {
+          String message = ex.getInvalidDate() + " is not a valid date.";
+          response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, message);
+      }
 
       response.setStatus( HttpServletResponse.SC_OK);
   }
@@ -162,7 +190,8 @@ public class AirlineServlet extends HttpServlet {
     Airline airline = getAirline(airlineName);
 
     if (airline == null) {
-      response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        String message = airlineName + " was not found.";
+        response.sendError(HttpServletResponse.SC_NOT_FOUND, message);
 
     } else {
       PrintWriter pw = response.getWriter();
@@ -192,7 +221,13 @@ public class AirlineServlet extends HttpServlet {
           PrintWriter pw = response.getWriter();
 
           XmlDumper dumper = new XmlDumper(pw);
-          dumper.dump(airlineWithMatchingFlights);
+
+           if(airlineWithMatchingFlights.getFlights().size() > 0) {
+              dumper.dump(airlineWithMatchingFlights);
+          } else {
+               response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+           }
+
 
           response.setStatus(HttpServletResponse.SC_OK);
       }
@@ -251,7 +286,7 @@ public class AirlineServlet extends HttpServlet {
   }
 
   @VisibleForTesting
-  private Airline getAirline(String airlineName) {
+  Airline getAirline(String airlineName) {
       return this.airlines.get(airlineName);
   }
 

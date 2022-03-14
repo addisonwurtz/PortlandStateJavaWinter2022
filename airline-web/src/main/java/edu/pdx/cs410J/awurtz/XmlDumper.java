@@ -77,6 +77,7 @@ public class XmlDumper implements AirlineDumper<Airline> {
         try {
             writeDomTreeToXml(helper, doc);
         } catch (TransformerException e) {
+            e.printStackTrace(System.err);
             System.err.println("There was an problem writing airline to the XML file.");
             System.exit(1);
         }

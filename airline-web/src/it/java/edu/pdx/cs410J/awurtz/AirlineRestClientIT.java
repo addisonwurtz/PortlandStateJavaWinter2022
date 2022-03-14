@@ -52,4 +52,22 @@ class AirlineRestClientIT {
     assertThat(flight.getNumber(), equalTo(flightNumber));
   }
 
+  @Test
+  void testSearchFlightsMethodReturnsFlightsWithMatchingSourceAndDestination() throws IOException, ParserException {
+    AirlineRestClient client = newAirlineRestClient();
+
+    client.addFlight("Delta", new Flight(999, "PDX"));
+    client.addFlight("Delta", new Flight (456, "SFO"));
+    client.addFlight( "Delta", new Flight(333, "PDX"));
+
+    Airline airline = client.searchFlights("Delta", "PDX", "LAX");
+
+    Collection<Flight> flights = airline.getFlights();
+
+    for (Flight flight : flights) {
+      assertThat(flight.getSource(), equalTo("PDX"));
+      assertThat(flight.getDestination(), equalTo("LAX"));
+    }
+
+  }
 }

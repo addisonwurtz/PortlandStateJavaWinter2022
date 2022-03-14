@@ -33,13 +33,6 @@ public class AirlineRestClient extends HttpRequestHelper
     }
 
     /**
-     * Returns all dictionary entries from the server
-     */
-    public Map<String, String> getAllDictionaryEntries() throws IOException, ParserException {
-        throw new UnsupportedOperationException("Delete me!");
-    }
-
-    /**
    * Returns the definition of the given airline
    */
   public Airline getAirline(String airlineName) throws IOException, ParserException {
@@ -57,6 +50,18 @@ public class AirlineRestClient extends HttpRequestHelper
               String.valueOf(flight.getNumber()), "source", flight.getSource(), "depart",
               flight.getDepartureString(), "dest", flight.getDestination(), "arrive", flight.getArrivalString()));
       throwExceptionIfNotOkayHttpStatus(response);
+  }
+
+  public Airline searchFlights(String airlineName, String source, String destination) throws IOException, ParserException {
+      Response response = get(this.url, Map.of("airline", airlineName, "source", source,
+              "dest", destination));
+      throwExceptionIfNotOkayHttpStatus(response);
+      String content = response.getContent();
+      if(content == null || content == "") {
+          return null;
+      }
+      XmlParser parser = new XmlParser(content);
+      return parser.parse();
   }
 
   public void removeAllAirlines() throws IOException {
