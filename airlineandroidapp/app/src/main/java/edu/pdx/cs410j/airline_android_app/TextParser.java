@@ -1,7 +1,5 @@
 package edu.pdx.cs410j.airline_android_app;
 
-import edu.pdx.cs410J.ParserException;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;

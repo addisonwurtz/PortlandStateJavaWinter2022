@@ -1,6 +1,5 @@
 package edu.pdx.cs410j.airline_android_app;
 
-import edu.pdx.cs410J.AbstractAirline;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -12,9 +11,9 @@ import java.util.Collections;
 /**
  * Code for Airline class.
  */
-public class Airline extends AbstractAirline<Flight> {
+public class Airline extends AbstractAirline {
     /** Name of airline */
-    private String name;
+    private final String name;
     /** List of airline's flights */
     private final ArrayList<Flight> flights = new ArrayList<>();
 
@@ -26,10 +25,12 @@ public class Airline extends AbstractAirline<Flight> {
         this.name = name;
     }
 
+    /*
     /**
      * Airline Constructor for XML files
      * @param root of DOM
      */
+    /*
     public Airline(Element root) {
         NodeList nodeList = root.getChildNodes();
         Node node;
@@ -44,15 +45,26 @@ public class Airline extends AbstractAirline<Flight> {
             switch (element.getNodeName()) {
                 case "name" -> this.name = element.getTextContent();
                 case "flight" -> this.addFlight(new Flight(element));
+                break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + element.getNodeName());
             }
         }
 
         //must also add flights from DOM
     }
 
+     */
+
     @Override
     public String getName() {
         return this.name;
+    }
+
+    //TODO why does it want me to implement this function?
+    @Override
+    public void addFlight(AbstractFlight flight) {
+        throw new RuntimeException("This method should not be called.");
     }
 
     @Override

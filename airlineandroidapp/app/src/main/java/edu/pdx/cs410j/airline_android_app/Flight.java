@@ -1,8 +1,5 @@
 package edu.pdx.cs410j.airline_android_app;
 
-import edu.pdx.cs410J.AbstractFlight;
-import edu.pdx.cs410J.AirportNames;
-import edu.pdx.cs410J.ParserException;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -142,6 +139,7 @@ public class Flight extends AbstractFlight implements Comparable<Flight>{
      * Constructs flight from DOM element
      * @param root representing flight
      */
+    /*
     public Flight(Element root) {
         NodeList nodeList = root.getChildNodes();
 
@@ -198,16 +196,14 @@ public class Flight extends AbstractFlight implements Comparable<Flight>{
                             continue;
                         }
                         Element dateElement = (Element) dateNode;
-                        switch (dateElement.getNodeName()) {
-                            case "date" -> {
-                                day = Integer.parseInt(dateElement.getAttribute("day"));
-                                month = Integer.parseInt(dateElement.getAttribute("month"));
-                                year = Integer.parseInt(dateElement.getAttribute("year"));
-                            }
-                            case "time" -> {
-                                hour = Integer.parseInt(dateElement.getAttribute("hour"));
-                                minute = Integer.parseInt(dateElement.getAttribute("minute"));
-                            }
+                        if(dateElement.getNodeName().equals("date")) {
+                            day = Integer.parseInt(dateElement.getAttribute("day"));
+                            month = Integer.parseInt(dateElement.getAttribute("month"));
+                            year = Integer.parseInt(dateElement.getAttribute("year"));
+                        }
+                        else if(dateElement.getNodeName().equals("time")) {
+                            hour = Integer.parseInt(dateElement.getAttribute("hour"));
+                            minute = Integer.parseInt(dateElement.getAttribute("minute"));
                         }
                     }
                     calendar = new GregorianCalendar(year, month, day, hour, minute);
@@ -223,6 +219,8 @@ public class Flight extends AbstractFlight implements Comparable<Flight>{
         }
 
     }
+
+     */
 
     public Flight(int flightNumber, String source) {
 

@@ -1,9 +1,5 @@
 package edu.pdx.cs410j.airline_android_app;
 
-import com.google.common.annotations.VisibleForTesting;
-import edu.pdx.cs410J.AirlineDumper;
-import edu.pdx.cs410J.AirportNames;
-
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
