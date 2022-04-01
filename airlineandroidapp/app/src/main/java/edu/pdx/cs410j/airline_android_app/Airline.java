@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
+import edu.pdx.cs410J.AbstractAirline;
+import edu.pdx.cs410J.AbstractFlight;
+
 /**
  * Code for Airline class.
  */
@@ -61,13 +64,13 @@ public class Airline extends AbstractAirline {
         return this.name;
     }
 
-    //TODO why does it want me to implement this function?
     @Override
     public void addFlight(AbstractFlight flight) {
-        throw new RuntimeException("This method should not be called.");
+        flights.add((Flight) flight);
+        Collections.sort(flights);
     }
 
-    @Override
+    //TODO I think this might be a problem later...
     public void addFlight(Flight flight) {
         flights.add(flight);
         Collections.sort(flights);

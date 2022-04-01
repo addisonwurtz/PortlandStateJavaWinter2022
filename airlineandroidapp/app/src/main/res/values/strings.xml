@@ -1,9 +1,11 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Airline App</string>
     <string name="flights">Flights</string>
     <string name="airlines">Airlines</string>
     <string name="search">Search</string>
     <string name="help">Help</string>
+    <string name="new_airline">New Airline</string>
+    <string name="circular_button_with_plus_sign">circular button with plus sign</string>
 
     <string name="read_me">Addison Wurtz\n
 Project 6 (Airline-Android)\n
@@ -18,4 +20,5 @@ From the entry point activity, the user should be able to navigate easily throug
 adding airlines and flights to the app, searching for flights between airports, and displaying
 all flights associated with a given airline. Additionally, this application is designed to store
 flights persistently, even if the app is closed or loses user focus.</string>
+
 </resources>

@@ -14,6 +14,8 @@ import static java.lang.Integer.parseInt;
 import static java.text.DateFormat.Field.*;
 import static java.time.temporal.ChronoField.YEAR;
 
+import edu.pdx.cs410J.AbstractFlight;
+
 /**
  * code for <code>Flight</code> class
  */
@@ -134,7 +136,7 @@ public class Flight extends AbstractFlight implements Comparable<Flight>{
                     "times must before arrival times.");
         }
     }
-
+/*
     /**
      * Constructs flight from DOM element
      * @param root representing flight

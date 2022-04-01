@@ -8,6 +8,8 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import edu.pdx.cs410J.AirlineDumper;
+
 public class PrettyPrinter implements AirlineDumper<Airline> {
   private final Writer writer;
   private static final String prettyDateTimePattern = "EEE, MMM dd yyyy 'at' hh:mm a";

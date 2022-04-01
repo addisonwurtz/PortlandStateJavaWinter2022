@@ -4,12 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 public class ReadMeActivity extends AppCompatActivity {
 
@@ -17,7 +11,7 @@ public class ReadMeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_read_me);
-        final TextView readMeTextView = findViewById(R.id.textView);
+        final TextView readMeTextView = findViewById(R.id.listView);
 
 //        InputStream readme = ReadMeActivity.class.getResourceAsStream("readme.txt");
 //        StringBuilder stringBuilder = new StringBuilder();
