@@ -1,28 +1,23 @@
 package edu.pdx.cs410j.airline_android_app;
 
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static java.lang.Integer.parseInt;
-import static java.text.DateFormat.Field.*;
-import static java.time.temporal.ChronoField.YEAR;
+
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import edu.pdx.cs410J.AbstractFlight;
 
 /**
  * code for <code>Flight</code> class
  */
-public class Flight extends AbstractFlight implements Comparable<Flight>{
+public class Flight extends AbstractFlight implements Comparable<Flight>, Parcelable {
 
-    String source;
     Integer flightNumber;
+    String source;
     String departDate;
     String departTime;
     Date depart;
@@ -54,80 +49,70 @@ public class Flight extends AbstractFlight implements Comparable<Flight>{
      * @param arriveTime
      *        Arrival time (am/pm)
      */
-    public Flight(Integer flightNumber, String source, String departDate, String departTime, String dest,
-                  String arriveDate, String arriveTime) {
+    public Flight(Integer flightNumber, String source, String departDate, String departTime, String departAmPm, String dest,
+                  String arriveDate, String arriveTime, String arriveAmPm) {
 
         this.flightNumber = flightNumber;
-        this.source = source;
-        this.departDate = departDate;
-        this.departTime = departTime;
+        this.source = parseAirportCode(source);
+        this.departDate = parseDate(departDate);
+        this.departTime = parseTime(departTime, departAmPm);
         this.depart = getDeparture();
-        this.destination = dest;
-        this.arriveDate = arriveDate;
-        this.arriveTime = arriveTime;
+        this.destination = parseAirportCode(dest);
+        this.arriveDate = parseDate(arriveDate);
+        this.arriveTime = parseTime(arriveTime, arriveAmPm);
         this.arrive = getArrival();
 
         if(depart.after(arrive)) {
-            throw new InvalidTimeException("Departure time " + depart + " is after arrival time " + arrive + " Departure" +
-                    "times must before arrival times.");
+            throw new InvalidTimeException("Invalid departure: Departure cannot be after arrival.");
         }
     }
 
     /**
      * Constructor builds flight from command line arguments
      * returns a flight built from the freshly parsed parameters.
-     * @param args commandline arguments (options are ignored in this method)
-     * @throws MissingCommandLineArgumentException that specifies which argument is missing
+     * @param flightArgs commandline arguments (options are ignored in this method)
+     * @throws MissingFlightArgumentException that specifies which argument is missing
      */
-    public Flight(String[] args) {
-        String[] flightArgs;
-        int i = 0, j = 0;
-
-        while(args[i].contains("-")) {
-            if(args[i].equals("-host")) { ++i; }
-            if(args[i].equals("-port")) { ++i; }
-            if(args[i].equals("-search")) { ++i; }
-            ++i;
-        }
-        flightArgs = Arrays.copyOfRange(args, ++i, args.length);
+    public Flight(String[] flightArgs) {
+        int j = 0;
 
         try {
             this.flightNumber = parseInt(flightArgs[j]);
         } catch(NumberFormatException ex) {
-            throw new InvalidFlightNumberException(flightArgs[j]);
+            throw new InvalidFlightNumberException(flightArgs[j] + " is not a valid flight number");
         } catch(ArrayIndexOutOfBoundsException ex) {
-            throw new MissingCommandLineArgumentException("flight number");
+            throw new MissingFlightArgumentException("flight number");
         }
         try {
             this.source = parseAirportCode(flightArgs[++j]);
         } catch(ArrayIndexOutOfBoundsException ex) {
-            throw new MissingCommandLineArgumentException("source airport code");
+            throw new MissingFlightArgumentException("source airport code");
         }
         try {
             this.departDate = parseDate(flightArgs[++j]);
         } catch (ArrayIndexOutOfBoundsException ex) {
-            throw new MissingCommandLineArgumentException("departure date");
+            throw new MissingFlightArgumentException("departure date");
         }
         try {
             this.departTime = parseTime(flightArgs[++j], flightArgs[++j]);
         } catch (ArrayIndexOutOfBoundsException ex) {
-            throw new MissingCommandLineArgumentException("departure time");
+            throw new MissingFlightArgumentException("departure time");
         }
         this.depart = getDeparture();
         try {
             this.destination = parseAirportCode(flightArgs[++j]);
         } catch (ArrayIndexOutOfBoundsException ex) {
-            throw new MissingCommandLineArgumentException("destination airport");
+            throw new MissingFlightArgumentException("destination airport");
         }
         try {
             this.arriveDate = parseDate(flightArgs[++j]);
         } catch (ArrayIndexOutOfBoundsException ex) {
-            throw new MissingCommandLineArgumentException("arrival date");
+            throw new MissingFlightArgumentException("arrival date");
         }
         try {
             this.arriveTime = parseTime(flightArgs[++j], flightArgs[++j]);
         } catch (ArrayIndexOutOfBoundsException ex) {
-            throw new MissingCommandLineArgumentException("arrival time");
+            throw new MissingFlightArgumentException("arrival time");
         }
         this.arrive = getArrival();
 
@@ -136,93 +121,6 @@ public class Flight extends AbstractFlight implements Comparable<Flight>{
                     "times must before arrival times.");
         }
     }
-/*
-    /**
-     * Constructs flight from DOM element
-     * @param root representing flight
-     */
-    /*
-    public Flight(Element root) {
-        NodeList nodeList = root.getChildNodes();
-
-        for (int i = 0; i < nodeList.getLength(); i++) {
-            Node node = nodeList.item(i);
-            if (!(node instanceof Element)) {
-                continue;
-            }
-            Element element = (Element) node;
-            switch (element.getNodeName()) {
-                case "number" -> this.flightNumber = Integer.valueOf(element.getTextContent());
-                case "src" -> this.source = element.getTextContent();
-                case "depart" -> {
-                    GregorianCalendar calendar;
-                    int day = 0, month = 0, year = 0, hour = 0, minute = 0;
-
-                    NodeList dateNodes = element.getChildNodes();
-                    for (int j = 0; j < dateNodes.getLength(); j++) {
-                        Node dateNode = dateNodes.item(j);
-                        if (!(dateNode instanceof Element)) {
-                            continue;
-                        }
-                        Element dateElement = (Element) dateNode;
-                        switch (dateElement.getNodeName()) {
-                            case "date" -> {
-                                day = Integer.parseInt(dateElement.getAttribute("day"));
-                                month = Integer.parseInt(dateElement.getAttribute("month"));
-                                year = Integer.parseInt(dateElement.getAttribute("year"));
-                            }
-                            case "time" -> {
-                                hour = Integer.parseInt(dateElement.getAttribute("hour"));
-                                minute = Integer.parseInt(dateElement.getAttribute("minute"));
-                            }
-                        }
-                    }
-                    calendar = new GregorianCalendar(year, month, day, hour, minute);
-                    this.depart = calendar.getTime();
-                    this.departDate = month + "/" + day + "/" + year;
-                    if (hour > 12) {
-                        this.departTime = (hour - 12) + ":" + minute + " pm";
-                    } else {
-                        this.departTime = hour + ":" + minute + " am";
-                    }
-                }
-                case "dest" -> this.destination = element.getTextContent();
-                case "arrive" -> {
-                    GregorianCalendar calendar;
-                    int day = 0, month = 0, year = 0, hour = 0, minute = 0;
-
-                    NodeList dateNodes = element.getChildNodes();
-                    for (int j = 0; j < dateNodes.getLength(); j++) {
-                        Node dateNode = dateNodes.item(j);
-                        if (!(dateNode instanceof Element)) {
-                            continue;
-                        }
-                        Element dateElement = (Element) dateNode;
-                        if(dateElement.getNodeName().equals("date")) {
-                            day = Integer.parseInt(dateElement.getAttribute("day"));
-                            month = Integer.parseInt(dateElement.getAttribute("month"));
-                            year = Integer.parseInt(dateElement.getAttribute("year"));
-                        }
-                        else if(dateElement.getNodeName().equals("time")) {
-                            hour = Integer.parseInt(dateElement.getAttribute("hour"));
-                            minute = Integer.parseInt(dateElement.getAttribute("minute"));
-                        }
-                    }
-                    calendar = new GregorianCalendar(year, month, day, hour, minute);
-                    this.arrive = calendar.getTime();
-                    this.arriveDate = month + "/" + day + "/" + year;
-                    if (hour > 12) {
-                        this.arriveTime = (hour - 12) + ":" + minute + " pm";
-                    } else {
-                        this.arriveTime = hour + ":" + minute + " am";
-                    }
-                }
-            }
-        }
-
-    }
-
-     */
 
     public Flight(int flightNumber, String source) {
 
@@ -252,6 +150,45 @@ public class Flight extends AbstractFlight implements Comparable<Flight>{
             System.exit(1);
         }
     }
+
+    protected Flight(Parcel in) {
+        flightNumber = in.readInt();
+        source = in.readString();
+        departDate = in.readString();
+        departTime = in.readString();
+        destination = in.readString();
+        arriveDate = in.readString();
+        arriveTime = in.readString();
+    }
+
+    public static final Creator<Flight> CREATOR = new Creator<Flight>() {
+        @Override
+        public Flight createFromParcel(Parcel in) {
+            return new Flight(in);
+        }
+
+        @Override
+        public Flight[] newArray(int size) {
+            return new Flight[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(flightNumber);
+        parcel.writeString(source);
+        parcel.writeString(departDate);
+        parcel.writeString(departTime);
+        parcel.writeString(destination);
+        parcel.writeString(arriveDate);
+        parcel.writeString(arriveTime);
+    }
+
 
     @Override
     public int getNumber() {
@@ -504,5 +441,7 @@ public class Flight extends AbstractFlight implements Comparable<Flight>{
 
         return dateFormat.format(date);
     }
+
+
 }
 

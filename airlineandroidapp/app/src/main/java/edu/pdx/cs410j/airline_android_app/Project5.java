@@ -1,7 +1,6 @@
 package edu.pdx.cs410j.airline_android_app;
 
 import java.io.*;
-import java.util.Map;
 
 /**
  * The main class that parses the command line and communicates with the
@@ -164,10 +163,10 @@ public class Project5 {
 
 }
 
-class MissingCommandLineArgumentException extends RuntimeException {
+class MissingFlightArgumentException extends RuntimeException {
     private final String missingArgument;
 
-    public MissingCommandLineArgumentException(String missingArgument) {
+    public MissingFlightArgumentException(String missingArgument) {
         this.missingArgument = missingArgument;
     }
 
@@ -175,12 +174,12 @@ class MissingCommandLineArgumentException extends RuntimeException {
 }
 
 class InvalidFlightNumberException extends NumberFormatException {
-    private final String invalidFlightNumber;
+    private final String message;
 
-    public InvalidFlightNumberException(String invalidFlightNumber) {
-        this.invalidFlightNumber = invalidFlightNumber;}
+    public InvalidFlightNumberException(String message) {
+        this.message = message;}
 
-    public String getInvalidFlightNumber() {return invalidFlightNumber;}
+    public String getMessage() {return message;}
 }
 
 class InvalidAirportCodeException extends RuntimeException {

@@ -4,6 +4,195 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    app:barrierMargin="20dp"
     tools:context=".FlightActivity">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="44dp"
+        android:layout_marginVertical="10dp"
+        android:text="@string/add_flights"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.347"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.039" />
+
+    <EditText
+        android:id="@+id/sourceAirport"
+        android:layout_width="208dp"
+        android:layout_height="44dp"
+        android:layout_marginVertical="10dp"
+        android:layout_marginTop="24dp"
+        android:ems="10"
+        android:hint="@string/source_airport"
+        android:inputType="text|textCapCharacters"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/flightNumber"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <EditText
+        android:id="@+id/arriveTime"
+        android:layout_width="154dp"
+        android:layout_height="44dp"
+        android:layout_marginVertical="10dp"
+        android:layout_marginTop="12dp"
+        android:ems="10"
+        android:hint="@string/arrive_time"
+        android:inputType="time"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.392"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/arriveDate"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <EditText
+        android:id="@+id/airlineName"
+        android:layout_width="208dp"
+        android:layout_height="44dp"
+        android:layout_marginVertical="10dp"
+        android:layout_marginTop="27dp"
+        android:ems="10"
+        android:hint="@string/airline_name"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <EditText
+        android:id="@+id/departDate"
+        android:layout_width="208dp"
+        android:layout_height="44dp"
+        android:layout_marginVertical="10dp"
+        android:ems="10"
+        android:hint="@string/depart_date"
+        android:inputType="date"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sourceAirport"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <EditText
+        android:id="@+id/destinationAirport"
+        android:layout_width="208dp"
+        android:layout_height="44dp"
+        android:layout_marginVertical="10dp"
+        android:layout_marginTop="12dp"
+        android:ems="10"
+        android:hint="@string/destination_airport"
+        android:inputType="text|textCapCharacters"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/departTime"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <EditText
+        android:id="@+id/departTime"
+        android:layout_width="154dp"
+        android:layout_height="44dp"
+        android:layout_marginVertical="10dp"
+        android:ems="10"
+        android:hint="@string/depart_time"
+        android:inputType="time"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.389"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/departDate"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="10dp"
+        android:clickable="true"
+        android:onClick="addFlight"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/arriveTime"
+        app:layout_constraintVertical_bias="0.134"
+        app:srcCompat="@android:drawable/ic_input_add" />
+
+    <EditText
+        android:id="@+id/arriveDate"
+        android:layout_width="208dp"
+        android:layout_height="44dp"
+        android:layout_marginVertical="10dp"
+        android:layout_marginTop="40dp"
+        android:ems="10"
+        android:hint="Arrive Date"
+        android:inputType="date"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/destinationAirport"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <EditText
+        android:id="@+id/flightNumber"
+        android:layout_width="208dp"
+        android:layout_height="44dp"
+        android:layout_marginVertical="10dp"
+        android:ems="10"
+        android:hint="Flight Number"
+        android:inputType="number"
+        android:paddingVertical="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/airlineName"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <ToggleButton
+        android:id="@+id/departAmPm"
+        android:layout_width="52dp"
+        android:layout_height="44dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="11dp"
+        android:textOff="am"
+        android:textOn="pm"
+        app:layout_constraintBottom_toTopOf="@+id/destinationAirport"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.047"
+        app:layout_constraintStart_toEndOf="@+id/departTime"
+        app:layout_constraintTop_toBottomOf="@+id/departDate"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <ToggleButton
+        android:id="@+id/arriveAmPm"
+        android:layout_width="52dp"
+        android:layout_height="44dp"
+        android:textOff="am"
+        android:textOn="pm"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.038"
+        app:layout_constraintStart_toEndOf="@+id/arriveTime"
+        app:layout_constraintTop_toBottomOf="@+id/arriveDate"
+        app:layout_constraintVertical_bias="0.048" />
+
+    <RadioGroup
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        tools:layout_editor_absoluteX="349dp"
+        tools:layout_editor_absoluteY="555dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

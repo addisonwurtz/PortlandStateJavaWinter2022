@@ -1,5 +1,8 @@
 package edu.pdx.cs410j.airline_android_app;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -7,6 +10,7 @@ import org.w3c.dom.NodeList;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import edu.pdx.cs410J.AbstractAirline;
 import edu.pdx.cs410J.AbstractFlight;
@@ -14,11 +18,11 @@ import edu.pdx.cs410J.AbstractFlight;
 /**
  * Code for Airline class.
  */
-public class Airline extends AbstractAirline {
+public class Airline extends AbstractAirline implements Parcelable {
     /** Name of airline */
     private final String name;
     /** List of airline's flights */
-    private final ArrayList<Flight> flights = new ArrayList<>();
+    private ArrayList<Flight> flights = new ArrayList<>();
 
     /**
      * Airline Constructor
@@ -28,36 +32,35 @@ public class Airline extends AbstractAirline {
         this.name = name;
     }
 
-    /*
-    /**
-     * Airline Constructor for XML files
-     * @param root of DOM
-     */
-    /*
-    public Airline(Element root) {
-        NodeList nodeList = root.getChildNodes();
-        Node node;
-        Element element;
 
-        for (int i = 0; i < nodeList.getLength(); i++) {
-            node = nodeList.item(i);
-            if(!(node instanceof Element)) {
-                continue;
-            }
-            element = (Element) node;
-            switch (element.getNodeName()) {
-                case "name" -> this.name = element.getTextContent();
-                case "flight" -> this.addFlight(new Flight(element));
-                break;
-                default:
-                    throw new IllegalStateException("Unexpected value: " + element.getNodeName());
-            }
-        }
-
-        //must also add flights from DOM
+    protected Airline(Parcel in) {
+        name = in.readString();
+        flights = in.createTypedArrayList(Flight.CREATOR);
     }
 
-     */
+    public static final Creator<Airline> CREATOR = new Creator<Airline>() {
+        @Override
+        public Airline createFromParcel(Parcel in) {
+            return new Airline(in);
+        }
+
+        @Override
+        public Airline[] newArray(int size) {
+            return new Airline[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(name);
+        parcel.writeTypedList(flights);
+    }
+
 
     @Override
     public String getName() {
@@ -81,4 +84,6 @@ public class Airline extends AbstractAirline {
         Collections.sort(flights);
         return flights;
     }
+
+
 }

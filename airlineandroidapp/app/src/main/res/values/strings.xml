@@ -20,5 +20,12 @@ From the entry point activity, the user should be able to navigate easily throug
 adding airlines and flights to the app, searching for flights between airports, and displaying
 all flights associated with a given airline. Additionally, this application is designed to store
 flights persistently, even if the app is closed or loses user focus.</string>
+    <string name="add_flights">Add Flights</string>
+    <string name="source_airport">Source Airport</string>
+    <string name="arrive_time">Arrive Time</string>
+    <string name="airline_name">Airline Name</string>
+    <string name="depart_date">Depart Date</string>
+    <string name="destination_airport">Destination Airport</string>
+    <string name="depart_time">Depart Time</string>
 
 </resources>

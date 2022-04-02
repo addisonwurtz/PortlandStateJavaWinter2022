@@ -2,6 +2,7 @@ package edu.pdx.cs410j.airline_android_app;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -10,10 +11,14 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 public class AirlineActivity extends AppCompatActivity {
 
-    private static final int GET_AIRLINES = 42;
+    public static final String AIRLINE_ARRAY = "AIRLINE_ARRAY";
+
     private ArrayAdapter<Airline> airlines;
+    private ArrayList<Airline> airlineArrayList = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +26,16 @@ public class AirlineActivity extends AppCompatActivity {
         setContentView(R.layout.activity_airline);
 
         airlines = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
+
+        Intent intent = getIntent();
+
+        if (intent.hasExtra(AIRLINE_ARRAY)) {
+            airlineArrayList = intent.getParcelableArrayListExtra(AIRLINE_ARRAY);
+
+            for (Airline airline : airlineArrayList) {
+                airlines.add(airline);
+            }
+        }
 
         ListView listView = findViewById(R.id.listView);
         listView.setAdapter(this.airlines);
@@ -52,11 +67,19 @@ public class AirlineActivity extends AppCompatActivity {
         if(!match) {
             Airline airline = new Airline(airlineName);
             airlines.add(airline);
+            airlineArrayList.add(airline);
         }
         else {
             Toast.makeText(AirlineActivity.this, "You can only add an airline once.", Toast.LENGTH_LONG).show();
         }
 
         editText.setText(null);
+    }
+
+    public void returnToMain(View view) {
+        Intent data = new Intent();
+        data.putParcelableArrayListExtra(AIRLINE_ARRAY, airlineArrayList);
+        setResult(RESULT_OK, data);
+        finish();
     }
 }
