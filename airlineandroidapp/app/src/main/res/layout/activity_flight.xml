@@ -189,10 +189,4 @@
         app:layout_constraintTop_toBottomOf="@+id/arriveDate"
         app:layout_constraintVertical_bias="0.048" />
 
-    <RadioGroup
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        tools:layout_editor_absoluteX="349dp"
-        tools:layout_editor_absoluteY="555dp" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -27,5 +27,19 @@ flights persistently, even if the app is closed or loses user focus.</string>
     <string name="depart_date">Depart Date</string>
     <string name="destination_airport">Destination Airport</string>
     <string name="depart_time">Depart Time</string>
+    <string name="source_airport_code">Source Airport Code</string>
+    <string name="destination_airport_code">Destination Airport Code</string>
+    <string name="flight_search">Flight Search</string>
+    <string name="title_activity_search_results">SearchResultsActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="no_search_matches">No flights matched your search.</string>
+
 
 </resources>

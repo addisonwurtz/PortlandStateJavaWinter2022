@@ -44,6 +44,14 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(intent, GET_FLIGHTS);
     }
 
+    public void launchSearch(View view) {
+        Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+        if(airlines.size() > 0) {
+            intent.putParcelableArrayListExtra(SearchActivity.AIRLINE_ARRAY, airlines);
+        }
+        startActivity(intent);
+    }
+
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -73,4 +81,5 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
 }

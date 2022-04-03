@@ -61,6 +61,7 @@
         android:width="110dp"
         android:height="50dp"
         android:clickable="true"
+        android:onClick="launchSearch"
         android:text="@string/search"
         app:layout_constraintBottom_toTopOf="@+id/button8"
         app:layout_constraintEnd_toEndOf="parent"

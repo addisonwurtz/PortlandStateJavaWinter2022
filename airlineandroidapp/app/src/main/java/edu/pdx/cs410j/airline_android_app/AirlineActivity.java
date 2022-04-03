@@ -19,7 +19,7 @@ public class AirlineActivity extends AppCompatActivity {
     public static final String AIRLINE = "AIRLINE";
 
     private ArrayAdapter<Airline> airlines;
-    private ArrayList<Airline> airlineArrayList = new ArrayList<>();
+    private final ArrayList<Airline> airlineArrayList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,16 +30,9 @@ public class AirlineActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
 
-        if(intent.hasExtra(AIRLINE)) {
-            airlines.add(intent.getParcelableExtra(AIRLINE));
-        }
-
         if (intent.hasExtra(AIRLINE_ARRAY)) {
             airlineArrayList.addAll(intent.getParcelableArrayListExtra(AIRLINE_ARRAY));
             airlines.addAll(airlineArrayList);
-//            for (Airline airline : airlineArrayList) {
-//                airlines.add(airline);
-//            }
         }
 
         ListView listView = findViewById(R.id.listView);
@@ -49,6 +42,7 @@ public class AirlineActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int index, long id) {
                 Airline airline = AirlineActivity.this.airlines.getItem(index);
                 Toast.makeText(AirlineActivity.this, "Clicked on " + airline, Toast.LENGTH_LONG).show();
+                //TODO go to pretty print of airline's flights
             }
         });
     }
