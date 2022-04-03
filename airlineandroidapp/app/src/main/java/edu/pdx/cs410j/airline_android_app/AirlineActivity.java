@@ -102,13 +102,13 @@ public class AirlineActivity extends AppCompatActivity {
         finish();
     }
 
-//    @Override
-//    public void onPause() {
-//        if(airlineArrayList.size() != 0) {
-//            writeAirlinesToDisk();
-//        }
-//        super.onPause();
-//    }
+    @Override
+    public void onPause() {
+        if(airlineArrayList.size() != 0) {
+            writeAirlinesToDisk();
+        }
+        super.onPause();
+    }
 
     private void writeAirlinesToDisk() {
         for (Airline airline :

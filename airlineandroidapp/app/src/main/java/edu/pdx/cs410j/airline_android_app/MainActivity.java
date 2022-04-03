@@ -37,13 +37,19 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-//    @Override
-//    protected void onStop() {
-//        if(airlines.size() != 0) {
-//            writeAirlinesToDisk();
-//        }
-//        super.onStop();
-//    }
+    @Override
+    protected void onPause() {
+        if(airlines.size() != 0) {
+            writeAirlinesToDisk();
+        }
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        writeAirlinesToDisk();
+        super.onStop();
+    }
 
     public void launchAirlineActivity(View view) {
         Intent intent = new Intent(MainActivity.this, AirlineActivity.class);
@@ -62,6 +68,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void launchFlightActivity(View view) {
         Intent intent = new Intent(MainActivity.this, FlightActivity.class);
+        if(airlines.size() > 0) {
+            intent.putParcelableArrayListExtra(AirlineActivity.AIRLINE_ARRAY, airlines);
+        }
         startActivityForResult(intent, GET_FLIGHTS);
     }
 
@@ -107,17 +116,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void writeAirlinesToDisk() {
-        for (Airline airline :
-                airlines) {
+        if(airlines.size() != 0) {
 
-            File file = new File(this.getFilesDir(), airline.getName() + ".txt");
+            for (Airline airline : airlines) {
 
-            try(PrintWriter pw = new PrintWriter(new FileWriter(file))) {
-               TextDumper dumper = new TextDumper(pw);
-               dumper.dump(airline);
+                File file = new File(this.getFilesDir(), airline.getName() + ".txt");
 
-            } catch (IOException e) {
-                Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+                try (PrintWriter pw = new PrintWriter(new FileWriter(file))) {
+                    TextDumper dumper = new TextDumper(pw);
+                    dumper.dump(airline);
+
+                } catch (IOException e) {
+                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+                }
             }
         }
     }

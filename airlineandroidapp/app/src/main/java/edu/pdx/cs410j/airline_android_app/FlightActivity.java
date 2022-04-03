@@ -10,17 +10,33 @@ import android.widget.EditText;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 public class FlightActivity extends AppCompatActivity {
 
     public static final String AIRLINES_WITH_NEW_FLIGHTS_ARRAY = "AIRLINES_WITH_NEW_FLIGHTS_ARRAY";
-    ArrayList<Airline> airlineArrayList = new ArrayList<Airline>();
+    private static final String AIRLINE_ARRAY = "AIRLINE_ARRAY";
+    ArrayList<Airline> airlineArrayList = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_flight);
+
+        Intent intent = getIntent();
+
+        if (intent.hasExtra(AIRLINE_ARRAY)) {
+            airlineArrayList.addAll(intent.getParcelableArrayListExtra(AIRLINE_ARRAY));
+        }
     }
 
     public void addFlight(View view) {
@@ -31,8 +47,8 @@ public class FlightActivity extends AppCompatActivity {
                 arriveTime, arriveAmPm;
         EditText editText = null;
 
-        ToggleButton departToggle = (ToggleButton) findViewById(R.id.departAmPm);
-        ToggleButton arriveToggle = (ToggleButton) findViewById(R.id.arriveAmPm);
+        ToggleButton departToggle = findViewById(R.id.departAmPm);
+        ToggleButton arriveToggle = findViewById(R.id.arriveAmPm);
 
         try {
             editText = findViewById(R.id.airlineName);
@@ -123,6 +139,32 @@ public class FlightActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onPause() {
+        writeAirlinesToDisk();
+        super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        writeAirlinesToDisk();
+        super.onStop();
+    }
+
+    private void writeAirlinesToDisk() {
+        for (Airline airline : airlineArrayList) {
+
+            File file = new File(this.getFilesDir(), airline.getName() + ".txt");
+
+            try(PrintWriter pw = new PrintWriter(new FileWriter(file))) {
+                TextDumper dumper = new TextDumper(pw);
+                dumper.dump(airline);
+
+            } catch (IOException e) {
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        }
+    }
 
     private void clearFlightForm(ToggleButton departToggle, ToggleButton arriveToggle) {
         EditText editText;
