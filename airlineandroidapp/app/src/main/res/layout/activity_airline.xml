@@ -25,7 +25,7 @@
     <EditText
         android:id="@+id/editTextTextAirlineName"
         android:layout_width="336dp"
-        android:layout_height="44dp"
+        android:layout_height="48dp"
         android:ems="10"
         android:hint="@string/new_airline"
         android:importantForAutofill="no"

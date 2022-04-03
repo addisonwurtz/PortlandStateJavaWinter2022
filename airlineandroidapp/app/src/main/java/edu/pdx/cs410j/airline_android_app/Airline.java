@@ -79,6 +79,10 @@ public class Airline extends AbstractAirline implements Parcelable {
         Collections.sort(flights);
     }
 
+    public void addFlightArray(Collection<Flight> newFlights){
+        this.flights.addAll(newFlights);
+    }
+
     @Override
     public Collection<Flight> getFlights() {
         Collections.sort(flights);

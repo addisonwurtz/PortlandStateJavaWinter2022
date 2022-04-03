@@ -5,7 +5,7 @@
     <string name="search">Search</string>
     <string name="help">Help</string>
     <string name="new_airline">New Airline</string>
-    <string name="circular_button_with_plus_sign">circular button with plus sign</string>
+    <string name="circular_button_with_plus_sign">add new airline</string>
 
     <string name="read_me">Addison Wurtz\n
 Project 6 (Airline-Android)\n

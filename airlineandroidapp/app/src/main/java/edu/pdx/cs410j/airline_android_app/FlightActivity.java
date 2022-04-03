@@ -2,6 +2,7 @@ package edu.pdx.cs410j.airline_android_app;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -9,7 +10,12 @@ import android.widget.EditText;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import java.util.ArrayList;
+
 public class FlightActivity extends AppCompatActivity {
+
+    public static final String AIRLINES_WITH_NEW_FLIGHTS_ARRAY = "AIRLINES_WITH_NEW_FLIGHTS_ARRAY";
+    ArrayList<Airline> airlineArrayList = new ArrayList<Airline>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,12 +71,25 @@ public class FlightActivity extends AppCompatActivity {
                 arriveAmPm = "am";
             }
 
-            Airline airline = new Airline(airlineName);
 
             Flight flight = new Flight(flightNumber, source, departDate, departTime, departAmPm,
                     destination, arriveDate, arriveTime, arriveAmPm);
 
-            airline.addFlight(flight);
+            boolean airlineExists = false;
+
+            for (Airline airline: airlineArrayList)
+            {
+                if(airline.getName().equals(airlineName)) {
+                    airline.addFlight(flight);
+                    airlineExists = true;
+                }
+            }
+
+            if(!airlineExists) {
+                Airline airline = new Airline(airlineName);
+                airline.addFlight(flight);
+                airlineArrayList.add(airline);
+            }
 
             Toast.makeText(FlightActivity.this, flight.toString(), Toast.LENGTH_LONG).show();
 
@@ -90,6 +109,17 @@ public class FlightActivity extends AppCompatActivity {
             Toast.makeText(FlightActivity.this, ex.getMessage(), Toast.LENGTH_LONG).show();
         }
 
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent data = new Intent();
+
+        data.putParcelableArrayListExtra(AIRLINES_WITH_NEW_FLIGHTS_ARRAY, airlineArrayList);
+        setResult(RESULT_OK, data);
+        super.onBackPressed();
+        finish();
 
     }
 
