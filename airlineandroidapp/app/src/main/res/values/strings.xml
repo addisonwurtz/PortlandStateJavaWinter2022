@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <string name="app_name">Airline App</string>
     <string name="flights">Flights</string>
     <string name="airlines">Airlines</string>
@@ -7,7 +7,8 @@
     <string name="new_airline">New Airline</string>
     <string name="circular_button_with_plus_sign">add new airline</string>
 
-    <string name="read_me">Addison Wurtz\n
+    <string name="read_me">\n
+Addison Wurtz\n
 Project 6 (Airline-Android)\n
 CS510 Advanced Programming in Java\n
 \n
@@ -19,7 +20,10 @@ experience and data input.
 From the entry point activity, the user should be able to navigate easily through the application,
 adding airlines and flights to the app, searching for flights between airports, and displaying
 all flights associated with a given airline. Additionally, this application is designed to store
-flights persistently, even if the app is closed or loses user focus.</string>
+flights persistently, even if the app is closed or loses user focus.
+\n\n
+NOTE: Airlines (in the AirlineActivity) are clickable and will display a pretty printed list of all
+    flights associated with that airline.</string>
     <string name="add_flights">Add Flights</string>
     <string name="source_airport">Source Airport</string>
     <string name="arrive_time">Arrive Time</string>

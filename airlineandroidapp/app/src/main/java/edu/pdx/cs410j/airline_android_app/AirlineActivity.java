@@ -104,9 +104,14 @@ public class AirlineActivity extends AppCompatActivity {
 
     @Override
     public void onPause() {
-        if(airlineArrayList.size() != 0) {
-            writeAirlinesToDisk();
+        int size = airlineArrayList.size();
+        airlineArrayList.clear();
+
+        for(int i = size; i < airlines.getCount(); ++i) {
+            airlineArrayList.add(airlines.getItem(i));
         }
+
+        writeAirlinesToDisk();
         super.onPause();
     }
 
