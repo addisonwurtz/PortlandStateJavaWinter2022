@@ -146,13 +146,30 @@ public class Flight extends AbstractFlight implements Comparable<Flight>, Parcel
             this.flightNumber = flightNumber;
             this.source = source;
             this.depart = simpleDateFormat.parse(departure);
+            this.departDate = getDateFromDateTime(departure);
+            this.departTime = getTimeFromDateTime(departure);
             this.destination = destination;
             this.arrive = simpleDateFormat.parse(arrival);
+            this.arriveDate = getDateFromDateTime(arrival);
+            this.arriveTime = getTimeFromDateTime(arrival);
 
         } catch (ParseException ex) {
             System.err.println("Invalid date format: " + ex.getMessage());
             System.exit(1);
         }
+    }
+
+    private String getTimeFromDateTime(String dateTime) {
+        StringTokenizer stringTokenizer = new StringTokenizer(dateTime, " ");
+        stringTokenizer.nextToken();
+        String time = stringTokenizer.nextToken() + " " + stringTokenizer.nextToken();
+
+        return time;
+    }
+
+    private String getDateFromDateTime(String dateTime) {
+        StringTokenizer stringTokenizer = new StringTokenizer(dateTime, " ");
+        return stringTokenizer.nextToken();
     }
 
     protected Flight(Parcel in) {

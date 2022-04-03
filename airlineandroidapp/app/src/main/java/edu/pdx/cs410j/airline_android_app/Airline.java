@@ -89,5 +89,9 @@ public class Airline extends AbstractAirline implements Parcelable {
         return flights;
     }
 
+    public int getFlightCount() {
+        return flights.size();
+    }
+
 
 }

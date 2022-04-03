@@ -15,7 +15,7 @@ import java.util.Collection;
 public class SearchActivity extends AppCompatActivity {
 
     public static final String AIRLINE_ARRAY = "AIRLINE_ARRAY";
-    private ArrayList<Airline> airlineArrayList = new ArrayList<>();
+    private final ArrayList<Airline> airlineArrayList = new ArrayList<>();
 
 
     @Override
@@ -98,12 +98,5 @@ public class SearchActivity extends AppCompatActivity {
         Intent intent = new Intent(SearchActivity.this, SearchResultsActivity.class);
         intent.putExtra(SearchResultsActivity.SEARCH_RESULTS, (Parcelable) resultAirline);
         startActivity(intent);
-
-//        EditText editText = findViewById(R.id.editTextAirlineName);
-//        editText.setText(null);
-//        editText = findViewById(R.id.editTextSource);
-//        editText.setText(null);
-//        editText = findViewById(R.id.destinationAirport);
-//        editText.setText(null);
     }
 }

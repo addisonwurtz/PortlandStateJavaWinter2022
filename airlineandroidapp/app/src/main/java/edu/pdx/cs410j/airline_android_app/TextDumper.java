@@ -17,14 +17,17 @@ public class TextDumper {
     ){
       pw.println(airline.getName());
 
-      airline.getFlights().forEach(flight -> {
-        pw.println(flight.getNumber());
-        pw.println(flight.getSource());
-        pw.println(flight.getDepartureString());
-        pw.println(flight.getDestination());
-        pw.println(flight.getArrivalString());
-      });
-
+      if(airline.getFlightCount() == 0) {
+        pw.println("!!!");
+      } else {
+        airline.getFlights().forEach(flight -> {
+          pw.println(flight.getNumber());
+          pw.println(flight.getSource());
+          pw.println(flight.getDepartureString());
+          pw.println(flight.getDestination());
+          pw.println(flight.getArrivalString());
+        });
+      }
       pw.flush();
     }
   }

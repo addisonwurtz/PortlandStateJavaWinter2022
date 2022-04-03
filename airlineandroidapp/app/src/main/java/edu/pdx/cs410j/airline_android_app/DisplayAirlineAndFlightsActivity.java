@@ -5,30 +5,50 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 
-import java.lang.reflect.Array;
+import java.io.StringWriter;
+import java.util.ArrayList;
 
 public class DisplayAirlineAndFlightsActivity extends AppCompatActivity {
 
     public static final String AIRLINE = "AIRLINE";
-    private ArrayAdapter airline;
+    private Airline airline = null;
+    private ArrayList<Flight> flights = new ArrayList<>();
+    private ArrayAdapter<String> prettyFlights;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_airline_and_flights);
 
-        Airline airline;
         Intent intent = getIntent();
+
+        prettyFlights = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
+        ListView listView = findViewById(R.id.listView);
+        listView.setAdapter(this.prettyFlights);
 
         if (intent.hasExtra(AIRLINE)) {
             airline = intent.getParcelableExtra(AIRLINE);
+
+            if(airline.getFlightCount() > 0) {
+                flights.addAll(airline.getFlights());
+
+                StringWriter sw = new StringWriter();
+                PrettyPrinter printer = new PrettyPrinter(sw);
+
+                prettyFlights.add(airline.toString());
+
+                for (Flight flight: flights) {
+                    printer.dump(flight);
+                    prettyFlights.add(sw.toString());
+                    sw.flush();
+                }
+
+            } else {
+                prettyFlights.add(airline.getName() + " has 0 flights");
+            }
         }
 
-        //TODO either change to text view or add individual flights to listView
-        ListView listView = findViewById(R.id.listView);
-        listView.setAdapter();
     }
 }

@@ -1,5 +1,7 @@
 package edu.pdx.cs410j.airline_android_app;
 
+import android.annotation.SuppressLint;
+
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
@@ -24,7 +26,7 @@ public class PrettyPrinter implements AirlineDumper<Airline> {
 
   @Override
   public void dump(Airline airline) {
-    SimpleDateFormat formatter = new SimpleDateFormat(prettyDateTimePattern);
+    @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat(prettyDateTimePattern);
 
     try (
             PrintWriter pw = new PrintWriter(this.writer)
@@ -37,15 +39,35 @@ public class PrettyPrinter implements AirlineDumper<Airline> {
       if (!flightList.isEmpty()) {
         for (Flight flight : flightList) {
           pw.println();
-          pw.println("Flight " + flight.getNumber() + "\t\t" + flight.getSource() + " -> " + flight.getDestination() + "\t\t" +
-                  flightDurationInMinutes(flight) + " minutes");
-          pw.println("Departs from " + AirportNames.getName(flight.getSource()) + " on " +
-                  formatter.format(flight.getDeparture()));
-          pw.println("Arrives at " + AirportNames.getName(flight.getDestination()) + " on " + formatter.format((flight.getArrival())));
+          pw.println("Flight " + flight.getNumber() + "\t\t" + flight.getSource() + " -> " + flight.getDestination());
+          pw.println(flightDurationInMinutes(flight) + " minutes\n");
+          pw.println("Departs from " + AirportNames.getName(flight.getSource()));
+          pw.println(formatter.format(flight.getDeparture()));
+          pw.println();
+          pw.println("Arrives at " + AirportNames.getName(flight.getDestination()));
+          pw.println(formatter.format((flight.getArrival())));
 
         }
       }
 
+    }
+  }
+
+  public void dump(Flight flight) {
+
+    @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat(prettyDateTimePattern);
+
+    try (
+            PrintWriter pw = new PrintWriter(this.writer)
+    ) {
+      pw.println();
+      pw.println("Flight " + flight.getNumber() + "\t\t" + flight.getSource() + " -> " + flight.getDestination());
+      pw.println(flightDurationInMinutes(flight) + " minutes\n");
+      pw.println("Departs from " + AirportNames.getName(flight.getSource()));
+      pw.println(formatter.format(flight.getDeparture()));
+      pw.println();
+      pw.println("Arrives at " + AirportNames.getName(flight.getDestination()));
+      pw.println(formatter.format((flight.getArrival())));
     }
   }
 

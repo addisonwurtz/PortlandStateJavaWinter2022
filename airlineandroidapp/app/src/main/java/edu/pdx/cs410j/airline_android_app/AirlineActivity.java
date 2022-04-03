@@ -46,15 +46,15 @@ public class AirlineActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int index, long id) {
                 Airline airline = AirlineActivity.this.airlines.getItem(index);
-                Toast.makeText(AirlineActivity.this, "Clicked on " + airline, Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(AirlineActivity.this, DisplayAirlineAndFlightsActivity.class);
-                intent.putExtra(DisplayAirlineAndFlightsActivity.AIRLINE, (Parcelable) airline);
-                launchDisplayAirlineAndFlightsActivity(intent);
+                //Toast.makeText(AirlineActivity.this, "Clicked on " + airline, Toast.LENGTH_LONG).show();
+                launchDisplayAirlineAndFlightsActivity(airline);
             }
         });
     }
 
-    private void launchDisplayAirlineAndFlightsActivity(Intent intent) {
+    private void launchDisplayAirlineAndFlightsActivity(Airline airline) {
+        Intent intent = new Intent(AirlineActivity.this, DisplayAirlineAndFlightsActivity.class);
+        intent.putExtra(DisplayAirlineAndFlightsActivity.AIRLINE, (Parcelable) airline);
         startActivity(intent);
     }
 
@@ -102,11 +102,13 @@ public class AirlineActivity extends AppCompatActivity {
         finish();
     }
 
-    @Override
-    public void onPause() {
-        writeAirlinesToDisk();
-        super.onPause();
-    }
+//    @Override
+//    public void onPause() {
+//        if(airlineArrayList.size() != 0) {
+//            writeAirlinesToDisk();
+//        }
+//        super.onPause();
+//    }
 
     private void writeAirlinesToDisk() {
         for (Airline airline :

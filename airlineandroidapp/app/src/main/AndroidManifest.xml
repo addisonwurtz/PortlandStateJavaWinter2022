@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Airlineandroidapp">
         <activity
-            android:name=".DispalyAirlineAndFlightsActivity"
+            android:name=".DisplayAirlineAndFlightsActivity"
             android:exported="false" />
         <activity
             android:name=".SearchResultsActivity"

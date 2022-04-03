@@ -34,13 +34,12 @@ public class TextParser {
 
       airline = new Airline(airlineName);
 
-      if (airline.getFlights() == null) {
-        return airline;
-      } else {
         do {
           flightNumber = br.readLine();
           if (flightNumber == null) {
             throw new ParserException("Flight number missing from flight.");
+          } else if(flightNumber.equals("!!!")) {
+            return airline;
           }
 
           String source = br.readLine();
@@ -69,7 +68,6 @@ public class TextParser {
         } while (Objects.equals(br.readLine(), "***"));
 
         return airline;
-      }
 
       } catch(IOException e){
         throw new ParserException("While parsing airline", e);

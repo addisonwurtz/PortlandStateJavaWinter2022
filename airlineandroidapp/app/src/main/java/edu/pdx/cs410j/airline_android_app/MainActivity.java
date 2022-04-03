@@ -37,11 +37,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onStop() {
-        writeAirlinesToDisk();
-        super.onStop();
-    }
+//    @Override
+//    protected void onStop() {
+//        if(airlines.size() != 0) {
+//            writeAirlinesToDisk();
+//        }
+//        super.onStop();
+//    }
 
     public void launchAirlineActivity(View view) {
         Intent intent = new Intent(MainActivity.this, AirlineActivity.class);
@@ -99,7 +101,9 @@ public class MainActivity extends AppCompatActivity {
                }
             }
         }
-        writeAirlinesToDisk();
+        if(airlines.size() != 0) {
+            writeAirlinesToDisk();
+        }
     }
 
     private void writeAirlinesToDisk() {
@@ -121,15 +125,18 @@ public class MainActivity extends AppCompatActivity {
     private void readAirlinesFromDisk() throws FileNotFoundException {
         String[] files = this.fileList();
 
-        for (String file: files) {
-            FileInputStream fis = this.openFileInput(file);
-            InputStreamReader inputStreamReader = new InputStreamReader(fis);
+        if(files.length != 0) {
 
-            try(BufferedReader reader = new BufferedReader(inputStreamReader)) {
-                TextParser parser = new TextParser(reader);
-                airlines.add(parser.parse());
-            } catch (IOException | ParserException ex) {
-                Toast.makeText(this, ex.getMessage(), Toast.LENGTH_LONG).show();
+            for (String file : files) {
+                FileInputStream fis = this.openFileInput(file);
+                InputStreamReader inputStreamReader = new InputStreamReader(fis);
+
+                try (BufferedReader reader = new BufferedReader(inputStreamReader)) {
+                    TextParser parser = new TextParser(reader);
+                    airlines.add(parser.parse());
+                } catch (IOException | ParserException ex) {
+                    Toast.makeText(this, ex.getMessage(), Toast.LENGTH_LONG).show();
+                }
             }
         }
     }
