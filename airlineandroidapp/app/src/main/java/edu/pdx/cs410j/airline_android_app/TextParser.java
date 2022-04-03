@@ -34,45 +34,51 @@ public class TextParser {
 
       airline = new Airline(airlineName);
 
-      do {
-        flightNumber = br.readLine();
-        if (flightNumber == null) {
-          throw new ParserException("Flight number missing from flight.");
-        }
+      if (airline.getFlights() == null) {
+        return airline;
+      } else {
+        do {
+          flightNumber = br.readLine();
+          if (flightNumber == null) {
+            throw new ParserException("Flight number missing from flight.");
+          }
 
-        String source = br.readLine();
-        if (source == null) {
-          throw new ParserException("Flight source missing from flight.");
-        }
+          String source = br.readLine();
+          if (source == null) {
+            throw new ParserException("Flight source missing from flight.");
+          }
 
-        String departure = br.readLine();
-        if (departure == null) {
-          throw new ParserException("Departure date missing from flight.");
-        }
+          String departure = br.readLine();
+          if (departure == null) {
+            throw new ParserException("Departure date missing from flight.");
+          }
 
-        String destination = br.readLine();
-        if (destination == null) {
-          throw new ParserException("Flight destination missing from flight.");
-        }
+          String destination = br.readLine();
+          if (destination == null) {
+            throw new ParserException("Flight destination missing from flight.");
+          }
 
-        String arrival = br.readLine();
-        if (arrival == null) {
-          throw new ParserException("Arrival date missing from flight.");
-        }
+          String arrival = br.readLine();
+          if (arrival == null) {
+            throw new ParserException("Arrival date missing from flight.");
+          }
 
-        Flight flight = new Flight(parseInt(flightNumber), source, departure, destination, arrival);
-        airline.addFlight(flight);
+          Flight flight = new Flight(parseInt(flightNumber), source, departure, destination, arrival);
+          airline.addFlight(flight);
 
-      } while (Objects.equals(br.readLine(), "***"));
+        } while (Objects.equals(br.readLine(), "***"));
+
+        return airline;
+      }
+
+      } catch(IOException e){
+        throw new ParserException("While parsing airline", e);
+      } catch(NumberFormatException exception){
+        System.err.println(flightNumber + " is not a valid integer value.");
+        System.exit(1);
+      }
+      assert (airline != null);
       return airline;
 
-    } catch (IOException e) {
-      throw new ParserException("While parsing airline", e);
-    } catch (NumberFormatException exception) {
-      System.err.println(flightNumber + " is not a valid integer value.");
-      System.exit(1);
-    }
-    assert(airline != null);
-    return airline;
   }
 }

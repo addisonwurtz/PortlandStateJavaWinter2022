@@ -5,10 +5,17 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.View;
-import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -22,6 +29,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        try {
+            readAirlinesFromDisk();
+        } catch (FileNotFoundException e) {
+           Toast.makeText(this, "Files storing airline data were not found.", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        writeAirlinesToDisk();
+        super.onStop();
     }
 
     public void launchAirlineActivity(View view) {
@@ -80,6 +99,38 @@ public class MainActivity extends AppCompatActivity {
                }
             }
         }
+        writeAirlinesToDisk();
     }
 
+    private void writeAirlinesToDisk() {
+        for (Airline airline :
+                airlines) {
+
+            File file = new File(this.getFilesDir(), airline.getName() + ".txt");
+
+            try(PrintWriter pw = new PrintWriter(new FileWriter(file))) {
+               TextDumper dumper = new TextDumper(pw);
+               dumper.dump(airline);
+
+            } catch (IOException e) {
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    private void readAirlinesFromDisk() throws FileNotFoundException {
+        String[] files = this.fileList();
+
+        for (String file: files) {
+            FileInputStream fis = this.openFileInput(file);
+            InputStreamReader inputStreamReader = new InputStreamReader(fis);
+
+            try(BufferedReader reader = new BufferedReader(inputStreamReader)) {
+                TextParser parser = new TextParser(reader);
+                airlines.add(parser.parse());
+            } catch (IOException | ParserException ex) {
+                Toast.makeText(this, ex.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        }
+    }
 }

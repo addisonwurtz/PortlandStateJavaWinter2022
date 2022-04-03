@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -11,6 +12,10 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 public class AirlineActivity extends AppCompatActivity {
@@ -42,9 +47,15 @@ public class AirlineActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int index, long id) {
                 Airline airline = AirlineActivity.this.airlines.getItem(index);
                 Toast.makeText(AirlineActivity.this, "Clicked on " + airline, Toast.LENGTH_LONG).show();
-                //TODO go to pretty print of airline's flights
+                Intent intent = new Intent(AirlineActivity.this, DisplayAirlineAndFlightsActivity.class);
+                intent.putExtra(DisplayAirlineAndFlightsActivity.AIRLINE, (Parcelable) airline);
+                launchDisplayAirlineAndFlightsActivity(intent);
             }
         });
+    }
+
+    private void launchDisplayAirlineAndFlightsActivity(Intent intent) {
+        startActivity(intent);
     }
 
     public void addAirline(View view) {
@@ -89,5 +100,27 @@ public class AirlineActivity extends AppCompatActivity {
         setResult(RESULT_OK, data);
         super.onBackPressed();
         finish();
+    }
+
+    @Override
+    public void onPause() {
+        writeAirlinesToDisk();
+        super.onPause();
+    }
+
+    private void writeAirlinesToDisk() {
+        for (Airline airline :
+                airlineArrayList) {
+
+            File file = new File(this.getFilesDir(), airline.getName() + ".txt");
+
+            try(PrintWriter pw = new PrintWriter(new FileWriter(file))) {
+                TextDumper dumper = new TextDumper(pw);
+                dumper.dump(airline);
+
+            } catch (IOException e) {
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        }
     }
 }

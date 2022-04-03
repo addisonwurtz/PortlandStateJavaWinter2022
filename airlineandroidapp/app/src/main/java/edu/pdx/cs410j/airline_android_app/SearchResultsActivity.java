@@ -29,7 +29,7 @@ public class SearchResultsActivity extends AppCompatActivity {
         }
 
         TextView textView = findViewById(R.id.searchResultView);
-        if(results == null) {
+        if(results == null || results.getFlights().size() == 0) {
             textView.setText(R.string.no_search_matches);
         } else {
             StringWriter sw = new StringWriter();

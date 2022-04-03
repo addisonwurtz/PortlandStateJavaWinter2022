@@ -1,11 +1,15 @@
 package edu.pdx.cs410j.airline_android_app;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static java.lang.Integer.parseInt;
 
+import android.annotation.SuppressLint;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -441,7 +445,6 @@ public class Flight extends AbstractFlight implements Comparable<Flight>, Parcel
 
         return dateFormat.format(date);
     }
-
 
 }
 
