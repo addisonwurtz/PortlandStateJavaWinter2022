@@ -47,7 +47,7 @@
         android:clickable="true"
         android:contentDescription="@string/circular_button_with_plus_sign"
         android:onClick="addAirline"
-        app:backgroundTint="#62B8E1"
+        app:backgroundTint="#64B5F6"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
