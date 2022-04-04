@@ -44,6 +44,11 @@ NOTE: Airlines (in the AirlineActivity) are clickable and will display a pretty 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="no_search_matches">No flights matched your search.</string>
+    <string name="search_results">Search Results</string>
+    <string name="arrive_date">Arrive Date</string>
+    <string name="flight_number">Flight Number</string>
+    <string name="am">am</string>
+    <string name="pm">pm</string>
 
 
 </resources>

@@ -17,10 +17,10 @@
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.347"
+        app:layout_constraintHorizontal_bias="0.351"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.039" />
+        app:layout_constraintVertical_bias="0.023" />
 
     <EditText
         android:id="@+id/sourceAirport"
@@ -36,7 +36,8 @@
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/flightNumber"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        android:importantForAutofill="no" />
 
     <EditText
         android:id="@+id/arriveTime"
@@ -52,7 +53,8 @@
         app:layout_constraintHorizontal_bias="0.392"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/arriveDate"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        android:importantForAutofill="no" />
 
     <EditText
         android:id="@+id/airlineName"
@@ -68,7 +70,8 @@
         app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        android:importantForAutofill="no" />
 
     <EditText
         android:id="@+id/departDate"
@@ -83,7 +86,8 @@
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sourceAirport"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        android:importantForAutofill="no" />
 
     <EditText
         android:id="@+id/destinationAirport"
@@ -99,7 +103,8 @@
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/departTime"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        android:importantForAutofill="no" />
 
     <EditText
         android:id="@+id/departTime"
@@ -114,7 +119,8 @@
         app:layout_constraintHorizontal_bias="0.389"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/departDate"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        android:importantForAutofill="no" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingActionButton2"
@@ -127,9 +133,10 @@
         app:backgroundTint="#62B8E1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/arriveTime"
-        app:layout_constraintVertical_bias="0.134"
+        app:layout_constraintVertical_bias="0.116"
         app:srcCompat="@android:drawable/ic_input_add" />
 
     <EditText
@@ -139,15 +146,15 @@
         android:layout_marginVertical="10dp"
         android:layout_marginTop="40dp"
         android:ems="10"
-        android:hint="Arrive Date"
+        android:hint="@string/arrive_date"
         android:inputType="date"
-        android:textColorHint="#546E7A"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/destinationAirport"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        android:importantForAutofill="no" />
 
     <EditText
         android:id="@+id/flightNumber"
@@ -155,16 +162,16 @@
         android:layout_height="44dp"
         android:layout_marginVertical="10dp"
         android:ems="10"
-        android:hint="Flight Number"
+        android:hint="@string/flight_number"
         android:inputType="number"
         android:paddingVertical="10dp"
-        android:textColorHint="#546E7A"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/airlineName"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        android:importantForAutofill="no" />
 
     <ToggleButton
         android:id="@+id/departAmPm"
@@ -172,23 +179,21 @@
         android:layout_height="48dp"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="11dp"
-        android:textOff="am"
-        android:textOn="pm"
+        android:textOff="@string/am"
+        android:textOn="@string/pm"
         app:layout_constraintBottom_toTopOf="@+id/destinationAirport"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.047"
         app:layout_constraintStart_toEndOf="@+id/departTime"
         app:layout_constraintTop_toBottomOf="@+id/departDate"
-        app:layout_constraintVertical_bias="0.0"
-        tools:ignore="DuplicateSpeakableTextCheck" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <ToggleButton
         android:id="@+id/arriveAmPm"
         android:layout_width="52dp"
         android:layout_height="44dp"
-        android:textColor="#455A64"
-        android:textOff="am"
-        android:textOn="pm"
+        android:textOff="@string/am"
+        android:textOn="@string/pm"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.038"
