@@ -17,16 +17,22 @@ public class TextDumper {
     ){
       pw.println(airline.getName());
 
-      if(airline.getFlightCount() == 0) {
+      int count = airline.getFlightCount();
+      if(count == 0) {
         pw.println("!!!");
       } else {
-        airline.getFlights().forEach(flight -> {
+        for (Flight flight : airline.getFlights()) {
           pw.println(flight.getNumber());
           pw.println(flight.getSource());
           pw.println(flight.getDepartureString());
           pw.println(flight.getDestination());
           pw.println(flight.getArrivalString());
-        });
+
+          --count;
+          if (count > 0) {
+            pw.println("***");
+          }
+        }
       }
       pw.flush();
     }
