@@ -4,12 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#E3F2FD"
     tools:context=".AirlineActivity">
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="336dp"
         android:layout_height="32dp"
+        android:background="#00FFFFFF"
         android:text="@string/airlines"
         android:textAlignment="viewStart"
         android:textAllCaps="false"
@@ -32,8 +34,8 @@
         android:inputType="text|textCapWords"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.493"
 
+        app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/listView"
         app:layout_constraintVertical_bias="0.115" />
@@ -45,6 +47,7 @@
         android:clickable="true"
         android:contentDescription="@string/circular_button_with_plus_sign"
         android:onClick="addAirline"
+        app:backgroundTint="#62B8E1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"

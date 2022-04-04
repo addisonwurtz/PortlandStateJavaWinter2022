@@ -74,8 +74,13 @@ public class Airline extends AbstractAirline implements Parcelable {
     }
 
     //TODO I think this might be a problem later...
-    public void addFlight(Flight flight) {
-        flights.add(flight);
+    public void addFlight(Flight newFlight) {
+        for (Flight flight: flights) {
+            if(flight.equals(newFlight)) {
+                return;
+            }
+        }
+        flights.add( newFlight);
         Collections.sort(flights);
     }
 

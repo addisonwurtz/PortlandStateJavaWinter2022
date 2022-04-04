@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#E3F2FD"
     tools:context=".SearchActivity">
 
     <EditText
@@ -13,6 +14,7 @@
         android:width="208dp"
         android:ems="10"
         android:hint="@string/airline_name"
+        android:importantForAutofill="no"
         android:inputType="textPersonName"
         android:lineHeight="44dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -20,8 +22,7 @@
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView3"
-        app:layout_constraintVertical_bias="0.043"
-        android:importantForAutofill="no" />
+        app:layout_constraintVertical_bias="0.043" />
 
     <EditText
         android:id="@+id/editTextSource"
@@ -30,6 +31,7 @@
         android:width="208dp"
         android:ems="10"
         android:hint="@string/source_airport_code"
+        android:importantForAutofill="no"
         android:inputType="textPersonName"
         android:lineHeight="44dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -37,8 +39,7 @@
         app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextAirlineName"
-        app:layout_constraintVertical_bias="0.04"
-        android:importantForAutofill="no" />
+        app:layout_constraintVertical_bias="0.04" />
 
     <EditText
         android:id="@+id/editTextDestination"
@@ -47,6 +48,7 @@
         android:width="208dp"
         android:ems="10"
         android:hint="@string/destination_airport_code"
+        android:importantForAutofill="no"
         android:inputType="textPersonName"
         android:lineHeight="44dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -54,8 +56,7 @@
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextSource"
-        app:layout_constraintVertical_bias="0.042"
-        android:importantForAutofill="no" />
+        app:layout_constraintVertical_bias="0.042" />
 
     <TextView
         android:id="@+id/textView3"

@@ -4,13 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#E3F2FD"
     tools:context=".SearchResultsActivity">
 
     <TextView
         android:id="@+id/textViewTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Search Results"
+        android:text="@string/search_results"
         android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@+id/searchResultView"
         app:layout_constraintEnd_toEndOf="parent"

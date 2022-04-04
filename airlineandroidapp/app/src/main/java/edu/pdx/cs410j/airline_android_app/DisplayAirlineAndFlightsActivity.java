@@ -34,12 +34,12 @@ public class DisplayAirlineAndFlightsActivity extends AppCompatActivity {
             if(airline.getFlightCount() > 0) {
                 flights.addAll(airline.getFlights());
 
-                StringWriter sw = new StringWriter();
-                PrettyPrinter printer = new PrettyPrinter(sw);
 
                 prettyFlights.add(airline.toString());
 
                 for (Flight flight: flights) {
+                    StringWriter sw = new StringWriter();
+                    PrettyPrinter printer = new PrettyPrinter(sw);
                     printer.dump(flight);
                     prettyFlights.add(sw.toString());
                     sw.flush();

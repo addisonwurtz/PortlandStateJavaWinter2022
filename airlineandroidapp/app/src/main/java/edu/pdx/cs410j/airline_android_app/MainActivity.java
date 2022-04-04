@@ -29,7 +29,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         try {
             readAirlinesFromDisk();
         } catch (FileNotFoundException e) {
@@ -45,11 +44,6 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
     }
 
-    @Override
-    protected void onStop() {
-        writeAirlinesToDisk();
-        super.onStop();
-    }
 
     public void launchAirlineActivity(View view) {
         Intent intent = new Intent(MainActivity.this, AirlineActivity.class);
@@ -58,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
             intent.putParcelableArrayListExtra(AirlineActivity.AIRLINE_ARRAY, airlines);
         }
         startActivityForResult(intent, GET_AIRLINES);
+//        startActivity(intent);
     }
 
     public void launchReadMe(View view) {
@@ -86,8 +81,20 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == GET_AIRLINES && resultCode == RESULT_OK && data != null) {
-            airlines.addAll(data.getParcelableArrayListExtra(AirlineActivity.AIRLINE_ARRAY));
-            //TODO write airlines to disk
+            boolean airlineExists = false;
+            ArrayList<Airline> tempArray = data.getParcelableArrayListExtra(AirlineActivity.AIRLINE_ARRAY);
+            for (Airline tempAirline : tempArray) {
+                airlineExists = false;
+                for (Airline mainAirline : airlines) {
+                    if (mainAirline.getName().equals(tempAirline.getName())) {
+                        airlineExists = true;
+                        break;
+                    }
+                }
+                if(!airlineExists) {
+                    airlines.add(tempAirline);
+                }
+            }
         }
         else if (requestCode == GET_FLIGHTS && resultCode == RESULT_OK && data != null) {
             boolean airlineExists = false;
@@ -100,7 +107,10 @@ public class MainActivity extends AppCompatActivity {
 
                    Airline mainAirline = airlines.get(i);
                    if(mainAirline.getName().equals(tempAirline.getName())) {
-                       mainAirline.addFlightArray(tempAirline.getFlights());
+                       for (Flight flight: tempAirline.getFlights()) {
+                           mainAirline.addFlight(flight);
+                       }
+                       //mainAirline.addFlightArray(tempAirline.getFlights());
                        airlineExists = true;
                        break;
                    }

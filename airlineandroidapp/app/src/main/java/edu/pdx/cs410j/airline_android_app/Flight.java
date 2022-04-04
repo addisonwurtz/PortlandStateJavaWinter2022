@@ -463,5 +463,9 @@ public class Flight extends AbstractFlight implements Comparable<Flight>, Parcel
         return dateFormat.format(date);
     }
 
+    public boolean equals(Flight otherFlight) {
+        return this.toString().contentEquals(otherFlight.toString());
+    }
+
 }
 

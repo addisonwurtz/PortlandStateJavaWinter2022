@@ -98,6 +98,7 @@ public class FlightActivity extends AppCompatActivity {
                 if(airline.getName().equals(airlineName)) {
                     airline.addFlight(flight);
                     airlineExists = true;
+                    break;
                 }
             }
 
@@ -143,12 +144,6 @@ public class FlightActivity extends AppCompatActivity {
     public void onPause() {
         writeAirlinesToDisk();
         super.onPause();
-    }
-
-    @Override
-    public void onStop() {
-        writeAirlinesToDisk();
-        super.onStop();
     }
 
     private void writeAirlinesToDisk() {
